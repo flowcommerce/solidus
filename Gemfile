@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby '2.2.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
@@ -26,14 +26,16 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# Use Unicorn as the app server
-# gem 'unicorn'
+# Use Puma as the app server
+gem 'puma'
+# Rack::Timeout is important for avoiding stuck Puma workers/threads on server:
+gem 'rack-timeout', require: 'rack/timeout/base'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem "solidus", "~> 1.3"
-gem "solidus_auth_devise", "~> 1.5"
+gem 'solidus', '~> 1.3'
+gem 'solidus_auth_devise', '~> 1.5'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -46,4 +48,10 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+end
+
+group :production do
+  # Setup STDOUT logging, and dev/prod asset handling parity (recommended by
+  # Heroku) with rails_12factor:
+  gem 'rails_12factor'
 end
