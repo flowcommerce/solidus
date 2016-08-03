@@ -44,3 +44,6 @@ bower.json
 
 .ruby-gemset
 .DS_Store
+.powenv
+.DS_Store
+.gems
