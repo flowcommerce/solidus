@@ -91,6 +91,7 @@ GEM
       warden (~> 1.2.3)
     devise-encryptable (0.2.0)
       devise (>= 2.1.0)
+    dotenv (2.1.1)
     erubis (2.7.0)
     execjs (2.7.0)
     ffaker (2.2.0)
@@ -332,6 +333,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
+  dotenv
   jbuilder (~> 2.0)
   jquery-rails
   pg (~> 0.15)

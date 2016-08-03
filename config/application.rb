@@ -1,3 +1,6 @@
+require 'dotenv'
+Dotenv.load
+
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
@@ -8,7 +11,7 @@ Bundler.require(*Rails.groups)
 
 module FlowSolidusDemo
   class Application < Rails::Application
-    
+
     config.to_prepare do
       # Load application's model / class decorators
       Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
