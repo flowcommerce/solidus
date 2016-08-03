@@ -80,6 +80,5 @@ test:
 #
 production:
   <<: *default
-  database: flow_solidus_demo_production
-  username: flow_solidus_demo
-  password: <%= ENV['FLOW_SOLIDUS_DEMO_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
+  pool: 20 # Maximum number of connections on Heroku 'Hobby Dev' databases
