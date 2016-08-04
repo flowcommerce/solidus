@@ -26,8 +26,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# Use Puma as the app server
-gem 'puma'
 # Rack::Timeout is important for avoiding stuck Puma workers/threads on server:
 gem 'rack-timeout', require: 'rack/timeout/base'
 
@@ -40,7 +38,7 @@ gem 'solidus_auth_devise', '~> 1.5'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  gem "dotenv"
+  gem "dotenv-rails"
 end
 
 group :development do
@@ -56,3 +54,6 @@ group :production do
   # Heroku) with rails_12factor:
   gem 'rails_12factor'
 end
+
+# Use Puma as the app server
+gem 'puma'
