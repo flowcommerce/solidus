@@ -1,0 +1,29 @@
+@import 'neat-helpers';
+
+// Change the grid settings
+$column: 10px;
+$gutter: 5px;
+$grid-columns: 16;
+$max-width: 100%;
+
+// Show visual grid for debugging purposes
+$visual-grid: false;
+$visual-grid-color: #eee;
+$visual-grid-index: back;
+$visual-grid-opacity: .4;
+
+$tiny-screen: 350px;
+$small-screen: 500px;
+$medium-screen: 800px;
+$large-screen: 1100px;
+
+$small-screen-up: new-breakpoint(min-width $small-screen);
+$small-screen-down: new-breakpoint(max-width $small-screen);
+
+// Use 8 columns when screen is >800px wide
+$medium-screen-up: new-breakpoint(min-width $medium-screen 8);
+$medium-screen-down: new-breakpoint(max-width $medium-screen 8);
+
+// Use 12 columns when screen is >1100px wide
+$large-screen-up: new-breakpoint(min-width $large-screen 12);
+$large-screen-down: new-breakpoint(max-width $large-screen 12);

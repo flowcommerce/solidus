@@ -35,6 +35,9 @@ gem 'rack-timeout', require: 'rack/timeout/base'
 gem 'solidus', '~> 1.3'
 gem 'solidus_auth_devise', '~> 1.5'
 
+gem 'bourbon'
+gem 'neat'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
