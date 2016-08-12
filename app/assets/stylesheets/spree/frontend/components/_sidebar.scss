@@ -1,0 +1,25 @@
+#sidebar {
+  @include span-columns(4);
+  @include position(absolute, 0 null null 0);
+  background: $gray;
+  color: $white;
+  display: none;
+  height: 100%;
+  padding: $base-spacing;
+
+  nav#taxonomies .taxonomy-root {
+    border-bottom: 0;
+    color: $white;
+  }
+
+  nav#taxonomies .taxons-list li {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+
+    a {
+      color: $gray;
+      font-size: 15px;
+    }
+  }
+}

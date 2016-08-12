@@ -1,21 +1,11 @@
-<header id="header" class="row" data-hook>
-  <%= link_to "Shop", "#", style: 'float: left;' %>
-
+<header>
+  <%= link_to "Shop", "#", id: 'shop-link' %>
+  <div style="float: right; margin-top: 5px;">
+    <%= link_to 'Sign in', '', id: 'link-to-login' %>
+    <%= link_to ' ', '/cart', id: 'link-to-cart' %>
+  </div>
 
   <%= link_to spree.root_path do %>
-    <figure id="logo" data-hook><%= logo %></figure>
-  <% end %>
-
-  <% if store_menu? %>
-    <nav>
-      <ul id="main-nav-bar" class="inline" data-hook>
-        <li id="link-to-cart" data-hook>
-          <%= link_to ' ', '/cart' %>
-        </li>
-        <li >
-          Sign in
-        </li>
-      </ul>
-    </nav>
+    Solidus/Flow Demo Store
   <% end %>
 </header>

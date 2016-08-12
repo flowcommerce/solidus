@@ -1,3 +1,4 @@
+// Converts the built in Skeleton grid framework to use Neat instead.
 .container {
   @include outer-container(100%);
 }
@@ -22,3 +23,7 @@
 .fourteen { @include span-columns(14); }
 .fifteen  { @include span-columns(15); }
 .sixteen  { @include span-columns(16); }
+
+.omega {
+  @include omega();
+}

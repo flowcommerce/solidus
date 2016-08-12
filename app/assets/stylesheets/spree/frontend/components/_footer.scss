@@ -1,0 +1,14 @@
+footer#footer {
+  border-top: 0;
+  color: $gray;
+  padding: $base-spacing;
+  text-align: center;
+
+  #footer-left {
+    @include span-columns(16);
+  }
+
+  #footer-right {
+    display: none;
+  }
+}

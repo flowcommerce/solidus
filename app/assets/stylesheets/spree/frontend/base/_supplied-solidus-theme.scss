@@ -243,7 +243,6 @@ p {
 /*--------------------------------------*/
 table {
   thead {
-    background-color: $table_head_color;
     text-transform: uppercase;
 
     tr {
@@ -260,10 +259,6 @@ table {
       td {
         vertical-align: middle;
         padding: 5px 10px;
-      }
-
-      &.alt, &.odd {
-        background-color: lighten($link_text_color, 50);
       }
     }
   }
