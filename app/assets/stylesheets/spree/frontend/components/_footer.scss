@@ -1,8 +1,9 @@
 footer#footer {
-  border-top: 0;
-  color: $gray;
+  border-top: $base-spacing;
+  color: $white;
   padding: $base-spacing;
   text-align: center;
+  background: $gray;
 
   #footer-left {
     @include span-columns(16);

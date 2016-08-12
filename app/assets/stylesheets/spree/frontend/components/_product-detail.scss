@@ -1,3 +1,36 @@
 .product-section-title {
   text-transform: none;
 }
+
+#product_show {
+  background: $very-light-gray;
+  padding: $base-spacing;
+
+  #main-image {
+    background: none;
+    border: none;
+  }
+
+  .product-title {
+    font-size: 24px;
+  }
+}
+
+h6.product-section-title,
+#taxon-crumbs {
+  display: none;
+}
+
+#product-variants li {
+  list-style: none;
+}
+
+#product-variants {
+  @include span-columns(6);
+}
+
+#product-properties {
+  border: none;
+  font-size: 12px;
+  opacity: .5;
+}
