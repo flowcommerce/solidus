@@ -463,59 +463,6 @@ span.price {
   font-size: $product_list_search_font_size;
 }
 
-ul#products {
-  &:after {
-    content: " ";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-  }
-
-  li {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-
-    a {
-      display: block;
-
-      &.info {
-        height: 35px;
-        margin-top: 5px;
-        font-size: $product_list_name_font_size;
-        color: $product_link_text_color;
-        border-bottom: $default_border;
-        overflow: hidden;
-      }
-    }
-
-    .product-image {
-      border: $default_border;
-      padding: 5px;
-      min-height: 110px;
-      background-color: $product_background_color;
-
-      &:hover {
-        border-color: $link_text_color;
-      }
-
-      img {
-        max-width: 100%; /* Fluid images for product */
-      }
-
-    }
-
-    .price {
-      color: $link_text_color;
-      font-size: $product_list_price_font_size;
-      padding-top: 5px;
-      display: block;
-    }
-  }
-}
-
 .subtaxon-title {
   text-transform: uppercase;
 

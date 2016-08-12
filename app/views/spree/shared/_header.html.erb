@@ -1,0 +1,21 @@
+<header id="header" class="row" data-hook>
+  <%= link_to "Shop", "#", style: 'float: left;' %>
+
+
+  <%= link_to spree.root_path do %>
+    <figure id="logo" data-hook><%= logo %></figure>
+  <% end %>
+
+  <% if store_menu? %>
+    <nav>
+      <ul id="main-nav-bar" class="inline" data-hook>
+        <li id="link-to-cart" data-hook>
+          <%= link_to ' ', '/cart' %>
+        </li>
+        <li >
+          Sign in
+        </li>
+      </ul>
+    </nav>
+  <% end %>
+</header>

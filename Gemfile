@@ -50,6 +50,9 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # SCSS Lint is used for linting stylesheets:
+  gem 'scss_lint', require: false
 end
 
 group :production do
