@@ -1,11 +1,11 @@
 #sidebar {
   @include span-columns(4);
-  @include position(absolute, 0 null null 0);
+  @include position(fixed, 0 null null 0);
   background: $gray;
-  color: $white;
   display: none;
   height: 100%;
   padding: $base-spacing;
+  color: $white;
 
   nav#taxonomies .taxonomy-root {
     border-bottom: 0;
@@ -18,7 +18,7 @@
     padding-left: 0;
 
     a {
-      color: $gray;
+      color: $white;
       font-size: 15px;
     }
   }
