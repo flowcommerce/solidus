@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).ready(function() {
   $('.shop-link').click(function(e) {
     $('#sidebar').show();
     e.preventDefault();
