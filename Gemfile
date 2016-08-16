@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.3'
+ruby '2.2.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
@@ -39,6 +39,8 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem "dotenv-rails"
+  gem "pry-rails"
+  gem "pry-remote"
 end
 
 group :development do
@@ -57,3 +59,6 @@ end
 
 # Use Puma as the app server
 gem 'puma'
+
+gem 'httpclient'
+gem 'faraday'
