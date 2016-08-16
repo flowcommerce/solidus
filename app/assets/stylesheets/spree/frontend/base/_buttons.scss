@@ -1,4 +1,13 @@
 #{$all-buttons},
-a.button {
+a.button,
+a.button.gray,
+input.button.gray {
   border: 0;
+  vertical-align: middle;
+  background: $gray;
+}
+
+a.button {
+  margin-top: 0;
+  line-height: 18px;
 }
