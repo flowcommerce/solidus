@@ -37,8 +37,15 @@ gem 'solidus_auth_devise', '~> 1.5'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem "byebug"
+  gem "awesome_print"
+  gem "better_errors"
+  gem "binding_of_caller"
   gem "dotenv-rails"
+  gem "factory_girl_rails"
+  gem "ffaker"
+  gem "i18n-tasks"
+  gem "pry-byebug"
   gem "pry-rails"
   gem "pry-remote"
 end
@@ -49,6 +56,16 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+end
+
+group :test do
+  gem "rspec-rails"
+  gem "capybara"
+  gem "capybara-screenshot"
+  gem "database_cleaner"
+  gem "launchy"
+  gem "poltergeist"
+  gem "simplecov", :require => false
 end
 
 group :production do
@@ -62,3 +79,4 @@ gem 'puma'
 
 gem 'httpclient'
 gem 'faraday'
+gem "smarter_csv"
