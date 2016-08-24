@@ -6,7 +6,7 @@
     <%= link_to ' ', cart_url, id: 'link-to-cart' %>
   </div>
 
-  <%= link_to spree.root_path do %>
-    Solidus/Flow Demo Store
+  <%= link_to spree.root_path, class: 'logo' do %>
+    <%= image_tag 'flow-fashion-logo.svg' %>
   <% end %>
 </header>

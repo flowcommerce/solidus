@@ -2,7 +2,8 @@
 // New Custom Variables:
 
 // Typography
-$base-font-family: Arial, Helvetica, sans-serif;
+$base-font-family: 'Chivo', sans-serif;
+$heading-font-family: 'Roboto', sans-serif;
 $base-font-size: 16px;
 $base-line-height: 1.5;
 
@@ -13,6 +14,11 @@ $gray: #333;
 $very-light-gray: #efefef;
 $base-font-color: $gray;
 $blue: #3992cc;
+
+// Theme colours
+$theme-gray: #3E4749;
+$theme-green: #91C71C;
+$theme-teal: #0092A6;
 
 // Spacing
 $base-spacing: 20px;

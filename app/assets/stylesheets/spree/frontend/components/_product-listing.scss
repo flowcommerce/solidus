@@ -23,10 +23,14 @@ ul#products {
       border-bottom: 0;
       font-size: 16px;
       height: auto;
+      display: block;
+      text-align: center;
     }
 
     .price {
       color: $gray;
+      display: block;
+      text-align: center;
     }
   }
 }

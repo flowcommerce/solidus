@@ -4,7 +4,9 @@ a.button.gray,
 input.button.gray {
   border: 0;
   vertical-align: middle;
-  background: $gray;
+  background: $theme-teal;
+  font-weight: normal;
+  padding: $small-spacing;
 }
 
 a.button {
