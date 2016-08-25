@@ -27,10 +27,10 @@ module Import
       spree_attributes = @product.to_spree_attributes
       if spree_product.present?
         puts "Updating existing product: #{sku}"
-        spree_product.update_attributes(spree_attributes)
+        spree_product.update!(spree_attributes)
       else
         puts "Creating new product: #{sku}"
-        spree_product = Spree::Product.create(spree_attributes)
+        spree_product = Spree::Product.create!(spree_attributes)
       end
       spree_product
     end
@@ -50,7 +50,7 @@ module Import
         spree_image = Spree::Image.find_by(attachment_file_name: filename)
         unless spree_image.present?
           puts "Downloading image: #{url}"
-          spree_product.images.create(attachment: url, position: index + 1)
+          spree_product.images.create!(attachment: url, position: index + 1)
         end
       end
     end
@@ -64,7 +64,7 @@ module Import
         taxon = taxon_names.reduce(taxonomy.root) do |parent_taxon, taxon_name|
           parent_taxon.children.find_or_create_by(name: taxon_name)
         end
-        spree_product.taxons << taxon
+        spree_product.taxons << taxon unless spree_product.taxons.include?(taxon)
       end
     end
 
@@ -75,7 +75,7 @@ module Import
 
     def default_stock_location
       Spree::StockLocation.where(default: true).first ||
-        Spree::StockLocation.all.select { |sl| sl.name.casecmp("default") }
+        Spree::StockLocation.all.select { |sl| sl.name.casecmp("default") }.first
     end
   end
 end

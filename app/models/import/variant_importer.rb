@@ -27,10 +27,10 @@ module Import
       spree_variant = find_spree_variant(value_to_find)
       if spree_variant.present?
         puts "Updating existing variant: #{@variant.sku}"
-        spree_variant.update_attributes(spree_attributes)
+        spree_variant.update!(spree_attributes)
       else
         puts "Creating new variant: #{@variant.sku}"
-        spree_variant = @spree_product.variants.create(spree_attributes)
+        spree_variant = @spree_product.variants.create!(spree_attributes)
       end
       spree_variant
     end
@@ -60,7 +60,7 @@ module Import
 
     def default_stock_location
       Spree::StockLocation.where(default: true).first ||
-        Spree::StockLocation.all.select { |sl| sl.name.casecmp("default") }
+        Spree::StockLocation.all.select { |sl| sl.name.casecmp("default") }.first
     end
   end
 end

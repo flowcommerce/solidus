@@ -51,6 +51,7 @@ module Import
       private
 
       def options_array
+        return [] if @attributes[:options].blank?
         option_strings = @attributes[:options].split(",")
         option_strings.map do |os|
           name, value = os.split(":")

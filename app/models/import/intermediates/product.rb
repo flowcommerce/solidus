@@ -96,6 +96,7 @@ module Import
 
       # Assumes @attributes[:properties] has format "material:cotton,neck:vee"
       def spree_product_properties_attributes(spree_product = nil)
+        return [] if @attributes[:properties].blank?
         properties = @attributes[:properties].split(",")
         properties.map do |property|
           name, value = property.split(":")

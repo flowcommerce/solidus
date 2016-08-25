@@ -24,10 +24,16 @@ describe Import::ProductImporter do
       width: 1.2
     }
   end
+  let(:invalid_attributes) { basic_attributes.except(:name) }
   let(:attributes_with_stock) { basic_attributes.merge(stock: 10) }
   let(:attributes_with_images) do
     basic_attributes.merge(
       images: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Nestor_notabilis_-Mount_Aspiring_National_Park%2C_New_Zealand-8.jpg,https://upload.wikimedia.org/wikipedia/commons/3/39/Kaka_%28Nestor_meridionalis%29-_Wellington_-NZ-8.jpg"
+    )
+  end
+  let(:attributes_with_unavailable_image) do
+    basic_attributes.merge(
+      images: "http://example.com/no_such_image.png"
     )
   end
   let(:attributes_with_taxons) do
@@ -63,6 +69,12 @@ describe Import::ProductImporter do
           )
         end
       end
+      context "Invalid attributes" do
+        subject { Import::ProductImporter.new(invalid_attributes) }
+        it "Fails gracefully, so we can move on to the next product" do
+          expect { subject.import }.to raise_error
+        end
+      end
     end
 
     context "Stock" do
@@ -79,15 +91,22 @@ describe Import::ProductImporter do
     end
 
     context "Images" do
-      subject { Import::ProductImporter.new(attributes_with_images) }
-      before { @spree_product = subject.import }
-      it "adds images" do
-        expect(@spree_product.images.count).to eq 2
-        expect(
-          @spree_product.images.first.attachment_file_name
-        ).to eq "Nestor_notabilis_-Mount_Aspiring_National_Park_2C_New_Zealand-8.jpg"
+      context "available image" do
+        subject { Import::ProductImporter.new(attributes_with_images) }
+        before { @spree_product = subject.import }
+        it "adds images" do
+          expect(@spree_product.images.count).to eq 2
+          expect(
+            @spree_product.images.first.attachment_file_name
+          ).to eq "Nestor_notabilis_-Mount_Aspiring_National_Park_2C_New_Zealand-8.jpg"
+        end
       end
-      it "handles 404 while adding images"
+      context "404 retrieving image" do
+        subject { Import::ProductImporter.new(attributes_with_unavailable_image) }
+        it "fails gracefully" do
+          expect { subject.import }.to raise_error
+        end
+      end
     end
 
     context "Taxons" do
@@ -103,6 +122,8 @@ describe Import::ProductImporter do
           "Brand -> ACME Products International"
         ]
       end
+      it "doesn't try to replace taxons if they're already present"
+      it "removes existing taxons that aren't specified"
     end
   end
 end

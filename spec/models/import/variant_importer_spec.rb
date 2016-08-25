@@ -23,13 +23,17 @@ describe Import::VariantImporter do
       images: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Nestor_notabilis_-Mount_Aspiring_National_Park%2C_New_Zealand-8.jpg,https://upload.wikimedia.org/wikipedia/commons/3/39/Kaka_%28Nestor_meridionalis%29-_Wellington_-NZ-8.jpg"
     )
   end
+  let(:attributes_with_unavailable_image) do
+    basic_attributes.merge(
+      images: "http://example.com/no_such_image.png"
+    )
+  end
   let(:spree_product) do
     FactoryGirl.create(:product, sku: basic_attributes[:product_sku])
   end
 
   describe "#import" do
     context "Basic Variant" do
-      # TODO: What if the product is missing?
       subject { Import::VariantImporter.new(spree_product, basic_attributes) }
       context "Variant doesn't exist yet" do
         before { @spree_variant = subject.import }
@@ -43,6 +47,12 @@ describe Import::VariantImporter do
         it "updates the existing variant" do
           expect(Spree::Variant.where(is_master: false).count).to eq 1
           expect(@spree_variant).to be_valid
+        end
+      end
+      context "Parent product doesn't exist yet" do
+        subject { Import::VariantImporter.new(nil, basic_attributes) }
+        it "fails gracefully" do
+          expect { subject.import }.to raise_error
         end
       end
     end
@@ -63,17 +73,24 @@ describe Import::VariantImporter do
     end
 
     context "Images" do
-      subject do
-        Import::VariantImporter.new(spree_product, attributes_with_images)
+      context "available image" do
+        subject do
+          Import::VariantImporter.new(spree_product, attributes_with_images)
+        end
+        before { @spree_variant = subject.import }
+        it "adds images" do
+          expect(@spree_variant.images.count).to eq 2
+          expect(
+            @spree_variant.images.first.attachment_file_name
+          ).to eq "Nestor_notabilis_-Mount_Aspiring_National_Park_2C_New_Zealand-8.jpg"
+        end
       end
-      before { @spree_variant = subject.import }
-      it "adds images" do
-        expect(@spree_variant.images.count).to eq 2
-        expect(
-          @spree_variant.images.first.attachment_file_name
-        ).to eq "Nestor_notabilis_-Mount_Aspiring_National_Park_2C_New_Zealand-8.jpg"
+      context "404 retrieving image" do
+        subject { Import::VariantImporter.new(attributes_with_unavailable_image) }
+        it "fails gracefully" do
+          expect { subject.import }.to raise_error
+        end
       end
-      it "handles 404 while adding images"
     end
   end
 end
