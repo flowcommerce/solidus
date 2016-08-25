@@ -1,5 +1,3 @@
-require "open-uri"
-
 module Import
   # Process a hash of product attributes and create or update a product
   class ProductImporter

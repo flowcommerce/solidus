@@ -1,12 +1,37 @@
 require "smarter_csv"
+require "open-uri"
 
+def uri?(string)
+  uri = URI.parse(string)
+  %w( http https ).include?(uri.scheme)
+rescue URI::BadURIError
+  false
+rescue URI::InvalidURIError
+  false
+end
+
+def download_file(csv_file_or_url, tmp_file_name = "download.txt")
+  filepath = "#{Rails.root}/tmp/#{tmp_file_name}.csv"
+  download = open(csv_file_or_url)
+  IO.copy_stream(download, filepath)
+  filepath
+end
+
+# TODO: products and variants in one go, so we don't expose products without variants on a live site
 namespace :import do
   namespace :csv do
     desc "Import products from CSV"
     task products: :environment do
-      csv_file = ARGV.last
-      task csv_file.to_sym {}
-      # TODO: process rows in batches
+      # TODO: error if ARGV doesn't include filename
+      source = ARGV.last
+      task source.to_sym {}
+
+      csv_file = if uri?(source)
+                   download_file(source, "downloaded_products.csv")
+                 else
+                   source
+                 end
+
       rows = SmarterCSV.process(csv_file)
 
       import_errors = {}
@@ -29,8 +54,15 @@ namespace :import do
 
     desc "Import variants from CSV"
     task variants: :environment do
-      csv_file = ARGV.last
-      task csv_file.to_sym {}
+      source = ARGV.last
+      task source.to_sym {}
+
+      csv_file = if uri?(source)
+                   download_file(source, "downloaded_variants.csv")
+                 else
+                   source
+                 end
+
       rows = SmarterCSV.process(csv_file)
 
       import_errors = {}
@@ -48,13 +80,28 @@ namespace :import do
       end
 
       if import_errors.count == 0
-        puts "Products imported with no errors"
+        puts "Variants imported with no errors"
       else
-        puts "Products imported with #{import_errors.count} errors"
+        puts "Variants imported with #{import_errors.count} errors"
       end
     end
 
-    # TODO: print logger output
-    # TODO: products and variants in one go, so we don't expose products without variants
+    desc "Test CSV file download"
+    task download_test: :environment do
+      # TODO: error if ARGV doesn't include filename
+      csv_file_or_url = ARGV.last
+      task csv_file_or_url.to_sym {}
+
+      if uri?(csv_file_or_url)
+        download = open(csv_file_or_url)
+        filepath = "#{Rails.root}/tmp/products.csv"
+        IO.copy_stream(download, filepath)
+        csv_file = filepath
+      else
+        csv_file = csv_file_or_url
+      end
+      rows = SmarterCSV.process(csv_file)
+    end
+
   end
 end
