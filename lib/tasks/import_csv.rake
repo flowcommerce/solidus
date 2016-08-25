@@ -10,7 +10,9 @@ namespace :import do
 
       rows.each do |row|
         Import::ProductImporter.new(row).import
+        # TODO: Catch error and add to error array
       end
+      # TODO: Report on success, or SKUs that had errors
     end
 
     desc "Import variants from CSV"
@@ -25,6 +27,7 @@ namespace :import do
       end
     end
 
+    # TODO: print logger output
     # TODO: products and variants in one go, so we don't expose products without variants
   end
 end
