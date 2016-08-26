@@ -1,0 +1,36 @@
+ul#products {
+  @include outer-container(100%);
+
+  li {
+    @include span-columns(4);
+    @include omega(4n);
+    margin-bottom: $base-spacing * 2;
+
+    .product-image {
+      background: $very-light-gray;
+      border: 0;
+      height: 25em;
+      margin-bottom: $small-spacing;
+      text-align: center;
+
+      img {
+        max-height: 100%;
+        max-width: 100%;
+      }
+    }
+
+    a.info {
+      border-bottom: 0;
+      font-size: 16px;
+      height: auto;
+      display: block;
+      text-align: center;
+    }
+
+    .price {
+      color: $gray;
+      display: block;
+      text-align: center;
+    }
+  }
+}

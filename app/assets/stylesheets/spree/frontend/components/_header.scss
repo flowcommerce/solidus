@@ -1,0 +1,42 @@
+.container > header {
+  @include outer-container(100%);
+  -webkit-backdrop-filter: blur(10px);
+  background: $transparent-white;
+  border-bottom: 1px solid $very-light-gray;
+  padding: $base-spacing;
+  position: fixed;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+
+  a {
+    color: $gray;
+  }
+}
+
+#link-to-cart {
+  background: image-url('icons/shopping_basket.png') no-repeat;
+  background-size: contain;
+  margin-left: 10px;
+  padding: 10px 15px;
+}
+
+.shop-link {
+  background: image-url('icons/menu.png') no-repeat;
+  background-size: contain;
+  float: left;
+  padding: 5px 0 3px 40px;
+}
+
+.right-menu {
+  float: right;
+  margin-top: 5px;
+}
+
+.logo {
+  padding: $small-spacing;
+
+  img {
+    vertical-align: bottom;
+  }
+}

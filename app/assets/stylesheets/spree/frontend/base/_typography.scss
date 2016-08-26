@@ -1,0 +1,24 @@
+@import 'https://fonts.googleapis.com/css?family=Chivo|Roboto';
+
+body {
+  color: $base-font-color;
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  -webkit-font-smoothing: antialiased;
+  line-height: $base-line-height;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+  font-family: $heading-font-family;
+}
+
+a,
+nav #main-nav-bar li#link-to-cart a {
+  color: $theme-teal;
+}
