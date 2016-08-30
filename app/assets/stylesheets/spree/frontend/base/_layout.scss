@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#content {
+  @include span-columns(16);
+  margin-top: 75px;
+  padding: $base-spacing;
+}

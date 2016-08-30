@@ -185,6 +185,9 @@ GEM
       sixarm_ruby_unaccent (>= 1.1.1, < 2)
     multi_json (1.12.1)
     multipart-post (2.0.0)
+    neat (1.7.4)
+      bourbon (>= 4.0)
+      sass (>= 3.3)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
@@ -295,6 +298,9 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    scss_lint (0.49.0)
+      rake (>= 0.9, < 12)
+      sass (~> 3.4.20)
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
@@ -431,6 +437,7 @@ DEPENDENCIES
   awesome_print
   better_errors
   binding_of_caller
+  bourbon
   byebug
   capybara
   capybara-screenshot
@@ -445,6 +452,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   launchy
+  neat
   pg (~> 0.15)
   poltergeist
   pry-byebug
@@ -456,6 +464,7 @@ DEPENDENCIES
   rails_12factor
   rspec-rails
   sass-rails (~> 5.0)
+  scss_lint
   sdoc (~> 0.4.0)
   simplecov
   smarter_csv

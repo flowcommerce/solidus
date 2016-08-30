@@ -1,0 +1,10 @@
+<header>
+  <%= link_to "Shop", "#", class: 'shop-link' %>
+  <div class="right-menu">
+    <%= link_to 'Sign in', login_url, id: 'link-to-login' %>
+    <%= link_to ' ', cart_url, id: 'link-to-cart' %>
+  </div>
+  <%= link_to spree.root_path, class: 'logo' do %>
+    <%= image_tag 'flow-fashion-logo.svg' %>
+  <% end %>
+</header>

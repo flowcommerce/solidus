@@ -1,0 +1,46 @@
+p[data-hook="use_billing"] {
+  float: none;
+  margin-top: 0;
+  padding: 0;
+}
+
+p.field {
+  padding: 0;
+}
+
+#shipping {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+  }
+}
+
+.form-buttons {
+  @include clearfix;
+  @include span-columns(1 of 1);
+  margin-top: $base-spacing;
+}
+
+div[data-hook="billing_fieldset_wrapper"],
+div[data-hook="shipping_fieldset_wrapper"] {
+  @include span-columns(6 of 12);
+}
+
+div[data-hook="shipping_fieldset_wrapper"] {
+  @include omega();
+}
+
+.stock-contents {
+  width: 100%;
+}
+
+#shipping_method .shipping-methods .shipping-method {
+  display: block;
+  label {
+    font-weight: normal;
+  }
+}

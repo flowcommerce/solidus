@@ -1,0 +1,15 @@
+#{$all-buttons},
+a.button,
+a.button.gray,
+input.button.gray {
+  border: 0;
+  vertical-align: middle;
+  background: $theme-teal;
+  font-weight: normal;
+  padding: $small-spacing;
+}
+
+a.button {
+  margin-top: 0;
+  line-height: 18px;
+}
