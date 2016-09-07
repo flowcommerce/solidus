@@ -87,4 +87,4 @@ gem 'httpclient'
 gem 'faraday'
 gem "smarter_csv"
 
-gem "aws-sdk"
+gem "aws-sdk", "< 2.0"
