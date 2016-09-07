@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.3'
+ruby '2.2.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
@@ -40,8 +40,17 @@ gem 'neat'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem "byebug"
+  gem "awesome_print"
+  gem "better_errors"
+  gem "binding_of_caller"
   gem "dotenv-rails"
+  gem "factory_girl_rails"
+  gem "ffaker"
+  gem "i18n-tasks"
+  gem "pry-byebug"
+  gem "pry-rails"
+  gem "pry-remote"
 end
 
 group :development do
@@ -55,6 +64,16 @@ group :development do
   gem 'scss_lint', require: false
 end
 
+group :test do
+  gem "rspec-rails"
+  gem "capybara"
+  gem "capybara-screenshot"
+  gem "database_cleaner"
+  gem "launchy"
+  gem "poltergeist"
+  gem "simplecov", :require => false
+end
+
 group :production do
   # Setup STDOUT logging, and dev/prod asset handling parity (recommended by
   # Heroku) with rails_12factor:
@@ -63,3 +82,9 @@ end
 
 # Use Puma as the app server
 gem 'puma'
+
+gem 'httpclient'
+gem 'faraday'
+gem "smarter_csv"
+
+gem "aws-sdk"
