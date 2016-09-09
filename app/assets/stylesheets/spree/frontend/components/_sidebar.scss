@@ -6,6 +6,7 @@
   height: 100%;
   padding: $base-spacing;
   color: $white;
+  overflow-y: scroll;
 
   nav#taxonomies .taxonomy-root {
     border-bottom: 0;
