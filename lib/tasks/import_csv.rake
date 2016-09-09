@@ -49,7 +49,7 @@ namespace :import do
           Import::ProductImporter.new(row, item_delimiter: item_delimiter, key_delimiter: key_delimiter, hierarchy_delimiter: hierarchy_delimiter).import
         rescue => error
           import_errors[sku] = error
-          puts "Error importing product with SKU #{sku}: #{error}"
+          puts "Error importing product with SKU #{sku}: #{error}".red
         end
       end
 
@@ -92,7 +92,7 @@ namespace :import do
           Import::VariantImporter.new(spree_product, row, item_delimiter: item_delimiter, key_delimiter: key_delimiter).import
         rescue => error
           import_errors[sku] = error
-          puts "Error importing variant with SKU #{sku}: #{error}"
+          puts "Error importing variant with SKU #{sku}: #{error}".red
         end
       end
 

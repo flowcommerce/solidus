@@ -448,6 +448,7 @@ DEPENDENCIES
   capybara
   capybara-screenshot
   coffee-rails (~> 4.1.0)
+  colorize
   database_cleaner
   dotenv-rails
   factory_girl_rails

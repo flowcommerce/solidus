@@ -102,9 +102,11 @@ module Import
       # TODO: Avoid duplicating properties on an update
       def spree_product_properties_attributes(spree_product = nil)
         return [] if @attributes[:properties].blank?
-        properties = @attributes[:properties].split(@item_delimiter)
+
+        properties = JSON.parse @attributes[:properties]
+
         properties.map do |property|
-          name, value = property.split(@key_delimiter, 2) # split on first colon only
+          name, value = property
           spree_product_property_attributes(name, value, spree_product)
         end
       end

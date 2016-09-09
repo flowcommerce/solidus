@@ -38,6 +38,8 @@ gem 'solidus_auth_devise', '~> 1.5'
 gem 'bourbon'
 gem 'neat'
 
+gem 'colorize'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug"
