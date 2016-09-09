@@ -50,7 +50,7 @@ module Import
         filename = File.basename(url)
         spree_image = spree_product.images.find_by(attachment_file_name: filename)
         if spree_image.present?
-          puts "Using existing: #{filename}"
+          puts "Using existing image: #{filename}"
         else
           puts "Downloading image: #{url}"
           spree_product.images.create!(attachment: url, position: index + 1)

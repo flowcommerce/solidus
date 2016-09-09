@@ -1,10 +1,12 @@
 module Import
   # Process a hash of product attributes and create or update a product
   class VariantImporter
-    def initialize(spree_product, attributes, key_to_match = :sku)
+    def initialize(spree_product, attributes, options = {})
+      @key_to_match = options[:key_to_match] || :sku
+      @item_delimiter = options[:item_delimiter] || ","
+      @key_delimiter = options[:key_delimiter] || ":"
       @spree_product = spree_product
-      @variant = Intermediates::Variant.from_csv_attributes(attributes)
-      @key_to_match = key_to_match
+      @variant = Intermediates::Variant.from_csv_attributes(attributes, item_delimiter: @item_delimiter, key_delimiter: @key_delimiter)
     end
 
     # TODO: use key_to_match instead of hard coded sku
@@ -23,10 +25,10 @@ module Import
       spree_attributes = @variant.to_spree_attributes(@spree_product)
       spree_variant = find_spree_variant(value_to_find)
       if spree_variant.present?
-        puts "Updating existing variant: #{@variant.sku}"
+        puts "Updating existing variant #{@variant.sku} for product #{@spree_product.sku}"
         spree_variant.update!(spree_attributes)
       else
-        puts "Creating new variant: #{@variant.sku}"
+        puts "Creating new variant #{@variant.sku} for product #{@spree_product.sku}"
         spree_variant = @spree_product.variants.create!(spree_attributes)
       end
       spree_variant
@@ -45,7 +47,7 @@ module Import
         filename = File.basename(url)
         spree_image = spree_variant.images.find_by(attachment_file_name: filename)
         if spree_image.present?
-          puts "Using existing: #{filename}"
+          puts "Using existing image: #{filename}"
         else
           puts "Downloading image: #{url}"
           spree_variant.images.create!(attachment: url, position: index + 1)

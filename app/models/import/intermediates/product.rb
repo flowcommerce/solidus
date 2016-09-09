@@ -1,8 +1,9 @@
 module Import
   module Intermediates
     # Intermediate product for importing/exporting
+    # TODO: Document structure of @attributes for future from_ methods that
+    #       handle other data sources
     class Product
-      # TODO: document structure of @attributes
       def initialize(attributes, options = {})
         @key_to_match = options[:key_to_match] || :sku
         @item_delimiter = options[:item_delimiter] || ","
@@ -12,8 +13,8 @@ module Import
 
       attr_reader :key_to_match
 
-      def self.from_csv_attributes(attributes, key_to_match = :name)
-        new(attributes, key_to_match)
+      def self.from_csv_attributes(attributes, options = {})
+        new(attributes, options)
       end
 
       # Massage source product data into spree product data

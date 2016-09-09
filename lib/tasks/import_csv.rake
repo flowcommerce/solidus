@@ -37,34 +37,39 @@ namespace :import do
                    source
                  end
 
-      f = File.open(csv_file, "r:bom|utf-8");
-        rows = SmarterCSV.process(f);
-      f.close
-      #
-      # rows = SmarterCSV.process(csv_file)
+      rows = SmarterCSV.process(csv_file)
+      row_count = rows.count
 
       import_errors = {}
-      rows.each do |row|
+      rows.each_with_index do |row, i|
         begin
+          puts
+          puts "Row #{i} of #{row_count}"
           sku = row[:sku].to_s.to_sym # SKU field might be parsed as a number
-          Import::ProductImporter.new(row, item_delimiter: item_delimiter, key_delimiter: key_delimiter).import
-        rescue => e
-          import_errors[sku] = e
-          puts "Error importing product with SKU #{sku}: #{e}"
+          Import::ProductImporter.new(row, item_delimiter: item_delimiter, key_delimiter: key_delimiter, hierarchy_delimiter: hierarchy_delimiter).import
+        rescue => error
+          import_errors[sku] = error
+          puts "Error importing product with SKU #{sku}: #{error}"
         end
       end
 
-      if import_errors.count == 0
+      if import_errors.count.zero?
         puts "Products imported with no errors"
       else
         puts "Products imported with #{import_errors.count} errors"
+        import_errors.each do |sku, error|
+          puts "  SKU #{sku}: #{error}"
+        end
       end
     end
 
     desc "Import variants from CSV"
     task variants: :environment do
-      source = ARGV.last
+      source = ARGV.second
       task source.to_sym {}
+
+      item_delimiter = ENV["item_delimiter"] || ","
+      key_delimiter = ENV["key_delimiter"] || ":"
 
       csv_file = if uri?(source)
                    download_file(source, "downloaded_variants.csv")
@@ -73,44 +78,32 @@ namespace :import do
                  end
 
       rows = SmarterCSV.process(csv_file)
+      row_count = rows.count
 
       import_errors = {}
-      rows.each do |row|
+      rows.each_with_index do |row, i|
         begin
+          puts
+          puts "Row #{i} of #{row_count}"
           sku = row[:sku].to_s.to_sym
           product_sku = row[:product_sku].to_s
           spree_product = Spree::Variant.find_by(sku: product_sku).try(:product)
           raise "Product #{product_sku} doesn't exist yet" unless spree_product.present?
-          Import::VariantImporter.new(spree_product, row).import
-        rescue => e
-          import_errors[sku] = e
-          puts "Error importing variant with SKU #{sku}: #{e}"
+          Import::VariantImporter.new(spree_product, row, item_delimiter: item_delimiter, key_delimiter: key_delimiter).import
+        rescue => error
+          import_errors[sku] = error
+          puts "Error importing variant with SKU #{sku}: #{error}"
         end
       end
 
-      if import_errors.count == 0
+      if import_errors.count.zero?
         puts "Variants imported with no errors"
       else
         puts "Variants imported with #{import_errors.count} errors"
+        import_errors.each do |sku, error|
+          puts "  SKU #{sku}: #{error}"
+        end
       end
     end
-
-    desc "Test CSV file download"
-    task download_test: :environment do
-      # TODO: error if ARGV doesn't include filename
-      csv_file_or_url = ARGV.last
-      task csv_file_or_url.to_sym {}
-
-      if uri?(csv_file_or_url)
-        download = open(csv_file_or_url)
-        filepath = "#{Rails.root}/tmp/products.csv"
-        IO.copy_stream(download, filepath)
-        csv_file = filepath
-      else
-        csv_file = csv_file_or_url
-      end
-      rows = SmarterCSV.process(csv_file)
-    end
-
   end
 end
