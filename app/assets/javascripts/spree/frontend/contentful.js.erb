@@ -1,9 +1,7 @@
 $(document).ready(function() {
   var client = contentful.createClient({
-    // This is the space ID. A space is like a project folder in Contentful terms
     space: 'jfcmd71weej6',
-    // This is the access token for this space. Normally you get both ID and the token in the Contentful web app
-    accessToken: '<%= ENV['CONTENTFUL_ACCESS_TOKEN'] %>'
+    accessToken: '13f05238e42072e0bcb7c17e14fce5ecbd22c746adef3e7e5a5dfd193f58e8a7'
   });
 
   client.getEntries({
