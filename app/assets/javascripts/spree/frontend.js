@@ -4,3 +4,4 @@
 //= require spree/frontend/product
 //= require spree/frontend/cart
 //= require spree/frontend/menu
+//= require spree/frontend/contentful

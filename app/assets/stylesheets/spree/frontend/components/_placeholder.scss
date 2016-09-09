@@ -1,7 +1,9 @@
-.placeholder-image {
-  background: $very-light-gray;
-  height: 400px;
+.banner-image {
   margin-bottom: $base-spacing * 2;
   text-align: center;
-  width: 100%;
+
+  img {
+    background: $very-light-gray;
+    width: 100%;
+  }
 }
