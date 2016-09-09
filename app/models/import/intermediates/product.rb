@@ -3,9 +3,11 @@ module Import
     # Intermediate product for importing/exporting
     class Product
       # TODO: document structure of @attributes
-      def initialize(attributes, key_to_match = :name)
+      def initialize(attributes, options = {})
+        @key_to_match = options[:key_to_match] || :sku
+        @item_delimiter = options[:item_delimiter] || ","
+        @key_delimiter = options[:key_delimiter] || ":"
         @attributes = attributes
-        @key_to_match = key_to_match
       end
 
       attr_reader :key_to_match
@@ -20,7 +22,7 @@ module Import
       def to_spree_attributes(spree_product = nil)
         {
           name: @attributes[:name],
-          sku: @attributes[:sku],
+          sku: @attributes[:sku].to_s,
           description: @attributes[:description],
           price: @attributes[:price],
           cost_price: @attributes[:cost_price],
@@ -41,7 +43,8 @@ module Import
       end
 
       def image_urls
-        @attributes[:images].try(:split, ",")
+        return [] if @attributes[:images].blank?
+        @attributes[:images].split(@item_delimiter)
       end
 
       # TODO: Use attr for these simple methods
@@ -58,7 +61,7 @@ module Import
       end
 
       def taxon_strings
-        @attributes[:taxons].try(:split, ",")
+        @attributes[:taxons].try(:split, @item_delimiter)
       end
 
       private
@@ -95,11 +98,12 @@ module Import
       end
 
       # Assumes @attributes[:properties] has format "material:cotton,neck:vee"
+      # TODO: Avoid duplicating properties on an update
       def spree_product_properties_attributes(spree_product = nil)
         return [] if @attributes[:properties].blank?
-        properties = @attributes[:properties].split(",")
+        properties = @attributes[:properties].split(@item_delimiter)
         properties.map do |property|
-          name, value = property.split(":")
+          name, value = property.split(@key_delimiter, 2) # split on first colon only
           spree_product_property_attributes(name, value, spree_product)
         end
       end

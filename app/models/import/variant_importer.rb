@@ -21,7 +21,6 @@ module Import
     def update_or_create
       value_to_find = @variant.sku
       spree_attributes = @variant.to_spree_attributes(@spree_product)
-
       spree_variant = find_spree_variant(value_to_find)
       if spree_variant.present?
         puts "Updating existing variant: #{@variant.sku}"
@@ -44,10 +43,12 @@ module Import
     def add_images(spree_variant)
       @variant.image_urls.each_with_index do |url, index|
         filename = File.basename(url)
-        spree_image = Spree::Image.find_by(attachment_file_name: filename)
-        unless spree_image.present?
+        spree_image = spree_variant.images.find_by(attachment_file_name: filename)
+        if spree_image.present?
+          puts "Using existing: #{filename}"
+        else
           puts "Downloading image: #{url}"
-          spree_variant.images.create(attachment: url, position: index + 1)
+          spree_variant.images.create!(attachment: url, position: index + 1)
         end
       end
     end

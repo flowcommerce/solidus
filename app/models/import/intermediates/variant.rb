@@ -3,14 +3,14 @@ module Import
     # Intermediate product for importing/exporting
     class Variant
       # TODO: document structure of @attributes
-      def initialize(attributes, key_to_match = :name)
+      def initialize(attributes, key_to_match = :sku)
         @attributes = attributes
         @key_to_match = key_to_match
       end
 
       attr_reader :key_to_match
 
-      def self.from_csv_attributes(attributes, key_to_match = :name)
+      def self.from_csv_attributes(attributes, key_to_match = :sku)
         new(attributes, key_to_match)
       end
 
@@ -20,7 +20,7 @@ module Import
       def to_spree_attributes(spree_product = nil)
         {
           product_id: spree_product.try(:id),
-          sku: @attributes[:sku],
+          sku: @attributes[:sku].to_s,
           price: @attributes[:price],
           cost_price: @attributes[:cost_price],
           width: @attributes[:width],
@@ -33,7 +33,7 @@ module Import
       end
 
       def sku
-        @attributes[:sku]
+        @attributes[:sku].to_s
       end
 
       def image_urls
@@ -45,7 +45,7 @@ module Import
       end
 
       def product_sku
-        @attributes[:product_sku]
+        @attributes[:product_sku].to_s
       end
 
       private
