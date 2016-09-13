@@ -5,3 +5,4 @@
 //= require spree/frontend/cart
 //= require spree/frontend/menu
 //= require spree/frontend/contentful
+//= require spree/frontend/option_selection
