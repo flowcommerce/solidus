@@ -1,6 +1,8 @@
 # Flow Fashion
 An example Solidus website for Flow.io to demonstrate to clients.
 
+https://www.shopflowfashion.com/
+
 ## Dev Set-up
 How to set up a dev environment for this project:
 
