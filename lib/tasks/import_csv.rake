@@ -2,16 +2,11 @@ require "smarter_csv"
 require "open-uri"
 
 def uri?(string)
-  uri = URI.parse(string)
-  %w( http https ).include?(uri.scheme)
-rescue URI::BadURIError
-  false
-rescue URI::InvalidURIError
-  false
+  string.downcase[0,4] == 'http'
 end
 
 def download_file(csv_file_or_url, tmp_file_name = "download.txt")
-  filepath = "#{Rails.root}/tmp/#{tmp_file_name}.csv"
+  filepath = Rails.root.join("tmp/#{tmp_file_name}.csv").to_s
   download = open(csv_file_or_url)
   IO.copy_stream(download, filepath)
   filepath
@@ -21,21 +16,17 @@ end
 # TODO: option to flush existing products, variants and images before import ()
 namespace :import do
   namespace :csv do
-    desc "Import products from CSV"
+    desc 'Import products from CSV'
     task products: :environment do
       # TODO: error if ARGV doesn't include filename
       source = ARGV.second
       task source.to_sym {}
 
-      item_delimiter = ENV["item_delimiter"] || ","
-      key_delimiter = ENV["key_delimiter"] || ":"
-      hierarchy_delimiter = ENV["hierarchy_delimiter"] || ">"
+      item_delimiter      = ENV['item_delimiter']      || ','
+      key_delimiter       = ENV['key_delimiter']       || ':'
+      hierarchy_delimiter = ENV['hierarchy_delimiter'] || '>'
 
-      csv_file = if uri?(source)
-                   download_file(source, "downloaded_products")
-                 else
-                   source
-                 end
+      csv_file = uri?(source) ? download_file(source, "downloaded_products.csv") : source
 
       rows = SmarterCSV.process(csv_file)
       row_count = rows.count
@@ -63,19 +54,15 @@ namespace :import do
       end
     end
 
-    desc "Import variants from CSV"
+    desc 'Import variants from CSV'
     task variants: :environment do
       source = ARGV.second
       task source.to_sym {}
 
-      item_delimiter = ENV["item_delimiter"] || ","
-      key_delimiter = ENV["key_delimiter"] || ":"
+      item_delimiter = ENV['item_delimiter'] || ','
+      key_delimiter  = ENV['key_delimiter']  || ':'
 
-      csv_file = if uri?(source)
-                   download_file(source, "downloaded_variants.csv")
-                 else
-                   source
-                 end
+      csv_file = uri?(source) ? download_file(source, 'downloaded_products.csv') : source
 
       rows = SmarterCSV.process(csv_file)
       row_count = rows.count

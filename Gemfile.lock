@@ -225,6 +225,7 @@ GEM
       thor (~> 0.14)
     sixarm_ruby_unaccent (1.1.1)
     slop (3.6.0)
+    smarter_csv (1.1.0)
     solidus (2.1.0)
       solidus_api (= 2.1.0)
       solidus_backend (= 2.1.0)
@@ -343,6 +344,7 @@ DEPENDENCIES
   rack-timeout
   rails (= 5.0.1)
   sass-rails (~> 5.0)
+  smarter_csv
   solidus (= 2.1.0)
   solidus_auth_devise
   therubyracer

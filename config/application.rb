@@ -19,6 +19,7 @@ Bundler.require(*Rails.groups)
 module DemoShop
   class Application < Rails::Application
 
+    # solidus overrides
     config.to_prepare do
       preload  = Dir.glob('./app/**/*_decorator*.rb')
       preload += Dir.glob('./app/overrides/*.rb')

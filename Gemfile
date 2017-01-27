@@ -27,6 +27,7 @@ group :development do
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.2'
   gem 'turbolinks', '~> 5'
+  gem 'smarter_csv'
 end
 
 group :production do
