@@ -7,42 +7,31 @@ https://www.shopflowfashion.com/
 How to set up a dev environment for this project:
 
 1. Clone the project
-2. Create a `database.yml` file and place it in config/ (You can probably just copy the `config/database.sample.yml` sample file.)
+2. Create a .env file in root and include keys
+   - RACK_ENV=development
+   - DB_URL='postgres://localhost/flow_solidus_demo_development' file and place it in config/ (You can probably just copy the `config/database.sample.yml` sample file.)
+   - SECRET_TOKEN='big-hash'
+   - SECRET_KEY_BASE='other-big-hash'
+
+   bash one liner to generate big hash
+   ruby -e 'require "securerandom"; puts SecureRandom.hex(64)'
 3. Run `bundle install` to grab the gems.
-4. Set up env variables:
-   - DEV_SECRET_KEY_BASE
-   - TEST_SECRET_KEY_BASE
-   - DEVISE_SECRET
-   You may prefer to add these to a .env file for convenience (see https://github.com/bkeepers/dotenv)
-5. Run `bundle exec rails g spree:install` to set up seed and sample data
-6. Log in to /admin with the default admin account. By default, user is `spree@example.com` and password `spree123`.
+4. Run `bundle exec rails g spree:install` to set up seed and sample data
+5. Log in to /admin with the default admin account. By default, user is `spree@example.com` and password `spree123`.
 
 ## Working Protocols
 ### Branches
 * The `master` branch contains the state of the site on the production server
 * The `staging` branch contains the state of the site on the staging server
-* All other branches should start with `fix/` or `feature/` and a number that matches a corresponding open issue on Github
-* Rebase off of `master` often, and especially before submitting a pull request to make sure your feature branch has the latest hotness.
-* [Issues](https://github.com/resolve/flow_solidus_demo/issues) should be created for all major features, bugs, discussions and other reasonably sized bits to work on. When possible, reference issue numbers in your commits and close issues with commits.
-* When a branch is ready for either staging or master, send a [Pull Request](https://github.com/resolve/flow_solidus_demo/pull/new/master) detailing the changes made, any dependency updates, screenshots of updates if needed, and any other information to help with the merge.
+* All other branches should start with `fix/` or `feature/` and a number that matches a corresponding open issue on Codebase or Github
 
 ### Code Standards
 #### Ruby
 In general, try and follow the guidelines in the [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
 * Soft tabs, two spaces.
 * Use ruby 1.9 style hash syntax. `attr: value` not `:attr => value`
-* Keep external dependencies to a minimum. Only add gems if you must.
-* Create small, simple classes that have a single responsibility when at all possible.
-* Factories, not fixtures for data tests.
-* Aim to write good tests for all classes. Testing is not as necessary for views, but use good judgement.
-* Set your text editor to remove trailing spaces, etc..
-* Use locales for text, even if the project will only ever be in English
-* Separate code that overrides Solidus from code the implements new features.
-  * Use spree subdirectories (`app/controllers/spree`, `app/models/spree` etc.) only for overriding files that also exist in Solidus.
-  * Use Deface to insert new admin view code.
-### Tests
-Models, services and other general classes should be tested. Helpers and views can be tested if possible, but not required.
-After running tests, code coverage will be available in the `coverage/index.html` file. Try and keep coverage above 95%.
+* Use spree subdirectories (`app/controllers/spree`, `app/models/spree` etc.) for frontend overrides
+* Use Deface to insert new admin view code.
 
 ## Using the Solidus API
 You'll need an admin user account with an API token. All requests should include the header
@@ -53,6 +42,23 @@ Find your token by running `rails console` and then query for it:
 ```ruby
 Spree::User.find_by_email("admin@example.com").spree_api_key
 ```
+
+## Customizeing frontend templates
+find the location of solidus gems
+```bash
+bundle show solidus
+```
+
+frontend is here
+```bash
+bundle show solidus_frontend
+
+subl `bundle show solidus_frontend`
+```
+
+then go to app/views/spree and copy them to local app/views/spress. names have to match
+or
+https://github.com/solidusio/solidus/tree/master/frontend/app/views/spree
 
 ### Products
 #### List products

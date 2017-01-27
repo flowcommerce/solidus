@@ -1,5 +1,0 @@
-<% if defined?(image) && image %>
-  <%= image_tag image.attachment.url(:original), itemprop: "image" %>
-<% else %>
-  <%= image_tag @product.display_image.attachment(:original), itemprop: "image" %>
-<% end %>

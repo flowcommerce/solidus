@@ -1,6 +1,0 @@
-scss_files: 'app/assets/stylesheets/**/*.scss'
-linters:
-  IdSelector:
-    enabled: false
-  NestingDepth:
-    max_depth: 4
