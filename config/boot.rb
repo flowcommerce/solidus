@@ -11,9 +11,11 @@ if File.exists?('./.env')
   Dotenv.load
 end
 
-# rack env has to be defined and overrides rails env
-ENV['RAILS_ENV'] = ENV.fetch('RACK_ENV')
+# allow setting of RACK_ENV or RAILS_ENV
+ENV['RACK_ENV']  ||= ENV['RAILS_ENV']
+ENV['RAILS_ENV'] ||= ENV['RACK_ENV']
 
-# ensure secrets are defined
+# ensure env is defined
+ENV.fetch('RAILS_ENV')
 ENV.fetch('SECRET_TOKEN')
 ENV.fetch('SECRET_KEY_BASE')
