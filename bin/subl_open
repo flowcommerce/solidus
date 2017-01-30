@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# open all solidus models and current folder
+# bundle show solidus
+
+subl `bundle show solidus_core` `bundle show solidus_api` `bundle show solidus_backend` `bundle show solidus_frontend` `bundle show solidus_sample` .
