@@ -1,96 +1,43 @@
-require "smarter_csv"
-require "open-uri"
+# imports products and variants to Solidus product catalog
 
-def uri?(string)
-  string.downcase[0,4] == 'http'
-end
+# how to import products to spree / solidus, the right way
+# req: you have to have at least sku, name, description, price and image
+# * create product with sku, name, description and price
+# * variant master will automaticly be addded
+# * with variant id, create product image
+# * done!
 
-def download_file(csv_file_or_url, tmp_file_name = "download.txt")
-  filepath = Rails.root.join("tmp/#{tmp_file_name}.csv").to_s
-  download = open(csv_file_or_url)
-  IO.copy_stream(download, filepath)
-  filepath
-end
+require './lib/import/gilt_products'
+require './lib/import/solidus_db'
 
 # TODO: products and variants in one go, so we don't expose products without variants on a live site
-# TODO: option to flush existing products, variants and images before import ()
 namespace :import do
+
+  # rake import:csv:products tmp/gilt.csv
   namespace :csv do
     desc 'Import products from CSV'
     task products: :environment do
-      # TODO: error if ARGV doesn't include filename
-      source = ARGV.second
-      task source.to_sym {}
+      csv_source = ARGV.second
 
-      item_delimiter      = ENV['item_delimiter']      || ','
-      key_delimiter       = ENV['key_delimiter']       || ':'
-      hierarchy_delimiter = ENV['hierarchy_delimiter'] || '>'
+      puts 'CSV not defined as argument'.red unless csv_source
+      puts 'CSV file not found'.red unless File.exist?(csv_source)
 
-      csv_file = uri?(source) ? download_file(source, "downloaded_products.csv") : source
+      csv = Import::GiltProducts.new(csv_source)
+      puts "Total of #{csv.count} rows present for import"
 
-      rows = SmarterCSV.process(csv_file)
-      row_count = rows.count
-
+      # we want only uniqe errors
       import_errors = {}
-      rows.each_with_index do |row, i|
-        begin
-          puts
-          puts "Row #{i} of #{row_count}"
-          sku = row[:sku].to_s.to_sym # SKU field might be parsed as a number
-          Import::ProductImporter.new(row, item_delimiter: item_delimiter, key_delimiter: key_delimiter, hierarchy_delimiter: hierarchy_delimiter).import
-        rescue => error
-          import_errors[sku] = error
-          puts "Error importing product with SKU #{sku}: #{error}".red
-        end
-      end
 
-      if import_errors.count.zero?
-        puts "Products imported with no errors"
-      else
-        puts "Products imported with #{import_errors.count} errors"
-        import_errors.each do |sku, error|
-          puts "  SKU #{sku}: #{error}"
-        end
-      end
-    end
+      cnt = 0
+      while row = csv.get_uniq
+        cnt += 1
+        # every product is a dot in a console
+        puts "* #{row[:name]}"
+        Import::SolidusDb.call row
 
-    desc 'Import variants from CSV'
-    task variants: :environment do
-      source = ARGV.second
-      task source.to_sym {}
-
-      item_delimiter = ENV['item_delimiter'] || ','
-      key_delimiter  = ENV['key_delimiter']  || ':'
-
-      csv_file = uri?(source) ? download_file(source, 'downloaded_products.csv') : source
-
-      rows = SmarterCSV.process(csv_file)
-      row_count = rows.count
-
-      import_errors = {}
-      rows.each_with_index do |row, i|
-        begin
-          puts
-          puts "Row #{i} of #{row_count}"
-          sku = row[:sku].to_s.to_sym
-          product_sku = row[:product_sku].to_s
-          spree_product = Spree::Variant.find_by(sku: product_sku).try(:product)
-          raise "Product #{product_sku} doesn't exist yet" unless spree_product.present?
-          Import::VariantImporter.new(spree_product, row, item_delimiter: item_delimiter, key_delimiter: key_delimiter).import
-        rescue => error
-          import_errors[sku] = error
-          puts "Error importing variant with SKU #{sku}: #{error}".red
-        end
-      end
-
-      if import_errors.count.zero?
-        puts "Variants imported with no errors"
-      else
-        puts "Variants imported with #{import_errors.count} errors"
-        import_errors.each do |sku, error|
-          puts "  SKU #{sku}: #{error}"
-        end
+        exit if ++cnt > 100
       end
     end
   end
+
 end

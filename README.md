@@ -143,12 +143,14 @@ From the command line:
 ```bash
 bundle exec rspec
 ```
+
 ## Grant a User Access to Spree Admin
 From the Rails console:
 ```ruby
 u = User.find(5)
 u.spree_roles << Spree::Role.where(name:"admin").first
 ```
+
 ## Import Products and Variants from CSV
 From the command line:
 ```bash
@@ -156,3 +158,12 @@ rake import:csv:products path_to_product_csv_file.csv
 rake import:csv:variants path_to_product_csv_file.csv
 ```
 Example CSV files are in `lib/tasks`.
+
+## Internals
+* products are in spree_products
+* images are in spree_assets but are added trough Spree::Image < Asset (single table inheritance)
+  * unfortunately there is no asset_id or image_id in spree_products
+  * for upload
+    * image   -> local file handle
+    * product -> local product
+    * img = Image.create(:attachment => image, :viewable_id => product.id)
