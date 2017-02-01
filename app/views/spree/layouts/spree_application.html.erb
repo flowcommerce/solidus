@@ -1,0 +1,51 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="ie ie6" lang="<%= I18n.locale %>"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie ie7" lang="<%= I18n.locale %>"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie ie8" lang="<%= I18n.locale %>"> <![endif]-->
+<!--[if IE 9 ]>    <html class="ie ie9" lang="<%= I18n.locale %>"> <![endif]-->
+<!--[if gt IE 9]><!--><html lang="<%= I18n.locale %>"><!--<![endif]-->
+  <head data-hook="inside_head">
+    <%= render :partial => 'spree/shared/head' %>
+  </head>
+  <body class="<%= body_class %>" id="<%= @body_id || 'default' %>" data-hook="body">
+    <style>
+      body { font-size: 100%; }
+      #logo { margin-top: 20px; }
+      #search-bar { margin-top: 10px; }
+      #search-bar input { font-size: 14px; height: 30px; }
+      #search-bar input[type=submit], button.button.primary { background-color: #0092A6; }
+      #taxon { font-size: 14px; height: 29px; }
+      a { color:#0092A6 !important; }
+      a.info { font-size: 14px !important; font-weight: normal; }
+      .price { color: #333 !important; }
+      ul.taxons-list a { font-size: 14px !important; line-height: 22px !important; margin-left: -10px; }
+      ul.filter_choices li { line-height: 30px; list-style-type: none; }
+      .pagination span a, .pagination .current { display: inline-block; padding: 5px 10px; border: 1px solid #fff; }
+      .pagination .current, .pagination span:hover a { border-color: #ddd; }
+    </style>
+
+
+    <div class="container">
+      <%= render :partial => 'spree/shared/header' %>
+
+      <div id="wrapper" class="row" data-hook>
+
+        <%= taxon_breadcrumbs(@taxon) %>
+
+        <%= render :partial => 'spree/shared/sidebar' if content_for? :sidebar %>
+
+        <div id="content" class="columns <%= !content_for?(:sidebar) ? "sixteen" : "twelve omega" %>" data-hook>
+          <%= flash_messages %>
+          <%= yield %>
+        </div>
+
+        <%= yield :templates %>
+
+      </div>
+
+      <%= render :partial => 'spree/shared/footer' %>
+
+    </div>
+
+  </body>
+</html>
