@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+# cli access to flow api
+# example
+#  bin/flow organizations -> shoud show organizations you can access
+
+# curl -X PUT -H "Content-Type: application/json" -H "Authorization: Basic SkFReTRGM1NrR1VTa000NnBqVjRPdUZDc0ZFaWlYd1hlSlNlVVQzc2JsUFo4U1lPZk9lMXJta2I0V3piUXk3T21IZ3RNVGVncUIxTjVONkFubDVRT0FkWVlyekRLSlpZUDM1aGQ2bG5PdHgxS2ZJTkRtd1FndzJMMlZoUHBMV3U6" -H "Cache-Control: no-cache" -d '{"number":"sku-2","name":"Slim Fit Denim","description":"Made from premium denim, these casual, do-anything, go-anywhere jeans are cut with a classic five-pocket design and offered in an array of washes.","locale":"en_US","price":120.0,"currency":"USD","categories":["Apparel","Jeans"],"attributes":{"color":"blue","size":"2","countries_of_origin":"CHN USA","product_id":"style-abc","gender":"male"},"images":[{"url":"http://lorempixel.com/300/400/"},{"url":"http://lorempixel.com/100/100/","tags":["thumbnail"]}],"dimensions":{"package":{"weight":{"value":"1.5","units":"pound"},"length":{"value":"18","units":"inch"},"width":{"value":"18","units":"inch"},"height":{"value":"1","units":"foot"}},"product":{"weight":{"value":"1","units":"pound"},"diameter":{"value":"12","units":"inch"}}}}' "https://api.flow.io/solidus-demo-sandbox/catalog/items/sku-2"
+
+# {
+#   "number": "sku-2",
+#   "name": "Slim Fit Denim",
+#   "locale": "en_US",
+#   "description": "Made from premium denim, these casual, do-anything",
+#   "price": 120.00,
+#   "currency": "USD",
+#   "categories": ["Apparel", "Jeans"],
+#   "images": [{ "url": "http://lorempixel.com/300/400/" }]
+# }
+
+require 'dotenv'
+require 'json'
+require 'awesome_print'
+
+Dotenv.load
+
+json = JSON.load(File.read('./body.json')).to_json
+url  = "https://api.flow.io/#{ENV.fetch('FLOW_ORG')}/catalog/items/sku-2"
+curl = %[curl -s -X PUT -H "Content-Type: application/json" -u #{ENV.fetch('FLOW_API_KEY')}: -d '#{json}' "#{url}"]
+
+response = `#{curl}`
+
+ap JSON.parse(response)

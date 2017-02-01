@@ -1,0 +1,10 @@
+{
+  "number": "sku-2",
+  "name": "Slim Fit Denim",
+  "locale": "en_US",
+  "description": "Made from premium denim, these casual, do-anything",
+  "price": 120.00,
+  "currency": "USD",
+  "categories": ["Apparel", "Jeans"],
+  "images": [{ "url": "http://lorempixel.com/300/400/" }]
+}

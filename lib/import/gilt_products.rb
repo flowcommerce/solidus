@@ -27,22 +27,20 @@ module Import
     def get_row
       row = @rows.shift
 
-      # ap row; exit
-
       return nil unless row
 
       name = row[3].split(':', 2)
       {
         name:         trim(name.first.split('*').first),
-        description:  trim(row[3].split(':', 2)[1]),
+        description:  trim(name[1]),
         uid:          row[1],
-        vendor:       row[17],
-        category:     row[14],
+        old_price:    row[6],
+        price:        row[7],
         image:        row[11],
+        category:     row[14],
+        vendor:       row[17],
         sex:          row[28],
         size:         row[29],
-        price:        row[7],
-        old_price:    row[6],
       }
     end
 
@@ -74,7 +72,7 @@ module Import
       csv_path = './tmp/_tmp_csv.txt'
 
       # curl if reliable downloader
-      `curl '#{url}' > '#{csv_path}'`
+      `wget -O '#{csv_path}' '#{url}'`
 
       csv_path
     end

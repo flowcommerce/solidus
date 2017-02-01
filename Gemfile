@@ -22,6 +22,7 @@ group :development do
   gem 'listen', '~> 3.0.5'
   gem 'awesome_print'
   gem 'pry-rails'
+  gem 'thread', require: false
 
   # css and js block
   gem 'therubyracer', platforms: :ruby

@@ -1,4 +1,5 @@
 # imports products and variants to Solidus product catalog
+# http://guides.spreecommerce.org/developer/products.html
 
 # how to import products to spree / solidus, the right way
 # req: you have to have at least sku, name, description, price and image
