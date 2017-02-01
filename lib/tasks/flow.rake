@@ -15,6 +15,7 @@ namespace :flow do
     variants.each_with_index do |variant, i|
       product = variant.product
 
+      # our id
       sku = variant.sku
 
       data = {}
@@ -26,12 +27,13 @@ namespace :flow do
       data[:currency]    = variant.cost_currency
       data[:images]      = [
         { url: product.display_image.attachment(:product), tags: ['main'] },
-        { url: product.images.first.attachment.url(:mini), tags: ['mini'] }
+        { url: product.images.first.attachment.url(:mini), tags: ['thumbnail'] }
       ]
       # data[:categories]  = ['Foo', 'Bar']
 
       json = data.to_json
 
+      # use curl for uploading insted of Ruby Net, more reliabe
       url  = "https://api.flow.io/#{ENV.fetch('FLOW_ORG')}/catalog/items/#{sku}"
       curl = %[curl -s -X PUT -H "Content-Type: application/json" -u #{ENV.fetch('FLOW_API_KEY')}: -d '#{json}' "#{url}"]
 
