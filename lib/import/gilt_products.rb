@@ -15,8 +15,9 @@ module Import
 
     # source can be local or remote
     def initialize(csv_source)
-      source = uri?(csv_source) ? download_file(csv_source) : csv_source
-      @rows = CSV.parse File.read source
+      source   = uri?(csv_source) ? download_file(csv_source) : csv_source
+      csv_data = File.read(source).encode('UTF-8', :invalid => :replace)
+      @rows    = CSV.parse(csv_data)
       @row_names = {}
     end
 
@@ -30,17 +31,25 @@ module Import
       return nil unless row
 
       name = row[3].split(':', 2)
+
+      product_name = trim(name.first.split('*').first)
+
+      # if we dont have a neme, fetch next
+      return get_row if product_name.blank?
+
       {
-        name:         trim(name.first.split('*').first),
+        name:         product_name,
         description:  trim(name[1]),
-        uid:          row[1],
+        id:           row[0],
+        group_id:     row[1],
+        category:     row[4],
         old_price:    row[6],
         price:        row[7],
+        gilt_url:     row[10].split('?').first,
         image:        row[11],
-        category:     row[14],
         vendor:       row[17],
+        size:         row[27],
         sex:          row[28],
-        size:         row[29],
       }
     end
 
@@ -68,6 +77,8 @@ module Import
       nil
     end
 
+    # prepare file for import, download it localy
+    # if you dont delete cache, subsquencial downloads will be faster
     def download_file(url)
       csv_path = './tmp/_tmp_csv.txt'
 

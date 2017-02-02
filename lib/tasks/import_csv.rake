@@ -23,6 +23,9 @@ namespace :import do
       puts 'CSV not defined as argument'.red unless csv_source
       puts 'CSV file not found'.red unless File.exist?(csv_source)
 
+      # init db
+      %w[S M L XL XXL XXXL].each { |size| Import::SolidusDb::create_size_variant(size) }
+
       csv = Import::GiltProducts.new(csv_source)
       puts "Total of #{csv.count} rows present for import"
 
@@ -30,13 +33,14 @@ namespace :import do
       import_errors = {}
 
       cnt = 0
-      while row = csv.get_uniq
+      while row = csv.get_row
         cnt += 1
         # every product is a dot in a console
-        puts "* #{row[:name]}"
+
+        puts "* %s - %s" % [row[:size], row[:name]]
         Import::SolidusDb.call row
 
-        exit if ++cnt > 100
+        exit if ++cnt > 10
       end
     end
   end

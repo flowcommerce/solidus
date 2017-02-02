@@ -14,36 +14,65 @@ module Import
       return if row[:price].to_s.length == 0
       return if row[:name].to_s.length < 2 || row[:name].to_s.length > 100
 
-      product = add_product(row)
-      add_image(product, row)
+      add_product(row)
 
       true
     end
 
     # base spree product
+    # this method is called for every row, so for master products and variants
     def add_product(row)
       # unique by name. don't create if product exists
+      # strangley spree is not povideing any uid in products table.
+      # I am using name for now, if that will not work I modify schema and add uid to spree_products
       product = Spree::Product.find_or_initialize_by(name: row[:name])
-      product.sku                  = "GILT-#{row[:uid]}"
-      product.price                = row[:price]
-      product.cost_price           = row[:price]
-      product.description          = row[:description]
-      product.slug                 = row[:name].to_slug
-      product.available_on         = Time.now
-      product.shipping_category_id = 1
-      product.tax_category_id      = 1
-      product.promotionable        = 1
-      product.save!
 
-      # info: variants are automaticly created when products are created
+      # create master product unless found
+      unless product.id
+        # master sku has M prefix
+        product.sku                  = "GILT-M-#{row[:id]}"
+        product.price                = row[:price]
+        product.description          = row[:description]
+        product.available_on         = Time.now
+        product.shipping_category_id = 1
+        product.tax_category_id      = 1
+        product.promotionable        = 1
+
+        # unfortunately this will create master variant as well
+        product.save!
+      end
+
+      add_image(product, row[:image])
+
+      # if we have defiend size, create it in solidus
+      unless row[:size].blank?
+        # create size variant type unless exists, and assign it
+        size_variant = Import::SolidusDb::create_size_variant(row[:size])
+
+        raise "Can't create size option" unless size_variant.id
+
+        product.option_type_ids = [size_variant.option_type_id]
+        product.save!
+
+        # now add propper variant in specified size
+        # is_master: false, product_id: product.id
+        variant = Spree::Variant.find_or_initialize_by(sku: "GILT-#{row[:id]}")
+        variant.product_id      = product.id
+        variant.cost_price      = row[:price]
+        variant.track_inventory = false
+        variant.save!
+
+        # this will link variant to size
+        Spree::OptionValuesVariant.find_or_create_by! variant_id: variant.id, option_value_id: size_variant.id
+      end
 
       product
     end
 
     # do not add image unless allready exists
     # we check only by variant
-    def add_image(product, row)
-      return unless row[:image]
+    def add_image(product, image_url)
+      return if image_url.blank?
 
       variant = Spree::Variant.find_by(is_master: true, product_id: product.id)
       raise 'Product variant not found' unless variant
@@ -51,7 +80,7 @@ module Import
       image = Spree::Image.find_or_initialize_by viewable_id: variant.id
       return if image.id
 
-      local_image = get_local_image row[:image]
+      local_image = get_local_image image_url
       image.attachment    = File.open(local_image, 'r')
       image.viewable_type = 'Spree::Variant'
       image.save
@@ -73,6 +102,19 @@ module Import
       `wget -O #{local_file} #{uri}` unless File.exists?(local_file)
 
       local_file
+    end
+
+    # we need tables prepared for possible proucts sizes
+    # this will be base for our variants
+    def create_size_variant(size)
+      size_type = Spree::OptionType.find_or_initialize_by name:'size'
+      unless size_type.id
+        size_type.presentation = 'Size'
+        size_type.save!
+      end
+
+      # ensure we have propper variant
+      Spree::OptionValue.find_or_create_by! name: size, presentation: size, option_type_id: size_type.id
     end
 
   end
