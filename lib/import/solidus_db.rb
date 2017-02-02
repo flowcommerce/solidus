@@ -66,6 +66,8 @@ module Import
         Spree::OptionValuesVariant.find_or_create_by! variant_id: variant.id, option_value_id: size_variant.id
       end
 
+      assign_category product, row[:category]
+
       product
     end
 
@@ -108,13 +110,34 @@ module Import
     # this will be base for our variants
     def create_size_variant(size)
       size_type = Spree::OptionType.find_or_initialize_by name:'size'
-      unless size_type.id
-        size_type.presentation = 'Size'
-        size_type.save!
-      end
+      # unless size_type.id
+      #   size_type.presentation = 'Size'
+      #   size_type.save!
+      # end
 
       # ensure we have propper variant
       Spree::OptionValue.find_or_create_by! name: size, presentation: size, option_type_id: size_type.id
+    end
+
+    # create category and assign product to it
+    def assign_category(product, category_path_string)
+      path = category_path_string.split(' > ')
+      root = path.shift
+
+      # this just needs to be set, for apparently no valid reason
+      # I think think model is complely useless
+      taxonomy = Spree::Taxonomy.find_or_create_by!(name:root)
+
+      # here is real root of taxonomy tree
+      taxon = Spree::Taxon.find_or_create_by!(parent_id: nil, taxonomy_id: taxonomy.id, name: root)
+
+      # now check for existance of 2 parent elements, 3 and n+ is ignorred
+      taxon = Spree::Taxon.find_or_create_by!(parent_id: taxon.id, taxonomy_id: taxonomy.id, name: path[0]) if path[0]
+      taxon = Spree::Taxon.find_or_create_by!(parent_id: taxon.id, taxonomy_id: taxonomy.id, name: path[1]) if path[1]
+
+      # it is weird why this model is named Spree::Classification instead of Spree::ProductsTaxon
+      # it maps to "spree_products_taxons" table
+      Spree::Classification.find_or_create_by! product_id: product.id, taxon_id: taxon.id
     end
 
   end

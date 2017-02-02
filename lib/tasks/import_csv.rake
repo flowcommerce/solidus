@@ -37,10 +37,10 @@ namespace :import do
         cnt += 1
         # every product is a dot in a console
 
-        puts "* %s - %s" % [row[:size], row[:name]]
+        puts "%s (%s)" % [row[:name], row[:size]]
         Import::SolidusDb.call row
 
-        exit if ++cnt > 10
+        # exit if ++cnt > 10
       end
     end
   end
