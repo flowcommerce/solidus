@@ -23,10 +23,63 @@ require 'awesome_print'
 
 Dotenv.load
 
-json = JSON.load(File.read('./body.json')).to_json
-url  = "https://api.flow.io/#{ENV.fetch('FLOW_ORG')}/catalog/items/sku-2"
-curl = %[curl -s -X PUT -H "Content-Type: application/json" -u #{ENV.fetch('FLOW_API_KEY')}: -d '#{json}' "#{url}"]
+###
 
-response = `#{curl}`
+def die(desc)
+  puts desc.red
+  exit
+end
 
-ap JSON.parse(response)
+def flow_api(method_name)
+
+end
+
+###
+
+params = {}
+ARGV.each_with_index do |el, i|
+  if el[0,2] == '--'
+    value = ARGV[i + 1]
+    value = true if !value || value[0,2] == '--'
+    params[el.split('--',2)[1]] = value
+  end
+end
+
+###
+
+methods = {}
+methods[:exp_all]      = { path: '/%o/experiences',        method: :get, desc: 'get epxpiriences' }
+methods[:exp_show]     = { path: '/%o/experiences/:key',   method: :get, desc: 'get experience (--key)' }
+methods[:set_cat_item] = { path: '/%o/catalog/items/:sku', method: :put, desc: 'update catalog item', json: true, body: true }
+
+unless ARGV[0]
+  puts "Usage:\n bin/flow method\n bin/flow method --sku GILT123 --body '{...}'\n\n"
+  for k, v in methods
+    puts '%s: %s - (%s)' % [k.to_s.ljust(20), v[:path], v[:desc]]
+  end
+  exit
+end
+
+opts = methods[ARGV[0].to_sym] || die('method %s not found' % ARGV[0])
+
+path = opts[:path].gsub('%o', ENV.fetch('FLOW_ORG'))
+path.gsub!(/:(\w+)/) {
+  die "Opt --#{$1} not defined" unless params[$1]
+  params[$1]
+}
+
+curl  = 'curl -i -s -X %s -u %s: ' % [opts[:method].to_s.upcase, ENV.fetch('FLOW_API_KEY')]
+curl += '-H "Content-Type: application/json" ' if opts[:json]
+curl += 'https://api.flow.io%s' % path
+
+time = Time.now
+puts curl.blue
+lines = `#{curl} 2>&1`.split("\n")
+last_line = lines.pop
+
+puts 'Speed: %ss, %sms' % (Time.now - time).to_s.split('.')
+puts
+puts lines.join("\n")
+
+ap JSON.parse(last_line) rescue nil
+
