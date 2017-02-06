@@ -46,5 +46,22 @@ namespace :flow do
 
     thread_pool.shutdown
   end
+
+  desc 'Gets experiences from flow'
+  task :get_experiences do
+    puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
+
+    command = 'curl -s -X GET -u %s: https://api.flow.io/%s/experiences' % [ENV.fetch('FLOW_API_KEY'), ENV.fetch('FLOW_ORG')]
+    data = JSON.load `#{command}`
+
+    # we will remove id and subcatalog from response because we do not need it
+    data.each { |list_el|
+      [:id, :subcatalog].each { |key|
+        list_el.delete(key.to_s)
+      }
+    }
+
+    Pathname.new('./config/flow_experiences.yml').write(data.to_yaml)
+  end
 end
 

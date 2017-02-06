@@ -1,0 +1,21 @@
+---
+- key: canada
+  name: Canada
+  delivered_duty: paid
+  region:
+    id: can
+  country: CAN
+  currency: CAD
+  language: en
+  measurement_system: metric
+  position: 0
+- key: japan
+  name: Japan
+  delivered_duty: paid
+  region:
+    id: jpn
+  country: JPN
+  currency: JPY
+  language: ja
+  measurement_system: metric
+  position: 1
