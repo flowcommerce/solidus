@@ -16,6 +16,7 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require './lib/ruby_core/object'
 require './lib/ruby_core/string'
 
 module DemoShop
