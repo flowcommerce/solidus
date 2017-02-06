@@ -48,11 +48,10 @@ namespace :flow do
   end
 
   desc 'Gets experiences from flow'
-  task :get_experiences do
+  task get_experiences: :environment do
     puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
 
-    command = 'curl -s -X GET -u %s: https://api.flow.io/%s/experiences' % [ENV.fetch('FLOW_API_KEY'), ENV.fetch('FLOW_ORG')]
-    data = JSON.load `#{command}`
+    data = Flow.remote :get, '/:organization/experiences'
 
     # we will remove id and subcatalog from response because we do not need it
     data.each { |list_el|
