@@ -109,11 +109,8 @@ module Import
     # we need tables prepared for possible proucts sizes
     # this will be base for our variants
     def create_size_variant(size)
-      size_type = Spree::OptionType.find_or_initialize_by name:'size'
-      # unless size_type.id
-      #   size_type.presentation = 'Size'
-      #   size_type.save!
-      # end
+      size_type = Spree::OptionType.find_or_initialize_by name: 'size'
+      size_type.update! presentation: 'Size' unless size_type.id
 
       # ensure we have propper variant
       Spree::OptionValue.find_or_create_by! name: size, presentation: size, option_type_id: size_type.id

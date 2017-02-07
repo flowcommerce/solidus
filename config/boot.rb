@@ -11,6 +11,8 @@ if File.exists?('./.env')
   Dotenv.load
 end
 
+ENV['LANG'] = 'en_US.UTF-8'
+
 # allow setting of RACK_ENV or RAILS_ENV
 ENV['RACK_ENV']  ||= ENV['RAILS_ENV']
 ENV['RAILS_ENV'] ||= ENV['RACK_ENV']
