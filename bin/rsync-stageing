@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+rsync -vr --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' . deployer@96.126.112.122:~/apps/flow-demo-shop
