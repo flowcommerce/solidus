@@ -23,7 +23,7 @@ RSpec.configure do |config|
   end
 
   # Print the 10 slowest examples and example groups at the end of the spec run
-  config.profile_examples = 10
+  config.profile_examples = 3
 
   # Run specs in random order to surface order dependencies.
   config.order = :random
