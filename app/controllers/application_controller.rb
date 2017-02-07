@@ -11,7 +11,9 @@ class ApplicationController < ActionController::Base
 
     # redirect to first expirience unless one defined is found
     unless experiences.include?(request.subdomain)
-      redirect_to '%s://%s.%s%s' % [request.url.split(':').first, experiences.first, request.domain, request.path]
+      domain = request.domain == 'localhost' ? 'lvh.me' : request.domain
+
+      redirect_to '%s://%s.%s:%s%s' % [request.url.split(':').first, experiences.first, domain, request.port, request.path]
     end
   end
 end
