@@ -15,11 +15,17 @@ module Flow
 
   # builds curl command and gets remote data
   def remote(action, path, params={})
+    body = params.delete(:BODY)
+    body = "-d '%s'" % body.gsub(%['], %['"'"']) if body
+
+    debug = params.delete(:DEBUG)
+
     remote_params = URI.encode_www_form params
     remote_path   = path.sub('%o', ENV.fetch('FLOW_ORG')).sub(':organization', ENV.fetch('FLOW_ORG'))
-    remote_path  += '?%s' % remote_params if remote_params
+    remote_path  += '?%s' % remote_params unless remote_params.blank?
 
-    command = 'curl -s -X %s -u %s: https://api.flow.io%s' % [action.to_s.upcase, ENV.fetch('FLOW_API_KEY'), remote_path]
+    command = 'curl -s -X %s -H "Content-Type: application/json" -u %s: %s https://api.flow.io%s' % [action.to_s.upcase, ENV.fetch('FLOW_API_KEY'), body, remote_path]
+    return command if debug
     JSON.load `#{command}`
   end
 

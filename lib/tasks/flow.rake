@@ -7,13 +7,15 @@ namespace :flow do
   desc 'Upload catalog'
   task upload_catalog: :environment do
 
-    variants = Spree::Variant.limit(50).all
+    variants = Spree::Variant.limit(1000).all
 
     # do reqests in paralel
     thread_pool = Thread.pool(5)
 
     variants.each_with_index do |variant, i|
       product = variant.product
+
+      image_base = 'http://cdn.color-mont.com'
 
       # our id
       sku = variant.sku
@@ -23,24 +25,34 @@ namespace :flow do
       data[:number]      = sku
       data[:name]        = product.name
       data[:description] = product.description
-      data[:price]       = variant.cost_price.to_f
       data[:currency]    = variant.cost_currency
       data[:images]      = [
-        { url: product.display_image.attachment(:product), tags: ['main'] },
-        { url: product.images.first.attachment.url(:mini), tags: ['thumbnail'] }
+        { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
+        { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
       ]
+
+      data[:price] = variant.cost_price.to_f
+      data[:price] = product.price.to_f if data[:price] == 0
+
+      unless data[:price]
+        ap data
+        exit
+      end
+
       # data[:categories]  = ['Foo', 'Bar']
 
-      json = data.to_json
+      body = data.to_json
 
-      # use curl for uploading insted of Ruby Net, more reliabe
-      url  = "https://api.flow.io/#{ENV.fetch('FLOW_ORG')}/catalog/items/#{sku}"
-      curl = %[curl -s -X PUT -H "Content-Type: application/json" -u #{ENV.fetch('FLOW_API_KEY')}: -d '#{json}' "#{url}"]
-
+      # multiprocess upload
       thread_pool.process do
-        puts "#{i.to_s.rjust(3)}. #{sku}: #{product.name}"
-        response = `#{curl}`
-        # ap JSON.parse(response)
+        puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, data[:price]]
+
+        response = Flow.remote :put, '/:organization/catalog/items/%s' % sku, BODY: body
+        if response['code'] == 'generic_error'
+          ap response
+          ap data
+          puts data.to_json
+        end
       end
     end
 
@@ -60,7 +72,7 @@ namespace :flow do
       }
     }
 
-    Pathname.new('./config/flow_experiences.yml').write(data.to_yaml)
+    Pathname.new(FLOW::EXPERIENCES_PATH).write(data.to_yaml)
   end
 end
 
