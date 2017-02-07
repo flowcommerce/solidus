@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  before_filter :check_and_set_flow_experience
+  before_action :check_and_set_flow_experience
 
   private
 

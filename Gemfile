@@ -1,7 +1,7 @@
 # http is more reliable than https, keep
 source 'http://rubygems.org'
 
-ruby '2.3.3'
+# ruby '2.3.3'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
@@ -20,9 +20,12 @@ gem 'faraday', require: false
 gem 'solidus', '2.1.0'
 gem 'solidus_auth_devise'
 
+group :development, :test do
+  gem 'awesome_print'
+end
+
 group :development do
   gem 'listen', '~> 3.0.5'
-  gem 'awesome_print'
   gem 'pry-rails'
   gem 'thread', require: false
 
@@ -32,7 +35,7 @@ group :development do
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.2'
   gem 'turbolinks', '~> 5'
-  gem 'smarter_csv'
+  # gem 'smarter_csv'
 end
 
 group :production do
@@ -40,11 +43,6 @@ group :production do
   gem 'rack-timeout', require: 'rack/timeout/base' # Rack::Timeout is important for avoiding stuck Puma workers/threads on server:
 end
 
-# group :development, :test do
-#   gem 'byebug', platform: :mri     # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-#   gem 'web-console', '>= 3.3.0'    # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-# end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-# anyone uses windows? uncomment and commit
-# gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+group :test do
+  gem 'rspec-rails'
+end
