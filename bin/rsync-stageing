@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
 rsync -vr --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' . deployer@96.126.112.122:~/apps/flow-demo-shop
+
+ssh deployer@96.126.112.122 'cd ~/apps/flow-demo-shop; bundle; rake db:migrate; RAILS_ENV=development rake assets:precompile'
+
+ssh -t deployer@96.126.112.122 'cd /home/deployer/apps; bash'
