@@ -1,3 +1,4 @@
+<% if Rails.env.development? %><!-- <%= params[:controller] %>#<%= params[:action] %> --><% end %>
 <!doctype html>
 <!--[if lt IE 7 ]> <html class="ie ie6" lang="<%= I18n.locale %>"> <![endif]-->
 <!--[if IE 7 ]>    <html class="ie ie7" lang="<%= I18n.locale %>"> <![endif]-->
@@ -31,6 +32,10 @@
       <div id="wrapper" class="row" data-hook>
 
         <%= taxon_breadcrumbs(@taxon) %>
+
+        <% if !params[:page] && request.path == '/' %>
+          <div class="sixteen columns"><img src="/jumbo/home.jpg" style="width: 100%; margin-bottom: 30px;" /></div>
+        <% end %>
 
         <%= render :partial => 'spree/shared/sidebar' if content_for? :sidebar %>
 

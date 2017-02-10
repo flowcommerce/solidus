@@ -1,0 +1,17 @@
+/*
+* This is a manifest file that includes stylesheets for spree_frontend
+ *= require normalize
+ *= require spree/frontend/screen
+*/
+
+.product-image {
+  border: none !important;
+}
+
+#main-image {
+  border: none !important;
+}
+
+#products li {
+  padding-bottom: 40px;
+}
