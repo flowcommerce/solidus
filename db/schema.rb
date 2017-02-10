@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170126105440) do
+ActiveRecord::Schema.define(version: 20170209123611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "flow_catalog_caches", force: :cascade do |t|
+    t.string   "sku"
+    t.string   "country"
+    t.string   "remote_id"
+    t.jsonb    "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["sku", "country"], name: "index_flow_catalog_caches_on_sku_and_country", using: :btree
+  end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string   "slug",                      null: false
