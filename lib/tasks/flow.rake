@@ -47,7 +47,7 @@ namespace :flow do
       thread_pool.process do
         puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, data[:price]]
 
-        response = Flow.remote :put, '/:organization/catalog/items/%s' % sku, BODY: body
+        response = Flow.api :put, '/:organization/catalog/items/%s' % sku, BODY: body
         if response['code'] == 'generic_error'
           ap response
           ap data
@@ -63,7 +63,7 @@ namespace :flow do
   task get_experiences: :environment do
     puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
 
-    data = Flow.remote :get, '/:organization/experiences'
+    data = Flow.api :get, '/:organization/experiences'
 
     # we will remove id and subcatalog from response because we do not need it
     data.each { |list_el|
@@ -72,7 +72,42 @@ namespace :flow do
       }
     }
 
-    Pathname.new(FLOW::EXPERIENCES_PATH).write(data.to_yaml)
+    Pathname.new(Flow::EXPERIENCES_PATH).write(data.to_yaml)
+  end
+
+  desc 'get catalog items'
+  task get_catalog_items: :environment do
+    # https://api.flow.io/reference/countries
+    # https://docs.flow.io/#/module/localization/resource/experiences
+
+    for country_id in Flow.country_codes
+      page_size  = 100
+      offest     = 0
+      data = []
+
+      while offest == 0 || data.length == 100
+        puts '%s : %s - %s' % [country_id, offest, offest + page_size]
+
+        data = Flow.api(:get, '/:organization/experiences/items', country: country_id, limit: page_size, offset: offest)
+
+        offest += page_size
+
+        data.each do |row|
+          local     = row['local']
+          sku       = row['number'].downcase
+          remote_id = local['experience']['id']
+          country   = country_id.downcase
+
+          # fill the catalog
+          fcc = FlowCatalogCache.find_or_initialize_by sku: sku, country: country
+          fcc.remote_id = remote_id
+          fcc.data = local
+          fcc.save!
+
+          puts sku
+        end
+      end
+    end
   end
 end
 

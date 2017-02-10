@@ -14,19 +14,34 @@ module Flow
   }
 
   # builds curl command and gets remote data
-  def remote(action, path, params={})
-    body = params.delete(:BODY)
-    body = "-d '%s'" % body.gsub(%['], %['"'"']) if body
-
+  def api(action, path, params={})
+    body  = params.delete(:BODY)
     debug = params.delete(:DEBUG)
 
     remote_params = URI.encode_www_form params
     remote_path   = path.sub('%o', ENV.fetch('FLOW_ORG')).sub(':organization', ENV.fetch('FLOW_ORG'))
     remote_path  += '?%s' % remote_params unless remote_params.blank?
 
-    command = 'curl -s -X %s -H "Content-Type: application/json" -u %s: %s https://api.flow.io%s' % [action.to_s.upcase, ENV.fetch('FLOW_API_KEY'), body, remote_path]
-    return command if debug
-    JSON.load `#{command}`
+    curl = ['curl -s']
+    curl.push '-X %s' % action.to_s.upcase
+    curl.push '-u %s:' % ENV.fetch('FLOW_API_KEY')
+    if body
+      curl.push '-H "Content-Type: application/json"'
+      curl.push "-d '%s'" % body.gsub(%['], %['"'"']) if body
+    end
+    curl.push '"https://api.flow.io%s"' % remote_path
+    command = curl.join(' ')
+
+    puts command
+
+    data = JSON.load `#{command}`
+
+    if data.kind_of?(Hash) && data['code'] == 'generic_error'
+      ap data
+      data
+    else
+      data
+    end
   end
 
   ###
@@ -36,6 +51,11 @@ module Flow
   # "https://flowcdn.io/util/icons/flags/32/%s.png" % el['region']['id']
   def experiences
     EXPERIENCES
+  end
+
+  # get only local country codes
+  def country_codes
+    Flow::EXPERIENCES.map{ |el| el['country'] }
   end
 
   # gets current expirence from request

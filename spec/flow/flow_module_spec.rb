@@ -22,7 +22,7 @@ RSpec.describe Flow do
   end
 
   it 'ensures we can fetch flow api data' do
-    data = Flow.remote(:get, '/geolocation/defaults', ip: '192.206.151.131')
+    data = Flow.api(:get, '/geolocation/defaults', ip: '192.206.151.131')
 
     expect(data[0]['country']).to eq('CAN')
   end
