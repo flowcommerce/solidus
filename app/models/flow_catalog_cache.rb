@@ -7,7 +7,13 @@ class FlowCatalogCache < ApplicationRecord
     # country - string 3 chars
     # sku     - single sku or list
     def load_by_country_and_sku(country, sku)
-      data = where(country: country, sku: sku).all
+      raise ArgumentError, 'country "%s" has to have exactly 3 characters' % country if country.length != 3
+
+      # sku and country has to be in downcase
+      sku = sku.kind_of?(Array) ? sku.map(&:downcase) : sku.downcase
+      data = where(country: country.downcase, sku: sku).all
+
+      return nil unless data[0]
 
       # return single row if single row reqested
       return data[0].get_data unless sku.kind_of?(Array)
@@ -31,7 +37,8 @@ class FlowCatalogCache < ApplicationRecord
   end
 
   # disable public access
-  def data
-    raise StandardError, 'Please use method "get_data" to get data from cache'
-  end
+  # not possible for some reason in AR??? it touches data method on object load
+  # def data
+  #   raise StandardError, 'Please use method "get_data" to get data from cache'
+  # end
 end

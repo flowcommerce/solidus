@@ -8,4 +8,18 @@ module ApplicationHelper
     data.gsub!(' *', '<li>')
     data.html_safe
   end
+
+  # shows flow harmoniszed price of the product
+  def flow_price(product)
+    variant    = product.variants.first
+    flow_cache = FlowCatalogCache.load_by_country_and_sku @flow_exp.country, variant.sku.downcase
+
+    if flow_cache
+      '%s %s' % [number_with_delimiter(flow_cache['amount']), @flow_exp.currency]
+    else
+      # flow catalog item not found, revert to base for now
+      # in the future, cache conversion rates, live price calculate
+      display_price(product)
+    end
+  end
 end
