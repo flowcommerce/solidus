@@ -10,13 +10,12 @@ module Flow
   # precache expirinces in thread memory
   EXPERIENCES = YAML.load_file(EXPERIENCES_PATH).map { |el|
     hash = ActiveSupport::HashWithIndifferentAccess.new(el)
-    hash
+    hash.freeze
   }
 
   # builds curl command and gets remote data
   def api(action, path, params={})
     body  = params.delete(:BODY)
-    debug = params.delete(:DEBUG)
 
     remote_params = URI.encode_www_form params
     remote_path   = path.sub('%o', ENV.fetch('FLOW_ORG')).sub(':organization', ENV.fetch('FLOW_ORG'))
@@ -53,18 +52,16 @@ module Flow
     EXPERIENCES
   end
 
-  # get only local country codes
-  def country_codes
-    Flow::EXPERIENCES.map{ |el| el['country'] }
+  def experience(key)
+    EXPERIENCES.each do |exp|
+      return exp if exp['region']['id'] == key
+    end
+    nil
   end
 
-  # gets current expirence from request
-  def current_expirience(request)
-    current = request.subdomain
-
-    EXPERIENCES.each do |el|
-      return el if el['region']['id'] == current
-    end
+  # get only local country codes
+  def country_codes
+    Flow::EXPERIENCES.map{ |el| el['country'].downcase }
   end
 
   def get_experience_url(request, exp_key)

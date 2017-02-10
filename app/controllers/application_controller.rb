@@ -4,16 +4,15 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # checks current experience (defiend by subdomain) and sets default one unless one preset
+  # checks current experience (defiend by parameter) and sets default one unless one preset
   def check_and_set_flow_experience
-    # get only expirience keys
-    experiences = Flow.experiences.map{ |el| el[:region][:id] }
-
-    # redirect to first expirience unless one defined is found
-    unless experiences.include?(request.subdomain)
-      domain = request.domain == 'localhost' ? 'lvh.me' : request.domain
-
-      redirect_to '%s://%s.%s:%s%s' % [request.url.split(':').first, experiences.first, domain, request.port, request.path]
+    if exp = params[:exp]
+      session[:flow_exp] = exp if Flow.country_codes.include?(exp)
+      return redirect_to request.path
     end
+
+    flow_key = session[:flow_exp] || Flow.country_codes.first
+    flow_exp = Flow.experience(flow_key) || Flow.experiences.first
+    @flow_exp = Hashie::Mash.new(flow_exp).freeze
   end
 end

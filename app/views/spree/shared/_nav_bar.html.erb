@@ -2,7 +2,7 @@
   <img
     style="width:32px; height: 32px; cursor: pointer;"
     onclick="$('#choose-expirience').toggle();"
-    src="https://flowcdn.io/util/icons/flags/32/<%= Flow.current_expirience(request)['region']['id'] %>.png"
+    src="https://flowcdn.io/util/icons/flags/32/<%= @flow_exp.region.id %>.png"
   />
   <br />
   <div id="choose-expirience" style="display: none;">
@@ -11,7 +11,7 @@
       onclick="$('#choose-expirience').toggle(200);"
     >
       <% for exp in Flow::EXPERIENCES %>
-        <a href="<%= Flow.get_experience_url(request, exp['region']['id']) %>" style="display: block; margin-bottom: 10px;">
+        <a href="?exp=<%= exp['region']['id'] %>" style="display: block; margin-bottom: 10px;">
           <img style="width:32px; height: 32px; vertical-align: middle;" src="https://flowcdn.io/util/icons/flags/32/<%= exp['region']['id'] %>.png" />
           <%= exp['name'] %>
         </a>
