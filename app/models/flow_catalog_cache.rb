@@ -19,7 +19,7 @@ class FlowCatalogCache < ApplicationRecord
       return data[0].get_data unless sku.kind_of?(Array)
 
       data.inject({}) do |hash, row|
-        hash[row[:sku]] = row.get_data
+        hash[row[:sku].downcase] = row.get_data
         hash
       end
     end

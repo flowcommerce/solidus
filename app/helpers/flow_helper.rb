@@ -1,4 +1,4 @@
-module ApplicationHelper
+module FlowHelper
   # Ads markdown rendering to product descripton
   #
   # @param product [Spree::Product] the product whose description you want to filter
@@ -15,11 +15,13 @@ module ApplicationHelper
     flow_cache = FlowCatalogCache.load_by_country_and_sku @flow_exp.country, variant.sku.downcase
 
     if flow_cache
-      '%s %s' % [number_with_delimiter(flow_cache['amount']), @flow_exp.currency]
+      data = '%s %s' % [number_with_delimiter(flow_cache['amount']), @flow_exp.currency]
+      data
     else
       # flow catalog item not found, revert to base for now
       # in the future, cache conversion rates, live price calculate
       display_price(product)
     end
   end
+
 end

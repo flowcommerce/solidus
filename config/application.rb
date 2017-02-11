@@ -24,9 +24,9 @@ module DemoShop
 
     # solidus overrides
     config.to_prepare do
-      preload  = Dir.glob('./app/**/*_decorator*.rb')
-      preload += Dir.glob('./app/overrides/*.rb')
-      preload.each { |c| Rails.configuration.cache_classes ? require(c) : load(c) }
+      overload  = Dir.glob('./app/**/*_decorator*.rb')
+      overload += Dir.glob('./app/overrides/*.rb')
+      overload.each { |c| load(c) }
     end
 
     # Settings in config/environments/* take precedence over those specified here.
