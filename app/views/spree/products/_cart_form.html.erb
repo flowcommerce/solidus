@@ -7,7 +7,7 @@
         <ul>
           <% @product.variants_and_option_values_for(current_pricing_options).each_with_index do |variant, index| %>
             <li>
-              <%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => variant.price_for(current_pricing_options)  %>
+              <%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => flow_price(variant) %>
               <%= label_tag "variant_id_#{ variant.id }" do %>
                 <span class="variant-description">
                   <%= variant_options variant %>

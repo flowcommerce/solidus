@@ -25,7 +25,7 @@ module Flow
     curl.push '-X %s' % action.to_s.upcase
     curl.push '-u %s:' % ENV.fetch('FLOW_API_KEY')
     if body
-      curl.push '-H "Content-Type: application/json"'
+      url.push '-H "Content-Type: application/json"'
       curl.push "-d '%s'" % body.gsub(%['], %['"'"']) if body
     end
     curl.push '"https://api.flow.io%s"' % remote_path
@@ -68,11 +68,37 @@ module Flow
     '%s://%s.%s:%s%s' % [request.url.split(':').first, exp_key, request.domain, request.port, request.path]
   end
 
+  # format price given amount and currency
+  def format_price(price, currency)
+    # we can send experience object as well
+    currency = currency.currency if currency.respond_to?(:currency)
+    currency = currency.upcase
+
+    # use rails helper
+    amount = ActionController::Base.helpers.number_with_delimiter(price)
+
+    # when USD, format in this special way
+    if currency == 'USD'
+      '$ %s' % amount
+    else
+      '%s %s' % [amount, currency]
+    end
+  end
+
   # get country defaults
   # https://docs.flow.io/#/module/geolocation
   def country_defaults(ip)
     data = remote :get, '/geolocation/defaults', ip: ip
     data.first
+  end
+
+  # fetch price from flow cache and render it
+  def render_price_from_flow(exp, product)
+    return unless product.sku
+
+    fcc = FlowCatalogCache.load_by_country_and_sku exp.country, product.sku
+    return unless fcc
+    format_price fcc.amount, exp.currency
   end
 
 end
