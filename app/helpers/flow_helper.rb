@@ -11,7 +11,8 @@ module FlowHelper
 
   # shows flow harmoniszed price of the product
   def flow_price(product)
-    Flow.render_price_from_flow(@flow_exp, product)
+    # we want to keep all flow logic in flow classes
+    Flow.render_price_from_flow(@flow_exp, product) || '$ %' % product.price
   end
 
 end
