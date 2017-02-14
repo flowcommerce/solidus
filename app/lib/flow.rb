@@ -23,7 +23,7 @@ module Flow
 
     curl = ['curl -s']
     curl.push '-X %s' % action.to_s.upcase
-    curl.push '-u %s:' % ENV.fetch('FLOW_API_KEY')
+    curl.push '-u %s:' % ENV.fetch('FLOW_TOKEN')
     if body
       url.push '-H "Content-Type: application/json"'
       curl.push "-d '%s'" % body.gsub(%['], %['"'"']) if body
