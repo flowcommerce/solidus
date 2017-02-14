@@ -68,7 +68,7 @@ path.gsub!(/:(\w+)/) {
   params[$1]
 }
 
-curl  = 'curl -i -s -X %s -u %s: ' % [opts[:method].to_s.upcase, ENV.fetch('FLOW_API_KEY')]
+curl  = 'curl -i -s -X %s -u %s: ' % [opts[:method].to_s.upcase, ENV.fetch('FLOW_TOKEN')]
 curl += '-H "Content-Type: application/json" ' if opts[:json]
 curl += 'https://api.flow.io%s' % path
 

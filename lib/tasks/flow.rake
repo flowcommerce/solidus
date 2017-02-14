@@ -1,6 +1,7 @@
 # uploads catalog to flow api
 # using local database
 
+require 'flowcommerce'
 require 'thread/pool'
 
 namespace :flow do
@@ -63,16 +64,12 @@ namespace :flow do
   task get_experiences: :environment do
     puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
 
-    data = Flow.api :get, '/:organization/experiences'
+    client   = FlowCommerce.instance
+    api_data = client.experiences.get(ENV.fetch('FLOW_ORG'))
 
-    # we will remove id and subcatalog from response because we do not need it
-    data.each { |list_el|
-      [:id, :subcatalog].each { |key|
-        list_el.delete(key.to_s)
-      }
-    }
+    puts 'Saved %d experinences - %s'.green % [api_data.length, api_data.map(&:country).join(', ')]
 
-    Pathname.new(Flow::EXPERIENCES_PATH).write(data.to_yaml)
+    Pathname.new(Flow::EXPERIENCES_PATH).write(api_data.map(&:to_hash).to_yaml)
   end
 
   desc 'get catalog items'
@@ -80,7 +77,11 @@ namespace :flow do
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
 
-    for country_id in Flow.country_codes
+    client        = FlowCommerce.instance
+    api_data      = client.experiences.get(ENV.fetch('FLOW_ORG'))
+    country_codes = api_data.map(&:country).map(&:downcase)
+
+    for country_id in country_codes
       page_size  = 100
       offest     = 0
       data = []

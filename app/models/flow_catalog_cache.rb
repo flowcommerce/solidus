@@ -7,6 +7,9 @@ class FlowCatalogCache < ApplicationRecord
     # country - string 3 chars
     # sku     - single sku or list
     def load_by_country_and_sku(country, sku)
+      # so we can send experience object
+      country = country.country if country.respond_to?(:country)
+
       raise ArgumentError, 'country "%s" has to have exactly 3 characters' % country if country.length != 3
 
       # sku and country has to be in downcase

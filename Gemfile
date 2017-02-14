@@ -22,6 +22,7 @@ gem 'solidus', '2.1.0'
 gem 'solidus_auth_devise'
 
 group :development, :test do
+  gem 'flowcommerce'
   gem 'awesome_print'
 end
 

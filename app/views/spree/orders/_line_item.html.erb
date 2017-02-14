@@ -18,13 +18,13 @@
       <% end %>
     </td>
     <td class="cart-item-price" data-hook="cart_item_price">
-      <%= line_item.single_money.to_html %>
+      <%= flow_line_item_price(line_item) %>
     </td>
     <td class="cart-item-quantity" data-hook="cart_item_quantity">
       <%= item_form.number_field :quantity, :min => 0, :class => "line_item_quantity", :size => 5 %>
     </td>
     <td class="cart-item-total" data-hook="cart_item_total">
-      <%= line_item.display_amount.to_html unless line_item.quantity.nil? %>
+      <%= flow_line_item_price(line_item, line_item.quantity) %>
     </td>
     <td class="cart-item-delete" data-hook="cart_item_delete">
       <%= link_to image_tag('icons/delete.png'), '#', :class => 'delete', :id => "delete_#{dom_id(line_item)}" %>

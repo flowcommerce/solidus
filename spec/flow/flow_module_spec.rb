@@ -12,15 +12,6 @@ RSpec.describe Flow do
     expect(exp[:region][:id].length > 1).to be(true)
   end
 
-  it 'ensures that we properly get current expirience' do
-    key = Flow::EXPERIENCES.first[:region][:id]
-
-    request = Struct.new(:subdomain, :domain, :path).new(key, 'lvh.me', '/')
-
-    current = Flow.current_expirience(request)
-    expect(current[:key]).to eq(Flow::EXPERIENCES.first[:key])
-  end
-
   it 'ensures we can fetch flow api data' do
     data = Flow.api(:get, '/geolocation/defaults', ip: '192.206.151.131')
 

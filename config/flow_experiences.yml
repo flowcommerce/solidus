@@ -1,21 +1,29 @@
 ---
-- key: canada
-  name: Canada
-  delivered_duty: paid
-  region:
-    id: can
-  country: CAN
-  currency: CAD
-  language: en
-  measurement_system: metric
-  position: 0
-- key: japan
-  name: Japan
-  delivered_duty: paid
-  region:
-    id: jpn
-  country: JPN
-  currency: JPY
-  language: ja
-  measurement_system: metric
-  position: 1
+- :id: exp-bd1c215cc5a34f43b70b4e0423f8f0b1
+  :key: canada
+  :name: Canada
+  :delivered_duty: paid
+  :region:
+    :id: can
+  :country: CAN
+  :currency: CAD
+  :language: en
+  :measurement_system: metric
+  :subcatalog:
+    :id: sca-a20cc68f2d5549e481af897fb503252c
+    :discriminator: subcatalog_reference
+  :position: 0
+- :id: exp-e7a3a687f585416184bab8b1b66bf4ad
+  :key: japan
+  :name: Japan
+  :delivered_duty: paid
+  :region:
+    :id: jpn
+  :country: JPN
+  :currency: JPY
+  :language: ja
+  :measurement_system: metric
+  :subcatalog:
+    :id: sca-63d5c307bf00480fa536e6eb17beb905
+    :discriminator: subcatalog_reference
+  :position: 1

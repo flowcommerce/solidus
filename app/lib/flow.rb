@@ -5,7 +5,7 @@ module Flow
   extend self
 
   EXPERIENCES_PATH = './config/flow_experiences.yml'
-  raise StandardError, 'Experiences yaml not found in %s' % yml_pathEXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
+  raise StandardError, 'Experiences yaml not found in %s' % EXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
 
   # precache expirinces in thread memory
   EXPERIENCES = YAML.load_file(EXPERIENCES_PATH).map { |el|
@@ -23,7 +23,7 @@ module Flow
 
     curl = ['curl -s']
     curl.push '-X %s' % action.to_s.upcase
-    curl.push '-u %s:' % ENV.fetch('FLOW_API_KEY')
+    curl.push '-u %s:' % ENV.fetch('FLOW_TOKEN')
     if body
       url.push '-H "Content-Type: application/json"'
       curl.push "-d '%s'" % body.gsub(%['], %['"'"']) if body
