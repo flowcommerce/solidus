@@ -1,0 +1,10 @@
+<h3><%= Spree.t(:order_summary) %></h3>
+
+<table data-hook="order_summary">
+  <tbody>
+    <tr data-hook="item_total">
+      <td><strong><%= Spree.t(:item_total) %>:</strong></td>
+      <td><strong><%= flow_cart_total %></strong></td>
+    </tr>
+  </tbody>
+</table>

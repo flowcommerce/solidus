@@ -1,7 +1,6 @@
 <nav class="columns sixteen">
   <ul id="main-nav-bar" class="inline" data-hook>
     <li id="home-link" data-hook><%= link_to Spree.t(:home), spree.root_path %></li>
-    <li id="link-to-cart"><%= link_to_cart %></li>
-    <script>Spree.fetch_cart('<%= j spree.cart_link_url %>')</script>
+    <li id="link-to-cart"><%= flow_link_to_cart %></li>
   </ul>
 </nav>

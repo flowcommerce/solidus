@@ -5,7 +5,7 @@ module Flow
   extend self
 
   EXPERIENCES_PATH = './config/flow_experiences.yml'
-  raise StandardError, 'Experiences yaml not found in %s' % yml_pathEXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
+  raise StandardError, 'Experiences yaml not found in %s' % EXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
 
   # precache expirinces in thread memory
   EXPERIENCES = YAML.load_file(EXPERIENCES_PATH).map { |el|
