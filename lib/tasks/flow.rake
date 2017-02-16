@@ -1,10 +1,10 @@
-# uploads catalog to flow api
-# using local database
 
 require 'flowcommerce'
 require 'thread/pool'
 
 namespace :flow do
+  # uploads catalog to flow api
+  # using local solidus database
   desc 'Upload catalog'
   task upload_catalog: :environment do
 
@@ -34,13 +34,6 @@ namespace :flow do
 
       data[:price] = variant.cost_price.to_f
       data[:price] = product.price.to_f if data[:price] == 0
-
-      unless data[:price]
-        ap data
-        exit
-      end
-
-      # data[:categories]  = ['Foo', 'Bar']
 
       body = data.to_json
 
@@ -77,38 +70,42 @@ namespace :flow do
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
 
-    client        = FlowCommerce.instance
-    api_data      = client.experiences.get(ENV.fetch('FLOW_ORG'))
-    country_codes = api_data.map(&:country).map(&:downcase)
+    total = 0
 
-    for country_id in country_codes
+    org = ENV.fetch('FLOW_ORG')
+    experiences = FlowCommerce.instance.experiences.get(org)
+
+    experiences.each do |experience|
+      country_id = experience.country.downcase
       page_size  = 100
       offest     = 0
-      data = []
+      items      = []
 
-      while offest == 0 || data.length == 100
-        puts '%s : %s - %s' % [country_id, offest, offest + page_size]
+      while offest == 0 || items.length == 100
+        # show current list size
+        puts 'Getting items: %s, rows %s - %s' % [country_id.upcase.green, offest, offest + page_size]
 
-        data = Flow.api(:get, '/:organization/experiences/items', country: country_id, limit: page_size, offset: offest)
+        # items = Flow.api(:get, '/:organization/experiences/items', country: country_id, limit: country_id, offset: offest)
+        items = FlowCommerce.instance.experiences.get_items org, :country => country_id, :limit => page_size, :offset => offest
 
         offest += page_size
 
-        data.each do |row|
-          local     = row['local']
-          sku       = row['number'].downcase
-          remote_id = local['experience']['id']
-          country   = country_id.downcase
+        items.each do |item|
+          total += 1
+          sku    = item.number
 
           # fill the catalog
-          fcc = FlowCatalogCache.find_or_initialize_by sku: sku, country: country
-          fcc.remote_id = remote_id
-          fcc.data = local
+          fcc           = FlowCatalogCache.find_or_initialize_by sku: sku, country: country_id
+          fcc.remote_id = item.id
+          fcc.data      = item.to_hash
           fcc.save!
 
           puts sku
         end
       end
     end
+
+    puts 'Finished with total of %s rows.' % total.to_s.green
   end
 end
 

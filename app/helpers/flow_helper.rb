@@ -9,7 +9,7 @@ module FlowHelper
     data.html_safe
   end
 
-  # shows flow harmoniszed price of the product
+  # shows localized price of the product
   def flow_price(product)
     # we want to keep all flow logic in flow classes
     Flow.render_price_from_flow(@flow_exp, product) || '$ %' % product.price
@@ -46,7 +46,7 @@ module FlowHelper
     link_to text.html_safe, spree.cart_path, class: 'cart-info %s' % css_class
   end
 
-  # get flow item from line item and shows harmonized price
+  # get flow item from line item and shows localized price
   # used in app/views/spree/orders/_line_item.html.erb
   # old: line_item.single_money.to_html
   def flow_line_item_price(line_item, quantity=nil)
