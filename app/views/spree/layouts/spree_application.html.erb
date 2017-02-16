@@ -54,7 +54,11 @@
     </div>
 
     <script>
-      $(document).on('click', '#sidebar', function(){ $('#nav-toggle, #sidebar').toggle(); })
+      $(document).on('click', '#sidebar', function(){
+        if ($('#nav-toggle:visible')[0]) {
+          $('#sidebar').hide();
+        }
+      })
     </script>
 
   </body>

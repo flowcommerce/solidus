@@ -20,13 +20,13 @@
 
 #top-nav-bar { margin-top: 0 !important; }
 
-#nav-toggle { display: none; }
+#nav-toggle, #search-bar { display: none; }
 
 @media only screen and (max-width: 767px) {
 
   .container, #wrapper { position: static; }
 
-  #taxon { display: none; }
+  #taxon, #search-bar { display: none; }
 
   #nav-toggle {
     display: inline-block;
