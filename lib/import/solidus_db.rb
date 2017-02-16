@@ -30,7 +30,7 @@ module Import
       # create master product unless found
       unless product.id
         # master sku has M prefix
-        product.sku                  = "GILT-M-#{row[:id]}"
+        product.sku                  = "CUSTOM-M-#{row[:id]}"
         product.price                = row[:price]
         product.description          = row[:description]
         product.available_on         = Time.now
@@ -56,7 +56,7 @@ module Import
 
         # now add propper variant in specified size
         # is_master: false, product_id: product.id
-        variant = Spree::Variant.find_or_initialize_by(sku: "GILT-#{row[:id]}")
+        variant = Spree::Variant.find_or_initialize_by(sku: "CUSTOM-#{row[:id]}")
         variant.product_id      = product.id
         variant.cost_price      = row[:price]
         variant.track_inventory = false

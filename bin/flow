@@ -53,7 +53,7 @@ methods[:exp_show]     = { path: '/%o/experiences/:key',   method: :get, desc: '
 methods[:set_cat_item] = { path: '/%o/catalog/items/:sku', method: :put, desc: 'update catalog item', json: true, body: true }
 
 unless ARGV[0]
-  puts "Usage:\n bin/flow method\n bin/flow method --sku GILT123 --body '{...}'\n\n"
+  puts "Usage:\n bin/flow method\n bin/flow method --sku CUSTOM-123 --body '{...}'\n\n"
   for k, v in methods
     puts '%s: %s - (%s)' % [k.to_s.ljust(20), v[:path], v[:desc]]
   end

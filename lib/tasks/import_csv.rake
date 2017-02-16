@@ -8,13 +8,13 @@
 # * with variant id, create product image
 # * done!
 
-require './lib/import/gilt_products'
+require './lib/import/custom_products'
 require './lib/import/solidus_db'
 
 # TODO: products and variants in one go, so we don't expose products without variants on a live site
 namespace :import do
 
-  # rake import:csv:products tmp/gilt.csv
+  # rake import:csv:products tmp/data.csv
   namespace :csv do
     desc 'Import products from CSV'
     task products: :environment do
@@ -26,7 +26,7 @@ namespace :import do
       # init db
       %w[S M L XL XXL XXXL].each { |size| Import::SolidusDb::create_size_variant(size) }
 
-      csv = Import::GiltProducts.new(csv_source)
+      csv = Import::CustomProducts.new(csv_source)
       puts "Total of #{csv.count} rows present for import"
 
       # we want only uniqe errors

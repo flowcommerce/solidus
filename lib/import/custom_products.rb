@@ -1,9 +1,9 @@
-# imports products from Gilt
+# imports products from Custom CSV
 # should parse this large files
-# https://github.com/flowcommerce/catalog-scripts/tree/master/gilt
+# https://github.com/flowcommerce/catalog-scripts/tree/master
 #
 # example
-# csv = GiltProductsImporter.new(csv_source)
+# csv = CustomProductsImporter.new(csv_source)
 # csv.get_row
 # csv.get_uniq
 
@@ -11,7 +11,7 @@ require 'csv'
 require 'awesome_print'
 
 module Import
-  class GiltProducts
+  class CustomProducts
 
     # source can be local or remote
     def initialize(csv_source)
@@ -45,7 +45,7 @@ module Import
         category:     row[4],
         old_price:    row[6],
         price:        row[7],
-        gilt_url:     row[10].split('?').first,
+        live_url:     row[10].split('?').first,
         image:        row[11],
         vendor:       row[17],
         size:         row[27],
