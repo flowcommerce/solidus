@@ -1,4 +1,4 @@
-# Integration Slidus with flow - notes
+# Integration Solidus with Flow.io - notes
 
 Integration is "hard" because we are not converting all values in one currency to another.
 
@@ -22,13 +22,13 @@ Integration is "hard" because we are not converting all values in one currency t
 
 * create catalog
 * create experiences in flow.io
-* create at least one distribution center in every expericence
+* create at least one distribution center in every experience
 * defined flow ENV variables, FLOW_API_KEY and FLOW_ORG
 
 
 ### Sync your catalog to and from Flow.io
 
-Products in solidus are automaticly refreshed from flow,
+Products in solidus are automatically refreshed from flow,
 but it is good practise to refresh all products at least once a week.
 
 Reason for that is that products in cache are refreshed only when they are in cart.
