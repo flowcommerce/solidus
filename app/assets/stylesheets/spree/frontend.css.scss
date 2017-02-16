@@ -19,3 +19,48 @@
 #header-logo { position: relative; top: 25px; left: 10px; }
 
 #top-nav-bar { margin-top: 0 !important; }
+
+#nav-toggle { display: none; }
+
+@media only screen and (max-width: 767px) {
+
+  .container, #wrapper { position: static; }
+
+  #taxon { display: none; }
+
+  #nav-toggle {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    position: relative;
+    top: 5px; left: 0;
+    float: left;
+    margin-bottom: -100px;
+  }
+
+  #nav-bar {
+    text-align: right !important;
+    margin-top: 10px;
+  }
+
+  #header-logo { left: 110px; }
+
+  #sidebar {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 90%;  height: 100%;
+    margin: 0;
+    background-color: #555;
+    padding: 10px;
+    border-right: 1px solid #222;
+
+    h6 { text-align: left; }
+    li { text-align: left; margin-left: 20px; }
+    h6, a, label, input { color: #fff !important; font-size: 105% !important; }
+    h6, li { margin-bottom: 10px !important; }
+    input[type=checkbox] { margin-left: -20px; }
+  }
+
+}

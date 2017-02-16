@@ -41,6 +41,7 @@ namespace :flow do
       thread_pool.process do
         puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, data[:price]]
 
+        # https://github.com/flowcommerce/ruby-sdk/blob/master/examples/create_items.rb
         response = Flow.api :put, '/:organization/catalog/items/%s' % sku, BODY: body
         if response['code'] == 'generic_error'
           ap response
