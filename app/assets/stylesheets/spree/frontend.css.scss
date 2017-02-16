@@ -22,11 +22,14 @@
 
 #nav-toggle, #search-bar { display: none; }
 
-@media only screen and (max-width: 767px) {
+// badly defined price ranges https://i.imgur.com/QCfkFWz.png
+#sidebar_products_search { display: none; }
 
+// show taxon (catagory) navbar in mobile view
+@media only screen and (max-width: 767px) {
   .container, #wrapper { position: static; }
 
-  #taxon, #search-bar { display: none; }
+  #taxon, #search-bar, #breadcrumbs { display: none; }
 
   #nav-toggle {
     display: inline-block;
@@ -34,7 +37,7 @@
     height: 48px;
     cursor: pointer;
     position: relative;
-    top: 5px; left: 0;
+    top: 8px; left: 0;
     float: left;
     margin-bottom: -100px;
   }
@@ -62,5 +65,4 @@
     h6, li { margin-bottom: 10px !important; }
     input[type=checkbox] { margin-left: -20px; }
   }
-
 }
