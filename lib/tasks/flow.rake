@@ -8,10 +8,13 @@ namespace :flow do
   desc 'Upload catalog'
   task upload_catalog: :environment do
 
-    variants = Spree::Variant.limit(1000).all
+    flow_client   = FlowCommerce.instance
+    flow_org      = ENV.fetch('FLOW_ORG')
 
     # do reqests in paralel
     thread_pool = Thread.pool(5)
+
+    variants = Spree::Variant.limit(1000).all
 
     variants.each_with_index do |variant, i|
       product = variant.product
@@ -19,42 +22,38 @@ namespace :flow do
       image_base = 'http://cdn.color-mont.com'
 
       # our id
-      sku = variant.sku
+      sku   = variant.sku
+      price = variant.cost_price.to_f
+      price = product.price.to_f if price == 0
 
-      data = {}
-      data[:locale]      = 'en_US'
-      data[:number]      = sku
-      data[:name]        = product.name
-      data[:description] = product.description
-      data[:currency]    = variant.cost_currency
-      data[:images]      = [
-        { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
-        { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
-      ]
-
-      data[:price] = variant.cost_price.to_f
-      data[:price] = product.price.to_f if data[:price] == 0
-
-      body = data.to_json
+      flow_item = Io::Flow::V0::Models::ItemForm.new(
+        number:      sku,
+        locale:      'en_US',
+        name:        product.name,
+        description: product.description,
+        currency:    variant.cost_currency,
+        price:       99.99,
+        language:    'en',
+        images: [
+          { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
+          { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
+        ]
+      )
 
       # multiprocess upload
       thread_pool.process do
-        puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, data[:price]]
+        puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, price]
 
+        # response = Flow.api :put, '/:organization/catalog/items/%s' % sku, BODY: flow_item.to_hash
         # https://github.com/flowcommerce/ruby-sdk/blob/master/examples/create_items.rb
-        response = Flow.api :put, '/:organization/catalog/items/%s' % sku, BODY: body
-        if response['code'] == 'generic_error'
-          ap response
-          ap data
-          puts data.to_json
-        end
+        flow_client.items.put_by_number flow_org, sku, flow_item
       end
     end
 
     thread_pool.shutdown
   end
 
-  desc 'Gets experiences from flow'
+  desc 'Gets and cache experiences from flow'
   task get_experiences: :environment do
     puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
 
@@ -66,7 +65,7 @@ namespace :flow do
     Pathname.new(Flow::EXPERIENCES_PATH).write(api_data.map(&:to_hash).to_yaml)
   end
 
-  desc 'get catalog items'
+  desc 'Get localized catalog items'
   task get_catalog_items: :environment do
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
