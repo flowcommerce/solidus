@@ -25,7 +25,7 @@ module Flow
     curl.push '-X %s' % action.to_s.upcase
     curl.push '-u %s:' % ENV.fetch('FLOW_TOKEN')
     if body
-      url.push '-H "Content-Type: application/json"'
+      curl.push '-H "Content-Type: application/json"'
       curl.push "-d '%s'" % body.gsub(%['], %['"'"']) if body
     end
     curl.push '"https://api.flow.io%s"' % remote_path
