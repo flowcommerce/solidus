@@ -25,6 +25,7 @@ module Flow
     curl.push '-X %s' % action.to_s.upcase
     curl.push '-u %s:' % ENV.fetch('FLOW_TOKEN')
     if body
+      body = body.to_json unless body.is_a?(Array)
       curl.push '-H "Content-Type: application/json"'
       curl.push "-d '%s'" % body.gsub(%['], %['"'"']) if body
     end
@@ -50,6 +51,10 @@ module Flow
   # "https://flowcdn.io/util/icons/flags/32/%s.png" % el['region']['id']
   def experiences
     EXPERIENCES
+  end
+
+  def organization
+    ENV.fetch('FLOW_ORG')
   end
 
   def experience(key)

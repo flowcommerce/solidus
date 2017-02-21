@@ -95,3 +95,15 @@
     padding: 0 0 15px 0;
   }
 }
+
+#checkout_form_address {
+  input[type=text], input[type=tel] {
+    font-size: 16px;
+    margin-top: 5px;
+    padding: 7px 10px;
+  }
+
+  select {
+    margin-top: 5px;
+  }
+}
