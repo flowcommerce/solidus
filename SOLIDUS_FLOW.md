@@ -43,5 +43,43 @@ Of course, once product is in cart we will get fresh prices and show only fresh 
 * "rake flow:upload_catalog" will upload local catalog to flow
 * "rake flow:get_catalog_items" will localy cache all flow catalog items
 
+## Create at least one shipping method
 
-### ...
+* /admin/shipping_methods
+* if you do not, you will not be able to proceed to step 2 in Checkout process
+
+
+## Centers
+
+Docs state that "Organizations are required to set up at least one center in order to generate quotes."
+`https://docs.flow.io/#/module/logistics/resource/centers`
+
+To Create a center;
+`https://docs.flow.io/#/module/logistics/resource/centers`
+
+Based on docs for Order Estimates:
+`https://docs.flow.io/#/module/localization/resource/order-estimates`
+
+code should determine the geolocation (i.e. using IP or explicit country), then we can request the estimate:
+```curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic <encrypted_api_key>" -d '{
+    "items": [
+        {
+            "number": "GILT-M-3587157",
+            "quantity": 2,
+            "center": ENV['FLOW_ORG']
+        }
+    ]
+}' "https://api.flow.io/solidus-demo-sandbox/order-estimates?experience=canada"```
+
+### New client
+
+we have to set up a `ratecard` - its an internal between flow and the carrier (i.e. DHL) that specifies shipping costs for a particular option.
+Since this is always a manual step, since its based on client contract - we have a way to create “mock” ratecards in demo orgs right now at:
+
+https://github.com/flowcommerce/misc/tree/master/ratecards
+
+Run `ruby card.rb $FLOW_ORG` and it will create all the ratecards for org
+
+[3:35]
+then, I was able to go into your shipping tiers, in console at set one like:
+https://console.flow.io/solidus-demo-sandbox/experience/canada/logistics

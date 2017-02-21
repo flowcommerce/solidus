@@ -167,3 +167,8 @@ Example CSV files are in `lib/tasks`.
     * image   -> local file handle
     * product -> local product
     * img = Image.create(:attachment => image, :viewable_id => product.id)
+
+## Demo admin account in development - spree default
+
+admin@example.com
+test123

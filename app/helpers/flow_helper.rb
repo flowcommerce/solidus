@@ -69,11 +69,112 @@ module FlowHelper
   def flow_line_item_price(line_item, quantity=nil)
     quantity = 1 if quantity.to_i < 1
 
-    sku = line_item.variant.sku
-    flow_product = FlowCatalogCache.load_by_country_and_sku(@flow_exp, sku)
-    total = flow_product[:amount] * quantity
+    total = if line_item.is_a?(Hash)
+      line_item[:price] * quantity
+    else
+      sku = line_item.variant.sku
+      flow_product = FlowCatalogCache.load_by_country_and_sku(@flow_exp, sku)
+      flow_product[:amount] * quantity
+    end
 
     Flow.format_price(total, @flow_exp)
+  end
+
+  # get default image path for product
+  # /app/models/spree/image.rb
+  def get_default_image_from_variant(variant)
+    if variant.images.length == 0
+      variant.product.display_image.attachment(:small)
+    else
+      variant.images.first.attachment.url(:small)
+    end
+  end
+
+  # get data from local order
+  def flow_localize_cart_from_spree
+    @order.line_items.each do |product|
+      variant = product.variant
+
+      @localized_order.push({
+        number:   variant.sku.downcase,
+        name:     "Gold-tone brass crocodile cuff bracelet",
+        quantity: product.quantity,
+        price:    product.price,
+        image:    get_default_image_from_variant(variant),
+        path:     product_path(product)
+      })
+    end
+  end
+
+  # get data from flow api
+  def flow_localize_cart_from_flow
+    items = []
+    product_data = {}
+
+    @order.line_items.each do |product|
+      variant = product.variant
+      sku     = variant.sku
+
+      # data we want to extract from spree order and pas to @localized_order
+      product_data[sku.downcase] = {
+        image: get_default_image_from_variant(variant),
+        path:  product_path(product)
+      }
+
+      items.push({
+        number: sku,
+        center: 'solidus-test',
+        quantity: product.quantity,
+        price: { amount: product.price.to_f, currency: 'USD' }
+      })
+    end
+
+    opts = {}
+    opts[:organization] = Flow.organization
+    opts[:experience] = 'canada'
+    opts[:BODY] = { items: items }
+
+    # croatia
+    # opts[:ip] = '188.129.64.124'
+
+    # canada
+    opts[:ip] = '192.206.151.131'
+
+    flow_data = Flow.api :post, '/:organization/order-estimates', opts
+
+    flow_data['items'].each do |item|
+      sku = item['number'].downcase
+      object = {
+        number:   sku,
+        name:     item['name'],
+        quantity: item['quantity'],
+        price:    item['local']['prices'].first['amount'],
+      }
+
+      object.merge! product_data[sku] if product_data[sku]
+
+      @localized_order.push object
+    end
+  end
+
+  # localizes order items
+  # we will use this order items to show products in cart, insted of
+  # spree default line items
+  def flow_localize_cart
+    @localized_order = []
+
+    raise 'Supported "source" values are :spree and :flow' if params[:source] && !['spree', 'flow'].include?(params[:source])
+
+    case params[:source]
+      when 'spree'
+        flow_localize_cart_from_spree
+      when 'flow'
+        flow_localize_cart_from_spree
+      else
+        flow_localize_cart_from_flow
+    end
+
+    @localized_order
   end
 
 end
