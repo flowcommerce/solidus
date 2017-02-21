@@ -66,3 +66,32 @@
     input[type=checkbox] { margin-left: -20px; }
   }
 }
+
+#product-variants ul { list-style-type: none; }
+
+#product-price h6, #taxon-crumbs h6 { margin-bottom: 5px; }
+
+#product-description-details {
+  line-height: 20px;
+
+  li {
+    display: block;
+    margin: 0;
+    padding: 0 0 10px 20px;
+  }
+
+  li:before {
+    content: '\2022';
+    position: absolute;
+    margin-left: -20px;
+  }
+}
+
+#product-description {
+  .variant-description { margin-left: 7px; }
+
+  p {
+    margin: 0;
+    padding: 0 0 15px 0;
+  }
+}
