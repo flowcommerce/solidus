@@ -13,6 +13,7 @@ gem 'rails', '5.0.1'
 gem 'puma'                     # we use this for dev and prod
 gem 'pg'
 gem 'hashie'
+# gem 'redcarpet'              # abandoned
 
 gem 'dotenv', require: false
 gem 'faraday', require: false

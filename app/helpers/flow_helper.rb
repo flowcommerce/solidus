@@ -1,21 +1,38 @@
 module FlowHelper
-  # Ads markdown rendering to product descripton
+  # Ads markdown like rendering to product descripton
   #
   # @param product [Spree::Product] the product whose description you want to filter
   # @return [String] the generated HTML
   def flow_product_description(product)
+    return raw(product.description) if Spree::Config[:show_raw_product_description]
+
+    data = product.description
+    data.gsub!(/^[\s\*]+/, '* ')
+    data.gsub!(/\n\s*\*\s+/, "\n\n* ")
+
+    # abandonded, do not use.
+    # red_carpet = Redcarpet::Render::HTML.new(no_style: true)
+    # markdown   = Redcarpet::Markdown.new(red_carpet, {})
+    # return markdown.render(data).html_safe
+
     data = ' '+raw(product.description.gsub(/(.*?)\r?\n\r?\n/m, '<p>\1</p>'))
     data.gsub!(' *', '<li>')
-    data.html_safe
+
+    parts = data.split('<li>', 2)
+    parts[0] = '<p>%s</p>' % parts[0] if parts[0] =~ /\w/
+
+    parts.join('<li>').html_safe
   end
 
+  # @param product [Spree::Product]
+  #
   # shows localized price of the product
   def flow_price(product)
     # we want to keep all flow logic in flow classes
     Flow.render_price_from_flow(@flow_exp, product) || '$ %' % product.price
   end
 
-  # cart total - ex: 88.99 CAD (@dux)
+  # @return [String] - cart total - ex: 88.99 CAD
   def flow_cart_total
     return @cart_total if @cart_total
 
@@ -31,7 +48,7 @@ module FlowHelper
     @cart_total = Flow.format_price(amount, @flow_exp)
   end
 
-  # this renders link to cart with total cart price (@dux)
+  # this renders link to cart with total cart price
   def flow_link_to_cart(text=nil)
     text = text ? h(text) : Spree.t(:cart)
 
