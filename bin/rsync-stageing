@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-rsync -vr --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' . deployer@96.126.112.122:~/apps/flow-demo-shop
+source .env
+
+rsync -vr --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' --exclude 'public/assets/*' . deployer@96.126.112.122:~/apps/flow-demo-shop
 
 ssh deployer@96.126.112.122 'cd ~/apps/flow-demo-shop; bundle; rake db:migrate; RAILS_ENV=development rake assets:precompile; sudo service nginx restart'
 
-ssh -t deployer@96.126.112.122 'cd /home/deployer/apps/flow-demo-shop; bash'
+ssh -t deployer@96.126.112.122 "echo '$DEMO_SUDO' | sudo -S service nginx restart; cd /home/deployer/apps/flow-demo-shop; bash"
+
