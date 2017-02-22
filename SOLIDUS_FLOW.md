@@ -83,3 +83,14 @@ Run `ruby card.rb $FLOW_ORG` and it will create all the ratecards for org
 [3:35]
 then, I was able to go into your shipping tiers, in console at set one like:
 https://console.flow.io/solidus-demo-sandbox/experience/canada/logistics
+
+
+### Order and checkout flow
+
+This is tmp reminder no how to organize checkout process
+
+* localize all the prices all the time
+* get real time data from flow_api, once in cart
+* if flow realtime data is not matching local cache, hot update local cache
+
+this all happens in FlowHelper.flow_line_item_price

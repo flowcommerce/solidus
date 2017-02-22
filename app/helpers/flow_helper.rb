@@ -67,60 +67,44 @@ module FlowHelper
   # used in app/views/spree/orders/_line_item.html.erb
   # old: line_item.single_money.to_html
   def flow_line_item_price(line_item, quantity=nil)
+    # will localize only once unless localized
+    flow_localize_cart
+
     quantity = 1 if quantity.to_i < 1
 
-    total = if line_item.is_a?(Hash)
-      line_item[:price] * quantity
-    else
-      sku = line_item.variant.sku
-      flow_product = FlowCatalogCache.load_by_country_and_sku(@flow_exp, sku)
-      flow_product[:amount] * quantity
+    sku = line_item.variant.sku.downcase
+    flow_product = FlowCatalogCache.load_by_country_and_sku(@flow_exp, sku)
+
+    # this should allways be true coz flow_localize_cart sould set it
+    if flow_api_item = @localized_order[sku]
+
+      # if price from flow api is not the same one in cache, update cache
+      if flow_api_item[:price] != flow_product[:amount]
+        FlowCatalogCache.update_price_by_country_and_sku country: @flow_exp, sku: sku, price: flow_api_item[:price]
+        flow_product['amount'] = flow_api_item[:price]
+      end
     end
+
+    total = flow_product[:amount] * quantity
 
     Flow.format_price(total, @flow_exp)
   end
 
-  # get default image path for product
-  # /app/models/spree/image.rb
-  def get_default_image_from_variant(variant)
-    if variant.images.length == 0
-      variant.product.display_image.attachment(:small)
-    else
-      variant.images.first.attachment.url(:small)
-    end
-  end
+  # localizes order items
+  # we will get order items from flow api to show products in cart, insted of
+  # spree default line items
+  def flow_localize_cart
+    return if @localized_order
 
-  # get data from local order
-  def flow_localize_cart_from_spree
-    @order.line_items.each do |product|
-      variant = product.variant
+    @localized_order = {}
 
-      @localized_order.push({
-        number:   variant.sku.downcase,
-        name:     "Gold-tone brass crocodile cuff bracelet",
-        quantity: product.quantity,
-        price:    product.price,
-        image:    get_default_image_from_variant(variant),
-        path:     product_path(product)
-      })
-    end
-  end
-
-  # get data from flow api
-  def flow_localize_cart_from_flow
     items = []
-    product_data = {}
+    local_cache = {}
 
     @order.line_items.each do |product|
-      variant = product.variant
-      sku     = variant.sku
+      sku     = product.variant.sku
 
-      # data we want to extract from spree order and pas to @localized_order
-      product_data[sku.downcase] = {
-        image: get_default_image_from_variant(variant),
-        path:  product_path(product)
-      }
-
+      # for flow api
       items.push({
         number: sku,
         center: 'solidus-test',
@@ -137,44 +121,23 @@ module FlowHelper
     # croatia
     # opts[:ip] = '188.129.64.124'
 
-    # canada
+    # mock canada IP
     opts[:ip] = '192.206.151.131'
 
     flow_data = Flow.api :post, '/:organization/order-estimates', opts
 
     flow_data['items'].each do |item|
-      sku = item['number'].downcase
-      object = {
-        number:   sku,
+      sku   = item['number'].downcase
+      price = item['local']['prices'].first['amount']
+
+      @localized_order[sku] = {
         name:     item['name'],
         quantity: item['quantity'],
-        price:    item['local']['prices'].first['amount'],
+        price:    price,
+        currency: item['local']['prices'].first['currency']
       }
 
-      object.merge! product_data[sku] if product_data[sku]
-
-      @localized_order.push object
     end
-  end
-
-  # localizes order items
-  # we will use this order items to show products in cart, insted of
-  # spree default line items
-  def flow_localize_cart
-    @localized_order = []
-
-    raise 'Supported "source" values are :spree and :flow' if params[:source] && !['spree', 'flow'].include?(params[:source])
-
-    case params[:source]
-      when 'spree'
-        flow_localize_cart_from_spree
-      when 'flow'
-        flow_localize_cart_from_spree
-      else
-        flow_localize_cart_from_flow
-    end
-
-    @localized_order
   end
 
 end

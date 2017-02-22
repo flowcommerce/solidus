@@ -26,6 +26,19 @@ class FlowCatalogCache < ApplicationRecord
         hash
       end
     end
+
+    def update_price_by_country_and_sku(country:, sku:, price:)
+      # so we can send experience object
+      country = country.country if country.respond_to?(:country)
+
+      cached_product = find_by sku: sku.downcase, country: country.downcase
+      return unless cached_product
+
+      # we update only price and I think this is only thing we should cache from floe wast data
+      # when all goes well with checkout, I will fix this model to use only needed data
+      cached_product.data['prices'][0]['amount'] = price
+      cached_product.save!
+    end
   end
 
   ###

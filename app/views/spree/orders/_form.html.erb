@@ -12,7 +12,7 @@
   <tbody id="line_items" data-hook>
     <%=
       render partial: 'spree/orders/line_item',
-        # collection: order_form.object.line_items,
+        collection: order_form.object.line_items,
         locals: {order_form: order_form }
     %>
   </tbody>
