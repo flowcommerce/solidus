@@ -1,28 +1,4 @@
 module FlowHelper
-  # Ads markdown like rendering to product descripton
-  #
-  # @param product [Spree::Product] the product whose description you want to filter
-  # @return [String] the generated HTML
-  def flow_product_description(product)
-    return raw(product.description) if Spree::Config[:show_raw_product_description]
-
-    data = product.description
-    data.gsub!(/^[\s\*]+/, '* ')
-    data.gsub!(/\n\s*\*\s+/, "\n\n* ")
-
-    # abandonded, do not use.
-    # red_carpet = Redcarpet::Render::HTML.new(no_style: true)
-    # markdown   = Redcarpet::Markdown.new(red_carpet, {})
-    # return markdown.render(data).html_safe
-
-    data = ' '+raw(product.description.gsub(/(.*?)\r?\n\r?\n/m, '<p>\1</p>'))
-    data.gsub!(' *', '<li>')
-
-    parts = data.split('<li>', 2)
-    parts[0] = '<p>%s</p>' % parts[0] if parts[0] =~ /\w/
-
-    parts.join('<li>').html_safe
-  end
 
   # @param product [Spree::Product]
   #
