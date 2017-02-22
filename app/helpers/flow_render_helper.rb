@@ -2,14 +2,16 @@ module FlowRenderHelper
 
   # Renders tree on the left
   def flow_taxons_tree(root_taxon, current_taxon)
-    max_level = 2
     return '' if root_taxon.children.empty?
+
+    max_level = 2
+
     content_tag :ul, class: 'taxons-list' do
       taxons = root_taxon.children.map do |taxon|
         css_class = (current_taxon && current_taxon.self_and_ancestors.include?(taxon)) ? 'current' : nil
         content_tag :li, class: css_class do
           extra = nil
-          extra = taxons_tree(taxon, current_taxon, max_level - 1) if taxon.id == @taxon.id
+          extra = taxons_tree(taxon, current_taxon, max_level - 1) if @taxon && [current_taxon.parent.try(:id), current_taxon.id].include?(taxon.id)
           link_to(taxon.name, seo_url(taxon)) + extra
         end
       end

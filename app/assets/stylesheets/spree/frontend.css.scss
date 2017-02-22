@@ -75,17 +75,17 @@
 #product-description-details {
   line-height: 20px;
 
-  li {
+  p, li {
     display: block;
     margin: 0;
-    padding: 0 0 10px 20px;
+    padding: 0 0 15px 0;
   }
 
-  li:before {
-    content: '\2022';
-    position: absolute;
-    margin-left: -20px;
-  }
+  // li:before {
+  //   content: '\2022';
+  //   position: absolute;
+  //   margin-left: -20px;
+  // }
 }
 
 #product-description {
