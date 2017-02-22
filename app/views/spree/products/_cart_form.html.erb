@@ -2,28 +2,27 @@
   <div id="inside-product-cart-form" data-hook="inside_product_cart_form" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 
     <% if @product.variants_and_option_values_for(current_pricing_options).any? %>
+      <% @variants = @product.variants_and_option_values_for(current_pricing_options) %>
+
       <div id="product-variants" class="columns five alpha">
         <h6 class="product-section-title"><%= Spree.t(:variants) %></h6>
-        <ul>
-          <% @product.variants_and_option_values_for(current_pricing_options).each_with_index do |variant, index| %>
-            <li>
-              <%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => flow_price(variant) %>
-              <%= label_tag "variant_id_#{ variant.id }" do %>
-                <span class="variant-description">
-                  <%= variant_options variant %>
-                </span>
-                <% if variant_price variant %>
-                  <span class="price diff"><%= variant_price variant %></span>
-                <% end %>
 
-                <% unless variant.can_supply? %>
-                  <span class="out-of-stock"><%= Spree.t(:out_of_stock) %></span>
-                <% end %>
-              <% end %>
-            </li>
-          <% end%>
-        </ul>
+        <!-- spreee custom select instead of radio select boxes -->
+        <script>window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = flow_price(v); h }.to_json.html_safe %>;</script>
+        <select style="min-width: 150px; height: 30px;" name="variant_id" onchange="$('span.price.selling').html(_spree_variants[String(this.value)]);">
+        <% @variants.each_with_index do |variant, index| %>
+          $('.price.selling')).text(variantPrice)
+          <option value="<%= variant.id %>">
+            <%= variant_options variant %>
+            <% if variant_price variant %> - <%= variant_price variant %><% end %>
+            <% unless variant.can_supply? %> - <%= Spree.t(:out_of_stock) %><% end %>
+          </option>
+        <% end %>
+        </select>
+
       </div>
+
+
     <% else %>
       <%= hidden_field_tag "variant_id", @product.master.id %>
     <% end %>

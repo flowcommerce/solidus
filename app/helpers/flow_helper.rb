@@ -1,5 +1,17 @@
 module FlowHelper
 
+  # live hot fix product or variant
+  # not used for now
+  def flow_fix_price(product)
+    return unless product.respond_to?(:sku) && product.respond_to?(:cost_price) && product.respond_to?(:cost_currency)
+
+    fcc = FlowCatalogCache.load_by_country_and_sku @flow_exp, product.sku
+
+    product.cost_price    = fcc[:amount]
+    product.cost_currency = fcc[:currency]
+    product
+  end
+
   # @param product [Spree::Product]
   #
   # shows localized price of the product
