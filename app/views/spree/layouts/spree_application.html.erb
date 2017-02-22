@@ -55,11 +55,27 @@
     </div>
 
     <script>
+      // toggle navbar
       $(document).on('click', '#sidebar', function(){
         if ($('#nav-toggle:visible')[0]) {
           $('#sidebar').hide();
         }
       })
+
+      // remove not main product lists
+      var removed = false;
+      $('ul').each(function(){
+        var el      = $(this);
+
+        if (el.attr('id') == 'products') {
+          console.log(1);
+          if (removed) {
+            el.remove();
+          } else {
+            removed = true;
+          }
+        }
+      });
     </script>
 
   </body>
