@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+sudo tail -300 /var/log/nginx/error.log
