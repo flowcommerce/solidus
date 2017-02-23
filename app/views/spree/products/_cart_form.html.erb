@@ -7,9 +7,7 @@
       <div id="product-variants" class="columns five alpha">
         <h6 class="product-section-title"><%= Spree.t(:variants) %></h6>
 
-        <!-- spreee custom select instead of radio select boxes -->
-        <script>window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = flow_price(v); h }.to_json.html_safe %>;</script>
-        <select style="min-width: 150px; height: 30px;" name="variant_id" onchange="$('span.price.selling').html(_spree_variants[String(this.value)]);">
+        <select id="variant_select" style="min-width: 150px; height: 30px;" name="variant_id" onchange="$('span.price.selling').html(_spree_variants[String(this.value)]);">
         <% @variants.each_with_index do |variant, index| %>
           $('.price.selling')).text(variantPrice)
           <option value="<%= variant.id %>">
@@ -33,9 +31,7 @@
         <div id="product-price">
           <h6 class="product-section-title"><%= Spree.t(:price) %></h6>
           <div>
-            <span class="price selling" itemprop="price">
-              <%= display_price(@product) %>
-            </span>
+            <span class="price selling" itemprop="price">&nbsp;</span>
             <span itemprop="priceCurrency" content="<%= current_pricing_options.currency %>"></span>
           </div>
 
@@ -62,3 +58,9 @@
     <% end %>
   </div>
 <% end %>
+
+<!-- spreee custom select instead of radio select boxes -->
+<script>
+  window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = flow_price(v); h }.to_json.html_safe %>;
+  $('span.price.selling').html(_spree_variants[$('#variant_select').val()]  );
+</script>
