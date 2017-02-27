@@ -44,4 +44,20 @@ module FlowRenderHelper
     parts.join('<li>').html_safe
   end
 
+  # gets taxon image defined by taxonomy (category) tree
+  # if icon is defined in parent, we get parent icon
+  # usage: flow_category_icon @taxons[0]
+  #
+  # @param taxon [Spree::Taxon] - spree category
+  # @return [String] - url if the custom image
+  def flow_category_icon(taxon)
+    icon = taxon.icon_file_name
+
+    while icon.blank? && (taxon = taxon.parent)
+      icon = taxon.icon_file_name
+    end
+
+    taxon && taxon.icon_file_name ? taxon.icon.url : nil
+  end
+
 end
