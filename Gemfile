@@ -10,27 +10,30 @@ end
 
 # basics
 gem 'rails', '5.0.1'
-gem 'puma'                     # we use this for dev and prod
 gem 'pg'
 gem 'hashie'
+gem 'flowcommerce'
 # gem 'redcarpet'              # abandoned
-
-gem 'dotenv', require: false
-gem 'faraday', require: false
 
 # solidus fw
 gem 'solidus', '2.1.0'
 gem 'solidus_auth_devise'
 
+group :manual_load do
+  gem 'dotenv'
+  gem 'faraday'
+  gem 'thread'
+end
+
 group :development, :test do
-  gem 'flowcommerce'
   gem 'awesome_print'
 end
 
 group :development do
+  gem 'spring'                           # fast console and tests
+  gem 'pry-rails'                        # better console
+  gem 'puma'
   gem 'listen', '~> 3.0.5'
-  gem 'pry-rails'
-  gem 'thread', require: false
 
   # css and js block
   gem 'therubyracer', platforms: :ruby
@@ -38,6 +41,7 @@ group :development do
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.2'
   gem 'turbolinks', '~> 5'
+
   # gem 'smarter_csv'
 end
 
