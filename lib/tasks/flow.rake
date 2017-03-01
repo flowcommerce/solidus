@@ -22,7 +22,7 @@ namespace :flow do
       image_base = 'http://cdn.color-mont.com'
 
       # our id
-      sku   = variant.sku
+      sku   = variant.sku.downcase
       price = variant.cost_price.to_f
       price = product.price.to_f if price == 0
 
