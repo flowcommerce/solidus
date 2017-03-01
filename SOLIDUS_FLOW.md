@@ -1,11 +1,24 @@
 # Integration Solidus with Flow.io - notes
 
-Integration is "hard" because we are not converting all values in one currency to another.
+Integration is easy :)
+
+## basic steps
+
+1. ensure all your products in spree have valid sku / number / unique id
+1. in flow
+  * create desired experiences
+  * create at least one distribution method in each experience (contact flow)
+1. upload local spreee catalog to flow (rake task)
+1. Get localized catalog items
+1. set up web hooks to point to https://YOUR_SITE/flow-event-target
+1. define distribution centers for expericences
+1. in spree allow global delivery to all products, because delivery is handled by flow now
+1. ...
 
 
 ## Basic requirements
 
-* Ruby 2.2 +
+* Ruby 2.2 + - 2.4 recommended
 * Rails 5.0 +
 * Solidus/Spree v2.1 + (for Rails 5)
 * Database
