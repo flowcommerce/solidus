@@ -11,7 +11,7 @@
       onclick="$('#choose-expirience').toggle(200);"
     >
       <% for exp in Flow::EXPERIENCES %>
-        <a href="?exp=<%= exp['region']['id'] %>" style="display: block; margin-bottom: 10px;">
+        <a href="?exp=<%= exp['key'] %>" style="display: block; margin-bottom: 10px;">
           <img style="width:32px; height: 32px; vertical-align: middle;" src="https://flowcdn.io/util/icons/flags/32/<%= exp['region']['id'] %>.png" />
           <%= exp['name'] %>
         </a>
