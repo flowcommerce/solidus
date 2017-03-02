@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
     ].include?(target)
       address = @current_spree_user ? @current_spree_user.addresses.first : nil
 
-      FlowOrder.init_from_spree_order(experience: @flow_exp, order: @order, address: address)
+      FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, address: address)
     end
   end
 end

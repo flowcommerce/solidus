@@ -7,10 +7,14 @@ class FlowOrder
   class << self
 
     # helper method to send complete order from spreee and make auto sync
-    def init_from_spree_order(experience:, order:, address:)
+    def sync_from_spree_order(experience:, order:, address:)
       flow_order = new experience: experience, order: order, address: address
 
-      order.line_items.each { |line_item| flow_order.add_item line_item }
+      order.line_items.each do |line_item|
+        flow_order.add_item line_item
+      end
+
+      flow_order.synchronize
     end
 
   end
@@ -20,7 +24,7 @@ class FlowOrder
   def initialize(experience:, order:, address:)
     @experience = experience
     @order = order
-    @order = address
+    @address = address
     @items = []
   end
 
@@ -41,7 +45,7 @@ class FlowOrder
 
       {
         center: FLOW_CENTER,
-        number: 'spree-%s' % object.variant_id,
+        number: object.variant.sku.downcase,
         quantity: object.quantity,
         price: {
           amount:   fcc[:amount].to_f,
@@ -55,6 +59,35 @@ class FlowOrder
 
   # synchronize with flow
   def synchronize
+
+    flow_number = 'spree-%s' % @order.id
+
+    opts = {}
+    opts[:organization] = ENV.fetch('FLOW_ORG')
+    opts[:experience] = @experience[:key]
+    opts[:BODY] = {
+      items:  @items,
+      number: flow_number
+    }
+
+    # ap opts
+
+    response = Flow.api :put, '/:organization/orders/%s' % flow_number, opts
+
+    unless response['id']
+      Flow.api :post, '/:organization/orders' % flow_number, opts
+    end
+
+    # r 123
+
+    if @order.flow_number.present?
+      # refresh order
+
+    else
+      # no flow number, create
+
+    end
+
     #     "code" => "generic_error",
     # "messages" => [ [0] "An order with the specified number already exists"]
   end
