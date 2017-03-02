@@ -8,17 +8,17 @@ class ApplicationController < ActionController::Base
   # checks current experience (defiend by parameter) and sets default one unless one preset
   def check_and_set_flow_experience
     if exp = params[:exp]
-      session[:flow_exp] = exp if Flow.country_codes.include?(exp)
+      session[:flow_exp] = exp.downcase if Flow.country_codes.include?(exp.upcase)
       return redirect_to request.path
     end
 
     # tmp
-    session.delete(:flow_exp) if session[:flow_exp].to_s.length == 3
+    session.delete(:flow_exp) if session[:flow_exp].to_s.length > 3
 
     # set session exp unless set
-    session[:flow_exp] = Flow.get_experience_for_ip(request.ip)[:key] unless session[:flow_exp]
+    session[:flow_exp] ||= Flow.get_experience_for_ip(request.ip)[:country].downcase
 
-    flow_key = session[:flow_exp] || Flow.country_codes.first
+    flow_key = session[:flow_exp] || Flow.country_codes.first.downcase
     flow_exp = Flow.experience(flow_key) || Flow.experiences.first
     @flow_exp = Hashie::Mash.new(flow_exp).freeze
   end

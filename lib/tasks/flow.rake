@@ -92,7 +92,7 @@ namespace :flow do
 
         items.each do |item|
           total += 1
-          sku    = item.number
+          sku    = item.number.downcase
 
           # fill the catalog
           fcc           = FlowCatalogCache.find_or_initialize_by sku: sku, country: country_id

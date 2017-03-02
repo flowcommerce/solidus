@@ -7,12 +7,6 @@ module Flow
   EXPERIENCES_PATH = './config/flow_experiences.yml'
   raise StandardError, 'Experiences yaml not found in %s' % EXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
 
-  # precache expirinces in thread memory
-  EXPERIENCES = YAML.load_file(EXPERIENCES_PATH).map { |el|
-    hash = ActiveSupport::HashWithIndifferentAccess.new(el)
-    hash.freeze
-  }
-
   # builds curl command and gets remote data
   def api(action, path, params={})
     body  = params.delete(:BODY)
@@ -50,7 +44,10 @@ module Flow
   # prebuild cache with "rake flow:get_experiences"
   # "https://flowcdn.io/util/icons/flags/32/%s.png" % el['region']['id']
   def experiences
-    EXPERIENCES
+    YAML.load_file(EXPERIENCES_PATH).map { |el|
+      hash = ActiveSupport::HashWithIndifferentAccess.new(el)
+      hash.freeze
+    }
   end
 
   def organization
@@ -58,15 +55,15 @@ module Flow
   end
 
   def experience(key)
-    EXPERIENCES.each do |exp|
-      return exp if exp['key'] == key
+    experiences.each do |exp|
+      return exp if exp['country'] == key.upcase
     end
     nil
   end
 
   # get only local country codes
   def country_codes
-    Flow::EXPERIENCES.map{ |el| el['key'] }
+    experiences.map{ |el| el['country'] }
   end
 
   def get_experience_url(request, exp_key)
@@ -113,7 +110,7 @@ module Flow
     experiences = flow_api.experiences.get(ENV.fetch('FLOW_ORG'), ip: ip)
     experiences.first
   rescue
-    EXPERIENCES.first
+    experiences.first
   end
 
 end

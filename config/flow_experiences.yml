@@ -27,3 +27,17 @@
     :id: sca-63d5c307bf00480fa536e6eb17beb905
     :discriminator: subcatalog_reference
   :position: 1
+- :id: exp-0c1c48535f104544a118db5859e7827e
+  :key: united-kingdom
+  :name: United Kingdom
+  :delivered_duty: paid
+  :region:
+    :id: gbr
+  :country: GBR
+  :currency: GBP
+  :language: en
+  :measurement_system: metric
+  :subcatalog:
+    :id: sca-74952826beeb446db70b37457210481d
+    :discriminator: subcatalog_reference
+  :position: 2

@@ -14,8 +14,10 @@ Integration is easy :)
 1. define distribution centers for expericences
 1. in spree allow global delivery to all products, because delivery is handled by flow now
 1. run migrations
-   * adds flow_number to spree_order
+   * adds flow_number to spree_order - radom string - secure hash
    * adds flow_catalog_caches table
+1. in app
+   * ensure all prices are rendered with all available options (VAT, ...)
 1. ...
 
 
