@@ -59,14 +59,14 @@ module Flow
 
   def experience(key)
     EXPERIENCES.each do |exp|
-      return exp if exp['region']['id'] == key
+      return exp if exp['key'] == key
     end
     nil
   end
 
   # get only local country codes
   def country_codes
-    Flow::EXPERIENCES.map{ |el| el['country'].downcase }
+    Flow::EXPERIENCES.map{ |el| el['key'] }
   end
 
   def get_experience_url(request, exp_key)
@@ -106,6 +106,14 @@ module Flow
     fcc = FlowCatalogCache.load_by_country_and_sku exp.country, product.sku
     return unless fcc
     format_price fcc.amount, exp.currency
+  end
+
+  def get_experience_for_ip(ip)
+    flow_api = FlowCommerce.instance
+    experiences = flow_api.experiences.get(ENV.fetch('FLOW_ORG'), ip: ip)
+    experiences.first
+  rescue
+    EXPERIENCES.first
   end
 
 end

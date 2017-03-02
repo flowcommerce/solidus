@@ -1,3 +1,5 @@
+# methods that are tied to current solidus/spree frontend
+
 module FlowRenderHelper
 
   # Renders tree on the left
@@ -58,6 +60,36 @@ module FlowRenderHelper
     end
 
     taxon && taxon.icon_file_name ? taxon.icon.url : nil
+  end
+
+  # this renders link to cart with total cart price
+  def flow_link_to_cart(text=nil)
+    text = text ? h(text) : Spree.t(:cart)
+
+    if simple_current_order.nil? || simple_current_order.item_count.zero?
+      text = '%s: (%s)' % [text, Spree.t(:empty)]
+      css_class = :empty
+    else
+      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, flow_cart_total]
+      css_class = :full
+    end
+
+    link_to text.html_safe, spree.cart_path, class: 'cart-info %s' % css_class
+  end
+
+  def flow_normalize_categories(taxonomy_string)
+    taxonomy_string.sub('<li itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"><a itemprop="item" href="/products"><span itemprop="name">Products</span><meta itemprop="position" content="2" /></a>&nbsp;&raquo;&nbsp;</li>','').html_safe
+  end
+
+  # gets jumbo image, returns nil unless found, no default
+  def flow_get_jumbo_image
+    if !params[:page] && request.path == '/'
+      '/jumbo/home.jpg'
+    else
+      return nil unless @taxon
+      image = @taxon.icon(:original)
+      image.include?('default_taxon.png') ? nil : image
+    end
   end
 
 end

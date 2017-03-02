@@ -13,6 +13,7 @@ gem 'rails', '5.0.1'
 gem 'pg'
 gem 'hashie'
 gem 'flowcommerce'
+gem 'pry-rails'                # better console
 # gem 'redcarpet'              # abandoned
 
 # solidus fw
@@ -31,7 +32,6 @@ end
 
 group :development do
   gem 'spring'                           # fast console and tests
-  gem 'pry-rails'                        # better console
   gem 'puma'
   gem 'listen', '~> 3.0.5'
 
