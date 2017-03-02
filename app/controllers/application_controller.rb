@@ -12,14 +12,12 @@ class ApplicationController < ActionController::Base
       return redirect_to request.path
     end
 
-    # tmp
-    session.delete(:flow_exp) if session[:flow_exp].to_s.length > 3
+    # ensure we have the right experince in session
+    session.delete(:flow_exp) unless Flow.country_codes.include?(session[:flow_exp].to_s.upcase)
 
     # set session exp unless set
-    session[:flow_exp] ||= Flow.get_experience_for_ip(request.ip)[:country].downcase
-
-    flow_key = session[:flow_exp] || Flow.country_codes.first.downcase
-    flow_exp = Flow.experience(flow_key) || Flow.experiences.first
+    session[:flow_exp] ||= Flow.get_experience_for_ip(request.ip)[:country].downcase rescue Flow.country_codes.first.downcase
+    flow_exp = Flow.experience(session[:flow_exp]) || Flow.experiences.first
     @flow_exp = Hashie::Mash.new(flow_exp).freeze
   end
 

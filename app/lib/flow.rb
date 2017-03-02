@@ -55,8 +55,9 @@ module Flow
   end
 
   def experience(key)
+    key = key.to_s.upcase
     experiences.each do |exp|
-      return exp if exp['country'] == key.upcase
+      return exp if exp['country'] == key
     end
     nil
   end
