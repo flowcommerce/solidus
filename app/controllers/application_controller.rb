@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
   def maintain_flow_order
     target = '%s#%s' % [params[:controller], params[:action]]
 
+    # r instance_variables
+    # r @products.first.class.to_s
+    # r @product.variants
+
     # if @order # alternative way
     # implement order cacheing via session check
     if [
@@ -34,5 +38,9 @@ class ApplicationController < ActionController::Base
 
       FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, address: address)
     end
+  end
+
+  def check_before_render
+    r 122
   end
 end
