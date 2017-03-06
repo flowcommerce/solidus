@@ -45,8 +45,7 @@ module Flow
   # "https://flowcdn.io/util/icons/flags/32/%s.png" % el['region']['id']
   def experiences
     YAML.load_file(EXPERIENCES_PATH).map { |el|
-      hash = ActiveSupport::HashWithIndifferentAccess.new(el)
-      hash.freeze
+      ActiveSupport::HashWithIndifferentAccess.new(el)
     }
   end
 

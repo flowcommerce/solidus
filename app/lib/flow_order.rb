@@ -1,4 +1,8 @@
-# represents flow order
+# represents flow.io order
+# for easy intgration we pass current
+# - flow experirnce
+# - solidus / spree order
+# - current customer, presetnt as  @current_spree_user controller instance variable
 
 class FlowOrder
 
@@ -7,8 +11,8 @@ class FlowOrder
   class << self
 
     # helper method to send complete order from spreee and make auto sync
-    def sync_from_spree_order(experience:, order:, address:)
-      flow_order = new experience: experience, order: order, address: address
+    def sync_from_spree_order(experience:, order:, customer:)
+      flow_order = new experience: experience, order: order, customer: customer
 
       order.line_items.each do |line_item|
         flow_order.add_item line_item
@@ -21,10 +25,10 @@ class FlowOrder
 
   ###
 
-  def initialize(experience:, order:, address:)
+  def initialize(experience:, order:, customer:)
     @experience = experience
     @order = order
-    @address = address
+    @customer = customer
     @items = []
   end
 
@@ -36,31 +40,27 @@ class FlowOrder
     @client = client
   end
 
-  def add_item(object)
+  def add_item(line_item)
+    variant   = line_item.variant
+    # raw_price = variant.flow_raw_price(@experience)
 
-    item = if object.is_a?(Hash)
-      object
-    else
-      fcc = FlowCatalogCache.load_by_country_and_sku @experience.country, object.sku
-
-      {
-        center: FLOW_CENTER,
-        number: object.variant.sku.downcase,
-        quantity: object.quantity,
-        price: {
-          amount:   fcc[:amount].to_f,
-          currency: fcc[:currency]
-        }
+    # create flow order line item
+    item = {
+      center: FLOW_CENTER,
+      number: variant.flow_number,
+      quantity: line_item.quantity,
+      price: {
+        amount:   variant.cost_price, # raw_price['amount'].to_f,
+        currency: variant.cost_currency # @experience.currency
       }
-    end
+    }
 
     @items.push item
   end
 
   # synchronize with flow
   def synchronize
-
-    flow_number = 'spree-%s' % @order.id
+    flow_number = @order.flow_number
 
     opts = {}
     opts[:organization] = ENV.fetch('FLOW_ORG')
@@ -70,26 +70,44 @@ class FlowOrder
       number: flow_number
     }
 
-    # ap opts
+    # if customer is defined, add customer info
+    # it is possible to have order in solidus without customer info (new guest session)
+    if @customer
+      opts[:customer] = {
+        email: @customer.email,
+        number: @customer.flow_number,
+      }
 
-    response = Flow.api :put, '/:organization/orders/%s' % flow_number, opts
+      if (address = @customer.ship_address)
+        streets = []
+        streets.push address.address1 unless address.address1.blank?
+        streets.push address.address2 unless address.address2.blank?
 
-    unless response['id']
-      Flow.api :post, '/:organization/orders' % flow_number, opts
+        opts[:destination] = {
+          streets:  streets,
+          city:     address.city,
+          province: address.state_name,
+          postal:   address.zipcode,
+          country: (address.country.name rescue ''),
+          contact: {
+            number: @customer.flow_number,
+            email:  @customer.email,
+            name:   '%s %s' % [address.firstname, address.lastname],
+            phone:  address.phone
+          }
+        }
+
+        [:name, :phone].each do |field|
+          opts[:customer][field] = address[field] unless address[field].blank?
+        end
+      end
     end
 
-    # r 123
+    @response = Flow.api(:put, '/:organization/orders/%s' % flow_number, opts)
 
-    if @order.flow_number.present?
-      # refresh order
+    sync_and_update_product_prices!
 
-    else
-      # no flow number, create
-
-    end
-
-    #     "code" => "generic_error",
-    # "messages" => [ [0] "An order with the specified number already exists"]
+    @response
   end
 
 
@@ -102,42 +120,24 @@ class FlowOrder
   def delete_order
 
   end
+
+  def sync_and_update_product_prices!
+    #puts @response.to_json
+    # r @response['items'][0]['local']['prices']
+  end
+
+  def total_price
+    @response['total']['label']
+  end
 end
 
 
-### example
+###
 
-# variants = []
-# variants.push Spree::Variant.order('random()').first
-# variants.push Spree::Variant.order('random()').first
+# croatia
+# opts[:ip] = '188.129.64.124'
 
-# items = variants.inject([]) { |list, variant|
-#   list.push({
-#     number: variant.sku,
-#     center: 'solidus-test',
-#     quantity: 3,
-#     price: { amount: variant.price.to_f, currency: 'CAD' }
-#   })
-
-#   list
-# }
-
-
-# opts = {}
-# opts[:organization] = org
-# opts[:experience] = 'canada'
-# opts[:BODY] = {
-#   items:  items,
-#   number: 'spree-test'
-# }
-
-# # # croatia
-# # # opts[:ip] = '188.129.64.124'
-
-# # canada
+# canada
 # opts[:ip] = '192.206.151.131'
 
-# # ap Flow.api :post, '/:organization/orders', opts
-
-# ap Flow.api :put, '/:organization/orders/spree-test', opts
 

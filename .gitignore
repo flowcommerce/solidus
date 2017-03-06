@@ -22,6 +22,7 @@ capybara-*.html
 /public/spree
 
 config/flow_experiences.yml
+.ruby-version
 
 # Environment normalization
 /.bundle

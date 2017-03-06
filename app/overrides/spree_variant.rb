@@ -12,20 +12,27 @@ Spree::Variant.class_eval do
 
   # returns [amount, currency]
   def flow_raw_price(experience)
-    flow_cache ||= {}
+    local = flow_cache['exp'].values.select{ |el| el['key'] == experience['key'] }[0]
+
+    # to do: realtime get experience
+    return unless local
+
+    local['prices'][0]
   end
 
   # returns price tied to local experience
   def flow_local_price(experience)
-    local = flow_cache['exp'].values.select{ |el| el['key'] == experience['key'] }[0]
+    raw_price = flow_raw_price(experience)
 
-    # to do: realtime get experience
-    return 'n/a' unless local
+    return 'n/a' unless raw_price
 
-    local['prices'][0]['label']
+    r raw_price
+
+    raw_price['label']
   end
 
   # gets flow catalog item, and imports it
+  # it is intentionally here
   def import_flow_item(item)
     country_id = item.local.experience.id
     rate = item.local.rates[0]

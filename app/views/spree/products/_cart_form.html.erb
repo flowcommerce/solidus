@@ -61,6 +61,6 @@
 
 <!-- spreee custom select instead of radio select boxes -->
 <script>
-  window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = flow_price(v); h }.to_json.html_safe %>;
+  window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = v.flow_local_price(@flow_exp); h }.to_json.html_safe %>;
   $('span.price.selling').html(_spree_variants[$('#variant_select').val()]  );
 </script>

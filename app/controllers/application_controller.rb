@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
-  before_action :check_and_set_flow_experience
-  after_action :maintain_flow_order
+  protect_from_forgery    with: :exception
+  before_action           :check_and_set_flow_experience
 
   private
 
@@ -18,29 +17,28 @@ class ApplicationController < ActionController::Base
     # set session exp unless set
     session[:flow_exp] ||= Flow.get_experience_for_ip(request.ip)[:country].downcase rescue Flow.country_codes.first.downcase
     flow_exp = Flow.experience(session[:flow_exp]) || Flow.experiences.first
+
+    flow_exp['IP'] = request.ip
+
     @flow_exp = Hashie::Mash.new(flow_exp).freeze
   end
 
-  def maintain_flow_order
-    target = '%s#%s' % [params[:controller], params[:action]]
+  # we need to prepare @order and sync to flow.io before render because we need
+  # flow total price
+  def sync_flow_order
+    # target = '%s#%s' % [params[:controller], params[:action]]
+    # if ['spree/checkout#edit','spree/orders#edit'].include?(target)
 
-    # r instance_variables
-    # r @products.first.class.to_s
-    # r @product.variants
+    return unless @order
 
-    # if @order # alternative way
-    # implement order cacheing via session check
-    if [
-      'spree/checkout#edit',
-      'spree/orders#edit'
-    ].include?(target)
-      address = @current_spree_user ? @current_spree_user.addresses.first : nil
-
-      FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, address: address)
-    end
+    FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
   end
 
-  def check_before_render
-    r 122
+  # before render trigger
+  # rails does not have before_render filter so we create it like this
+  # to make things simple
+  def render(*args)
+    [:sync_flow_order].each { |action| send action }
+    super
   end
 end
