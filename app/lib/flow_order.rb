@@ -11,7 +11,7 @@ class FlowOrder
   class << self
 
     # helper method to send complete order from spreee and make auto sync
-    def sync_from_spree_order(experience:, order:, customer:)
+    def sync_from_spree_order(experience:, order:, customer: nil)
       flow_order = new experience: experience, order: order, customer: customer
 
       order.line_items.each do |line_item|
@@ -104,6 +104,17 @@ class FlowOrder
     end
 
     @response = Flow.api(:put, '/:organization/orders/%s' % flow_number, opts)
+
+    # set cache for total order ammount
+    # written in flow_cache field inside spree_orders table
+    if (total = @response['total'])
+      @order.flow_cache ||= {}
+      @order.flow_cache['total'] ||= {}
+      if @order.flow_cache['total'][total['currency']] != total['label']
+        @order.flow_cache['total'][total['currency']] = total['label']
+        @order.update_column :flow_cache, @order.flow_cache
+      end
+    end
 
     sync_and_update_product_prices!
 

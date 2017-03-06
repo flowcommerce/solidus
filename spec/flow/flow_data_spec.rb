@@ -2,10 +2,12 @@ require 'spec_init'
 
 RSpec.describe Flow do
   it 'ensures that spree_order has flow_number' do
-    flow_number = 'foo-123'
-
-    spree_order = Spree::Order.new
-    spree_order[:flow_number] = flow_number
-    expect(spree_order.flow_number).to eq(flow_number)
+    expect(Spree::Order.columns_hash['flow_number'].sql_type).to eq('character varying')
   end
+
+  it 'ensures that spree has all needed cache fields' do
+    expect(Spree::Order.columns_hash['flow_cache'].sql_type).to eq('jsonb')
+    expect(Spree::Variant.columns_hash['flow_cache'].sql_type).to eq('jsonb')
+  end
+
 end

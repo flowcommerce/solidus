@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170303102052) do
+ActiveRecord::Schema.define(version: 20170306223619) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -316,6 +316,7 @@ ActiveRecord::Schema.define(version: 20170303102052) do
     t.string   "approver_name"
     t.boolean  "frontend_viewable",                                          default: true,    null: false
     t.string   "flow_number"
+    t.jsonb    "flow_cache",                                                 default: {}
     t.index ["approver_id"], name: "index_spree_orders_on_approver_id", using: :btree
     t.index ["bill_address_id"], name: "index_spree_orders_on_bill_address_id", using: :btree
     t.index ["completed_at"], name: "index_spree_orders_on_completed_at", using: :btree

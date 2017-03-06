@@ -79,7 +79,7 @@ namespace :flow do
   end
 
   desc 'Get localized catalog items'
-  task get_catalog_items: :environment do
+  task precache_catalog_items: :environment do
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
 

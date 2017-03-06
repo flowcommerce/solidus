@@ -12,12 +12,22 @@ Spree::Variant.class_eval do
 
   # returns [amount, currency]
   def flow_raw_price(experience)
-    local = flow_cache['exp'].values.select{ |el| el['key'] == experience['key'] }[0]
+    @experience = experience
+    @flow_local = flow_cache['exp'][experience['key']] rescue nil
 
     # to do: realtime get experience
-    return unless local
+    return unless @flow_local
 
-    local['prices'][0]
+    @flow_local['prices'][0] || calculated_local_price
+  end
+
+  # we take base rate and calculate prices on the fly
+  # if we for some reason do not have cached price
+  def calculated_local_price
+    price = { 'key': 'localized_item_price' }
+    price['amount'] = (@flow_local['rates'].values.first * cost_price * 1.23).round(2)
+    price['label']  = '~%.2f %s' % [price['amount'], @experience.currency]
+    price
   end
 
   # returns price tied to local experience
@@ -26,22 +36,30 @@ Spree::Variant.class_eval do
 
     return 'n/a' unless raw_price
 
-    r raw_price
-
     raw_price['label']
   end
 
   # gets flow catalog item, and imports it
   # it is intentionally here
   def import_flow_item(item)
-    country_id = item.local.experience.id
+    country_id = item.local.experience.key
     rate = item.local.rates[0]
+
+    # be sure to get right exchange rate
+    # if we miss rate from api, extract it from first item
+    if rate
+      ex_rate     = rate.value
+      ex_currency = rate.base.downcase
+    else
+      price       = item.local.prices[0]
+      ex_rate     = price.amount / price.base.amount
+      ex_currency = price.base.currency
+    end
 
     flow_cache['exp'] ||= {}
     flow_cache['exp'][country_id] = {
-      key: item.local.experience.key,
       rates: {
-        rate.base.downcase => rate.value
+        ex_currency => ex_rate
       }
     }
 

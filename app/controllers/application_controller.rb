@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
 
   # checks current experience (defiend by parameter) and sets default one unless one preset
   def check_and_set_flow_experience
+    # r FlowCommerce::Models::V0::OrganizationSessionForm( organization: ENV.fetch('FLOW_ORG'), ip: request.ip)
+
     if exp = params[:exp]
       session[:flow_exp] = exp.downcase if Flow.country_codes.include?(exp.upcase)
       return redirect_to request.path

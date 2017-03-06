@@ -62,9 +62,19 @@ module FlowRenderHelper
     taxon && taxon.icon_file_name ? taxon.icon.url : nil
   end
 
+  def flow_cart_total
+    order = @order || simple_current_order
+    order.flow_cache['total'][@flow_exp.currency]
+  rescue
+    'n/a ?'
+  end
+
   # this renders link to cart with total cart price
   def flow_link_to_cart(text=nil)
     text = text ? h(text) : Spree.t(:cart)
+
+    # r @flow_exp
+    # r simple_current_order
 
     if simple_current_order.nil? || simple_current_order.item_count.zero?
       text = '%s: (%s)' % [text, Spree.t(:empty)]
