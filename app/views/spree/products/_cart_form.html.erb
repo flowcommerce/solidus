@@ -7,7 +7,7 @@
       <div id="product-variants" class="columns five alpha">
         <h6 class="product-section-title"><%= Spree.t(:variants) %></h6>
 
-        <select id="variant_select" style="min-width: 150px; height: 30px;" name="variant_id" onchange="$('span.price.selling').html(_spree_variants[String(this.value)]);">
+        <select id="variant_select" style="min-width: 150px; height: 30px;" name="variant_id" onchange="show_localized_price(this.value);">
         <% @variants.each_with_index do |variant, index| %>
           $('.price.selling')).text(variantPrice)
           <option value="<%= variant.id %>">
@@ -61,6 +61,20 @@
 
 <!-- spreee custom select instead of radio select boxes -->
 <script>
+  window.show_localized_price = function(price_id) {
+    var value;
+
+    value = _spree_variants[String(price_id)]
+
+    parts = value.split('(')
+    if (parts[1]) {
+      value = parts[0] + '<br /><small>('+parts[1]+'</small>'
+    }
+
+    $('span.price.selling').html(value);
+  }
+
   window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = product_price_long(v); h }.to_json.html_safe %>;
-  $('span.price.selling').html(_spree_variants[$('#variant_select').val()]  );
+
+  show_localized_price($('#variant_select').val());
 </script>
