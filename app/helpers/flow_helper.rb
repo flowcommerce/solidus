@@ -120,15 +120,27 @@ module FlowHelper
   end
 
   def product_price_long(variant)
-    list = variant.flow_prices(@flow_exp).inject([]){ |list, el| list.push [el['key'].sub('localized_item_',''), el['label']]; list }
-    base = list.shift[1]
+    variant.flow_prices.map { |price|
+      case price.key
+     when "localized_item_price"
+       case price.includes
+         when "vat"
+           "%s incl VAT" % price.label
+         when "duty"
+           "%s incl VAT" % price.label
+         when "vat_and_duty"
+           "%s incl VAT and Duty" % price.label
+       else
+           price.label
+       end
+         
+     when "localized_item_vat"
+       "#{price.name}: #{price.label}"
 
-    # add additional prices if ones exist
-    base += ' (%s)' % list.map{ |el| el.join(' ') }.join(', ') if list[0]
-
-    base
-  rescue
-    variant.flow_rescue_price
+      when "localized_item_duty"
+       "Duty: #{price.label}"
+     end
+     }.join(", ")
   end
 
 end
