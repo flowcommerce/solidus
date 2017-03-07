@@ -6,23 +6,14 @@ class ApplicationController < ActionController::Base
 
   # checks current experience (defiend by parameter) and sets default one unless one preset
   def check_and_set_flow_experience
-    # r FlowCommerce::Models::V0::OrganizationSessionForm( organization: ENV.fetch('FLOW_ORG'), ip: request.ip)
-
     if exp = params[:exp]
-      session[:flow_exp] = exp.downcase if Flow.country_codes.include?(exp.upcase)
+      session[:flow_exp_key] = exp if FlowExperience.keys.include?(exp)
       return redirect_to request.path
     end
 
-    # ensure we have the right experince in session
-    session.delete(:flow_exp) unless Flow.country_codes.include?(session[:flow_exp].to_s.upcase)
-
     # set session exp unless set
-    session[:flow_exp] ||= Flow.get_experience_for_ip(request.ip)[:country].downcase rescue Flow.country_codes.first.downcase
-    flow_exp = Flow.experience(session[:flow_exp]) || Flow.experiences.first
-
-    flow_exp['IP'] = request.ip
-
-    @flow_exp = Hashie::Mash.new(flow_exp).freeze
+    session[:flow_exp_key] ||= FlowExperience.organization(request.ip)
+    @flow_exp = FlowExperience.init_by_key(session[:flow_exp_key]) || Flow.experiences.first
   end
 
   # we need to prepare @order and sync to flow.io before render because we need
@@ -30,6 +21,10 @@ class ApplicationController < ActionController::Base
   def sync_flow_order
     # target = '%s#%s' % [params[:controller], params[:action]]
     # if ['spree/checkout#edit','spree/orders#edit'].include?(target)
+
+    # ap @product.variants.first.flow_cache
+
+    # r @flow_exp.get_item @product
 
     return unless @order
 

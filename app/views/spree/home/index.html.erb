@@ -5,7 +5,7 @@
 <% end %>
 
 <div data-hook="homepage_products">
-  <% cache(@flow_exp.country + cache_key_for_products) do %>
+  <% cache(@flow_exp.key + cache_key_for_products) do %>
     <%= render :partial => 'spree/shared/products', :locals => { :products => @products } %>
   <% end %>
 </div>

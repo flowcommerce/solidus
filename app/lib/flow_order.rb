@@ -143,12 +143,4 @@ class FlowOrder
 end
 
 
-###
-
-# croatia
-# opts[:ip] = '188.129.64.124'
-
-# canada
-# opts[:ip] = '192.206.151.131'
-
 

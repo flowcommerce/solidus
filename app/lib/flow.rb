@@ -4,9 +4,6 @@
 module Flow
   extend self
 
-  EXPERIENCES_PATH = './config/flow_experiences.yml'
-  raise StandardError, 'Experiences yaml not found in %s' % EXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
-
   # builds curl command and gets remote data
   def api(action, path, params={})
     body  = params.delete(:BODY)
@@ -40,36 +37,6 @@ module Flow
 
   ###
 
-  # gets localy cached expiriences
-  # prebuild cache with "rake flow:get_experiences"
-  # "https://flowcdn.io/util/icons/flags/32/%s.png" % el['region']['id']
-  def experiences
-    YAML.load_file(EXPERIENCES_PATH).map { |el|
-      ActiveSupport::HashWithIndifferentAccess.new(el)
-    }
-  end
-
-  def organization
-    ENV.fetch('FLOW_ORG')
-  end
-
-  def experience(key)
-    key = key.to_s.upcase
-    experiences.each do |exp|
-      return exp if exp['country'] == key
-    end
-    nil
-  end
-
-  # get only local country codes
-  def country_codes
-    experiences.map{ |el| el['country'] }
-  end
-
-  def get_experience_url(request, exp_key)
-    '%s://%s.%s:%s%s' % [request.url.split(':').first, exp_key, request.domain, request.port, request.path]
-  end
-
   # format price given amount and currency
   def format_price(price, currency)
     # we can send experience object as well
@@ -87,30 +54,15 @@ module Flow
     end
   end
 
-  # get country defaults
-  # https://docs.flow.io/#/module/geolocation
-  def country_defaults(ip)
-    data = remote :get, '/geolocation/defaults', ip: ip
-    data.first
-  end
+  # # fetch price from flow cache and render it
+  # def render_price_from_flow(exp, product)
+  #   # return unless we have sku, SKU is abosulute must
+  #   # price can be null, as it is for master products but sku has to be set
+  #   return unless product.sku
 
-  # fetch price from flow cache and render it
-  def render_price_from_flow(exp, product)
-    # return unless we have sku, SKU is abosulute must
-    # price can be null, as it is for master products but sku has to be set
-    return unless product.sku
-
-    fcc = FlowCatalogCache.load_by_country_and_sku exp.country, product.sku
-    return unless fcc
-    format_price fcc.amount, exp.currency
-  end
-
-  def get_experience_for_ip(ip)
-    flow_api = FlowCommerce.instance
-    experiences = flow_api.experiences.get(ENV.fetch('FLOW_ORG'), ip: ip)
-    experiences.first
-  rescue
-    experiences.first
-  end
+  #   fcc = FlowCatalogCache.load_by_country_and_sku exp.country, product.sku
+  #   return unless fcc
+  #   format_price fcc.amount, exp.currency
+  # end
 
 end

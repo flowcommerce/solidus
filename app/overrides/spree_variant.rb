@@ -10,10 +10,14 @@ Spree::Variant.class_eval do
     's-variant-%d' % id
   end
 
+  def flow_prices(experience)
+    @flow_local = flow_cache['exp'][experience.key]['prices'] rescue nil
+  end
+
   # returns [amount, currency]
   def flow_raw_price(experience)
     @experience = experience
-    @flow_local = flow_cache['exp'][experience['key']] rescue nil
+    @flow_local = flow_cache['exp'][experience.key] rescue nil
 
     # to do: realtime get experience
     return unless @flow_local

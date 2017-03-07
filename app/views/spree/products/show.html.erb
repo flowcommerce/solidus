@@ -8,7 +8,7 @@
   <style>#sidebar { display: none; }</style>
 <% end %>
 
-<% cache [@flow_exp.country, I18n.locale, current_pricing_options, @product] do %>
+<% cache [@flow_exp.key, I18n.locale, current_pricing_options, @product] do %>
   <div data-hook="product_show" itemscope itemtype="http://schema.org/Product">
     <% @body_id = 'product-details' %>
 
