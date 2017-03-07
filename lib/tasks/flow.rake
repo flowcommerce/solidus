@@ -79,9 +79,14 @@ namespace :flow do
   end
 
   desc 'Get localized catalog items'
-  task precache_catalog_items: :environment do
+  task :precache_catalog_items, [:clean]=> :environment do |t, args|
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
+
+    if args[:clean]
+      # clean complete product catalog from cache
+      Spree::Variant.all.each { |v| v.update_column :flow_cache, {};'' }
+    end
 
     total = 0
 
