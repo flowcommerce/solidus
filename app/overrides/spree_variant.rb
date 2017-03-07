@@ -34,11 +34,18 @@ Spree::Variant.class_eval do
     price
   end
 
+  # rescue price to show unless we product is localized
+  def flow_rescue_price(quantity=nil)
+    quantity ||= 1
+    total_price = quantity * cost_price
+    '%.2f %s' % [total_price, cost_currency]
+  end
+
   # returns price tied to local experience
   def flow_local_price(experience)
     raw_price = flow_raw_price(experience)
 
-    return 'n/a' unless raw_price
+    return flow_rescue_price unless raw_price
 
     raw_price['label']
   end

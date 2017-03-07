@@ -37,7 +37,7 @@ class FlowExperience < Hash
     # croatia '188.129.64.124'
     # canada  '192.206.151.131'
     # japan   '45.63.127.114'
-    def country_key_by_ip(ip)
+    def key_by_ip(ip)
       FlowCommerce.instance.experiences.get(organization, ip: ip).first.key
     rescue
       all.first['key']

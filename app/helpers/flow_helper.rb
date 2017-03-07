@@ -107,15 +107,28 @@ module FlowHelper
   # old: line_item.single_money.to_html
   def flow_line_item_price(line_item, quantity=nil)
     # will localize only once unless localized
-    prices = line_item.variant.flow_prices(@flow_exp)
-    price  = prices[0]
+    variant = line_item.variant
+    prices  = variant.flow_prices(@flow_exp)
 
-    return 'n/a' unless price
-    return price['label'] unless quantity
+    return variant.flow_rescue_price(quantity) unless prices
 
-    total_amount = price['amount'] * quantity
+    return prices[0]['label'] unless quantity
+
+    total_amount = prices[0]['amount'] * quantity
 
     '%.2f %s' % [total_amount, @flow_exp.currency]
+  end
+
+  def product_price_long(variant)
+    list = variant.flow_prices(@flow_exp).inject([]){ |list, el| list.push [el['key'].sub('localized_item_',''), el['label']]; list }
+    base = list.shift[1]
+
+    # add additional prices if ones exist
+    base += ' (%s)' % list.map{ |el| el.join(' ') }.join(', ') if list[0]
+
+    base
+  rescue
+    variant.flow_rescue_price
   end
 
 end

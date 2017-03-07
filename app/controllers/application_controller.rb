@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     end
 
     # set session exp unless set
-    session[:flow_exp_key] ||= FlowExperience.organization(request.ip)
+    session[:flow_exp_key] ||= FlowExperience.key_by_ip(request.ip)
     @flow_exp = FlowExperience.init_by_key(session[:flow_exp_key]) || Flow.experiences.first
   end
 
@@ -25,6 +25,9 @@ class ApplicationController < ActionController::Base
     # ap @product.variants.first.flow_cache
 
     # r @flow_exp.get_item @product
+
+    # @product.variants.first.update_column :flow_cache, nil
+
 
     return unless @order
 
