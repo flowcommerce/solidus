@@ -19,7 +19,7 @@
 /* #Base 960 Grid
 ================================================== */
     $div: 20px;
-    $one: 80px;
+    $one: 72px;
 
     .container                                  { position: relative; width: $one * 16; margin: 0 auto; padding: 0; }
     .container .column,
@@ -69,14 +69,12 @@
     .container .offset-by-fourteen              { padding-left: $one x 14; }
     .container .offset-by-fifteen               { padding-left: $one x 15; }
 
-
-
 /* #Tablet (Portrait)
 ================================================== */
     $t_one: 48px;
     /* Note: Design for a width of 768px */
 
-    @media only screen and (min-width: 768px) and (max-width: 1300px) {
+    @media only screen and (max-width: 1200px) {
         .container                                  { width: $t_one * 16; }
         .container .column,
         .container .columns                         { margin-left: 10px; margin-right: 10px;  }

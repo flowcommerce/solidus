@@ -2,16 +2,16 @@
   <img
     style="width:32px; height: 32px; cursor: pointer;"
     onclick="$('#choose-expirience').toggle();"
-    src="https://flowcdn.io/util/icons/flags/32/<%= @flow_exp.region.id %>.png"
+    src="https://flowcdn.io/util/icons/flags/32/<%= @flow_exp[:region_id] %>.png"
   />
   <br />
   <div id="choose-expirience" style="display: none;">
     <div
-      style="position: absolute; margin-top: -30px; margin-left: -170px; width: 150px;  border: 1px solid #aaa; background-color:#eee; padding: 10px 10px 0 10px; display: inline-block; text-align: left;"
+      style="position: absolute; margin-top: -30px; margin-left: -220px; width: 200px;  border: 1px solid #aaa; background-color:#eee; padding: 10px 10px 0 10px; display: inline-block; text-align: left;"
       onclick="$('#choose-expirience').toggle(200);"
     >
-      <% for exp in Flow::EXPERIENCES %>
-        <a href="?exp=<%= exp['region']['id'] %>" style="display: block; margin-bottom: 10px;">
+      <% for exp in FlowExperience.all %>
+        <a href="?exp=<%= exp['key'] %>" style="display: block; margin-bottom: 10px;">
           <img style="width:32px; height: 32px; vertical-align: middle;" src="https://flowcdn.io/util/icons/flags/32/<%= exp['region']['id'] %>.png" />
           <%= exp['name'] %>
         </a>

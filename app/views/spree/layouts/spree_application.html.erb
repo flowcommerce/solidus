@@ -32,10 +32,10 @@
 
       <div id="wrapper" class="row" data-hook>
 
-        <%= taxon_breadcrumbs(@taxon) %>
+        <%= flow_normalize_categories taxon_breadcrumbs(@taxon) %>
 
-        <% if !params[:page] && request.path == '/' %>
-          <div class="sixteen columns"><img src="/jumbo/home.jpg" style="width: 100%; margin-bottom: 30px;" /></div>
+        <% if (@jumbo_image = flow_get_jumbo_image) %>
+          <div class="sixteen columns"><img src="<%= @jumbo_image %>" style="width: 100%; margin-bottom: 30px;" /></div>
         <% end %>
 
         <%= render :partial => 'spree/shared/sidebar' if content_for? :sidebar %>
@@ -49,9 +49,10 @@
 
       </div>
 
+      <%= yield :sidebar_base %>
+
       <%= render :partial => 'spree/shared/footer' %>
 
-      <%= yield :sidebar_base %>
     </div>
 
     <script>
@@ -65,7 +66,11 @@
       // remove not main product lists
       var removed = false;
       $('ul').each(function(){
+<<<<<<< HEAD
         var el      = $(this);
+=======
+        var el = $(this);
+>>>>>>> dev
 
         if (el.attr('id') == 'products') {
           console.log(1);

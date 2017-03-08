@@ -19,6 +19,17 @@ How to set up a dev environment for this project:
 4. Run `bundle exec rails g spree:install` to set up seed and sample data
 5. Log in to /admin with the default admin account. By default, user is `spree@example.com` and password `spree123`.
 
+## Application structure
+
+* ./app    - files that need to be loaded in all environments
+* ./bin    - executables
+* ./config - app config
+* ./db     - migrations and DB specific stuff
+* ./lib    - libraries that we load on demand and rake tasks
+* ./public - public files
+* ./spec   - rspec tests
+
+
 ## Working Protocols
 ### Branches
 * The `master` branch contains the state of the site on the production server

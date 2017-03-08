@@ -21,6 +21,9 @@ capybara-*.html
 /spec/tmp
 /public/spree
 
+config/flow_experiences.yml
+.ruby-version
+
 # Environment normalization
 /.bundle
 /vendor/bundle
