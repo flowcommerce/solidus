@@ -7,13 +7,13 @@ Spree::Product.class_eval do
   end
 
   # returns [amount, currency] from master variant
-  def flow_raw_price(experience)
-    variants.first.flow_raw_price(experience)
+  def flow_raw_price(flow_exp)
+    variants.first.flow_raw_price(flow_exp)
   end
 
   # returns price tied to local experience from master variant
-  def flow_local_price(experience)
-    variants.first.flow_local_price(experience)
+  def flow_local_price(flow_exp)
+    variants.first.flow_local_price(flow_exp)
   end
 
 end

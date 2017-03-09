@@ -63,10 +63,9 @@ module FlowHelper
   end
 
   def flow_cart_total
-    order = @order || simple_current_order
-    order.flow_cache['total'][@flow_exp.currency]
-  rescue
-    'n/a ?'
+    return @flow_order.total_price if @flow_order
+    return simple_current_order.total_price_cache(@flow_exp) if simple_current_order
+    Flow.price_not_found
   end
 
   # this renders link to cart with total cart price
@@ -102,45 +101,43 @@ module FlowHelper
     end
   end
 
-  # get flow item from line item and shows localized price
-  # used in app/views/spree/orders/_line_item.html.erb
-  # old: line_item.single_money.to_html
-  def flow_line_item_price(line_item, quantity=nil)
-    # will localize only once unless localized
-    variant = line_item.variant
-    prices  = variant.flow_prices(@flow_exp)
+  # used in single product page to show complete price of a product
+  def product_price_long(variant)
+    variant.flow_prices(@flow_exp).map do |price|
+      label = price['label']
 
-    return variant.flow_rescue_price(quantity) unless prices
-
-    return prices[0]['label'] unless quantity
-
-    total_amount = prices[0]['amount'] * quantity
-
-    '%.2f %s' % [total_amount, @flow_exp.currency]
+      case price['key']
+        when 'localized_item_vat'
+          '%s: %s' % [price['name'], label]
+        when 'localized_item_duty'
+          'duty: %s' % label
+        else
+          case price['includes']
+            when 'vat'
+              '%s incl VAT' % label
+            when 'duty'
+              '%s incl VAT' % label
+            when 'vat_and_duty'
+              '%s incl VAT and Duty' % label
+            else
+              label
+          end
+      end
+    end.join(", ")
   end
 
-  def product_price_long(variant)
-    variant.flow_prices.map { |price|
-      case price.key
-     when "localized_item_price"
-       case price.includes
-         when "vat"
-           "%s incl VAT" % price.label
-         when "duty"
-           "%s incl VAT" % price.label
-         when "vat_and_duty"
-           "%s incl VAT and Duty" % price.label
-       else
-           price.label
-       end
-         
-     when "localized_item_vat"
-       "#{price.name}: #{price.label}"
+  # used in checkout to show complete price breakdown
+  def total_cart_breakdown
+    out =  ['<table style="float: right;">']
 
-      when "localized_item_duty"
-       "Duty: #{price.label}"
-     end
-     }.join(", ")
+    @flow_order.response['prices'].each do |price|
+      out.push '<tr><td>%s</td><td style="text-align: right;">%s</td></tr>' % [price['key'].to_s.capitalize , price['label']]
+    end
+
+    out.push '<tr><td>%s</td><td style="text-align: right;"><b>%s</b></td></tr>' % [Spree.t(:total), flow_cart_total]
+
+    out.push '</table>'
+    out.join('').html_safe
   end
 
 end

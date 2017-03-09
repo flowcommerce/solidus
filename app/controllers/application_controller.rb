@@ -38,13 +38,13 @@ class ApplicationController < ActionController::Base
   # flow total price
   def sync_flow_order
     return unless @order
-    flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
-    @flow_render = { json: flow_order.to_json } if params[:debug] == 'flow'
+    @flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
+    @flow_render = { json: JSON.pretty_generate(@flow_order.response) } if params[:debug] == 'flow'
   end
 
   def flow_filter_spree_products_show
     # r @product.variants.first.flow_cache
-    @flow_render = { json: @flow_exp.get_item(@product).to_json } if params[:debug] == 'flow'
+    @flow_render = { json: JSON.pretty_generate(@flow_exp.get_item(@product).to_hash) } if params[:debug] == 'flow'
     # @product.variants.first.update_column :flow_cache, nil
   end
 end

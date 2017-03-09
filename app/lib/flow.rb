@@ -4,6 +4,11 @@
 module Flow
   extend self
 
+  # this method is not a constant so it can be replaced
+  def price_not_found
+    'n/a'
+  end
+
   # builds curl command and gets remote data
   def api(action, path, params={})
     body  = params.delete(:BODY)
@@ -23,8 +28,6 @@ module Flow
     curl.push '"https://api.flow.io%s"' % remote_path
     command = curl.join(' ')
 
-    puts command
-
     data = JSON.load `#{command}`
 
     if data.kind_of?(Hash) && data['code'] == 'generic_error'
@@ -34,35 +37,5 @@ module Flow
       data
     end
   end
-
-  ###
-
-  # format price given amount and currency
-  def format_price(price, currency)
-    # we can send experience object as well
-    currency = currency.currency if currency.respond_to?(:currency)
-    currency = currency.upcase
-
-    # use rails helper
-    amount = ActionController::Base.helpers.number_with_delimiter(price)
-
-    # when USD, format in this special way
-    if currency == 'USD'
-      '$ %s' % amount
-    else
-      '%s %s' % [amount, currency]
-    end
-  end
-
-  # # fetch price from flow cache and render it
-  # def render_price_from_flow(exp, product)
-  #   # return unless we have sku, SKU is abosulute must
-  #   # price can be null, as it is for master products but sku has to be set
-  #   return unless product.sku
-
-  #   fcc = FlowCatalogCache.load_by_country_and_sku exp.country, product.sku
-  #   return unless fcc
-  #   format_price fcc.amount, exp.currency
-  # end
 
 end

@@ -3,9 +3,9 @@
 # to basic shop frontend and backend needs
 
 class FlowExperience < Hash
-  class << self
+  EXPERIENCES_PATH = './config/flow_experiences.yml'
 
-    EXPERIENCES_PATH = './config/flow_experiences.yml'
+  class << self
     raise StandardError, 'Experiences yaml not found in %s' % EXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
 
     # gets localy cached expiriences
@@ -82,7 +82,7 @@ class FlowExperience < Hash
   def get_item(object)
     number = object.respond_to?(:flow_number) ? object.flow_number : object.to_s
 
-    raise ArgumentError, 'Flow number "%s" is not prefixed by s-variant' % number unless number[0,9] == 's-variant'
+    # raise ArgumentError, 'Flow number "%s" is not prefixed by s-variant' % number unless number[0,9] == 's-variant'
 
     FlowCommerce.instance.experiences.get_items_by_number organization, number, country: key
   end

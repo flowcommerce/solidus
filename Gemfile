@@ -14,6 +14,7 @@ gem 'pg'
 gem 'hashie'
 gem 'flowcommerce'
 gem 'pry-rails'                # better console
+gem 'awesome_print'
 # gem 'redcarpet'              # abandoned
 
 # solidus fw
@@ -24,10 +25,6 @@ group :manual_load do
   gem 'dotenv'
   gem 'faraday'
   gem 'thread'
-end
-
-group :development, :test do
-  gem 'awesome_print'
 end
 
 group :development do

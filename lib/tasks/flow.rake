@@ -9,7 +9,6 @@ namespace :flow do
   # if you want to force update all products
   desc 'Upload catalog'
   task :upload_catalog, [:force] => :environment do |t, args|
-
     flow_client   = FlowCommerce.instance
     flow_org      = ENV.fetch('FLOW_ORG')
 
@@ -29,6 +28,7 @@ namespace :flow do
       price = product.price.to_f if price == 0
 
       # skip sync if allready synced to last price
+      variant.flow_cache ||= {}
       next if !args[:force] && variant.flow_cache['last_sync_price'] == price
 
       total_sum += 1
@@ -61,9 +61,9 @@ namespace :flow do
       end
     end
 
-    puts 'For total if %s products, %s needed update' % [variants.length.to_s.blue, (total_sum == 0 ? 'none' : total_sum).to_s.green]
-
     thread_pool.shutdown
+
+    puts 'For total of %s products, %s needed update' % [variants.length.to_s.blue, (total_sum == 0 ? 'none' : total_sum).to_s.green]
   end
 
   desc 'Gets and cache experiences from flow'
@@ -75,11 +75,11 @@ namespace :flow do
 
     puts 'Saved %d experinences - %s'.green % [api_data.length, api_data.map(&:country).join(', ')]
 
-    Pathname.new(Flow::EXPERIENCES_PATH).write(api_data.map(&:to_hash).to_yaml)
+    Pathname.new(FlowExperience::EXPERIENCES_PATH).write(api_data.map(&:to_hash).to_yaml)
   end
 
   desc 'Get localized catalog items'
-  task :precache_catalog_items, [:clean]=> :environment do |t, args|
+  task :precache_catalog, [:clean]=> :environment do |t, args|
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
 
@@ -102,7 +102,7 @@ namespace :flow do
 
       while offset == 0 || items.length == 100
         # show current list size
-        puts 'Getting items: %s, rows %s - %s' % [country_id.upcase.green, offset, offset + page_size]
+        puts "\nGetting items: %s, rows %s - %s" % [country_id.upcase.green, offset, offset + page_size]
 
         # items = Flow.api(:get, '/:organization/experiences/items', country: country_id, limit: country_id, offset: offset)
         items = FlowCommerce.instance.experiences.get_items org, :country => country_id, :limit => page_size, :offset => offset
@@ -118,7 +118,7 @@ namespace :flow do
 
           variant.import_flow_item item
 
-          puts sku
+          print '%s, ' % sku
         end
       end
     end
@@ -144,12 +144,9 @@ namespace :flow do
       items.each do |item|
         sku = item['number']
 
-        do_remove = if sku.include?('s-variant-')
-          variant_id = sku.split('s-variant-').last.to_i
-          do_remove = Spree::Variant.find(variant_id) ? false : true
-        else
-          true
-        end
+        do_remove   = false
+        do_remove   = true if sku.to_i == 0 || sku.to_i.to_s != sku
+        do_remove ||= true unless Spree::Variant.find(sku.to_i)
 
         next unless do_remove
 

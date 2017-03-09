@@ -7,43 +7,35 @@ Spree::Variant.class_eval do
 
   # used for sync with flow
   def flow_number
-    's-variant-%d' % id
+    id.to_s
   end
 
-  def flow_prices(experience)
-    @flow_local = flow_cache['exp'][experience.key]['prices'] rescue nil
+  def flow_prices(flow_exp)
+    if cache = flow_cache['exp']
+      if data = cache[flow_exp.key]
+        data['prices'] || []
+      end
+    end
   end
 
   # returns [amount, currency]
-  def flow_raw_price(experience)
-    @experience = experience
-    @flow_local = flow_cache['exp'][experience.key] rescue nil
+  def flow_raw_price(flow_exp)
+    local = flow_cache['exp'][flow_exp.key] if flow_cache['exp']
 
     # to do: realtime get experience
-    return unless @flow_local
+    return unless local
 
-    @flow_local['prices'][0] || calculated_local_price
-  end
-
-  # we take base rate and calculate prices on the fly
-  # if we for some reason do not have cached price
-  def calculated_local_price
-    price = { 'key': 'localized_item_price' }
-    price['amount'] = (@flow_local['rates'].values.first * cost_price * 1.23).round(2)
-    price['label']  = '~%.2f %s' % [price['amount'], @experience.currency]
-    price
+    local['prices'][0] || Flow.price_not_found
   end
 
   # rescue price to show unless we product is localized
   def flow_rescue_price(quantity=nil)
-    quantity ||= 1
-    total_price = quantity * cost_price
-    '%.2f %s' % [total_price, cost_currency]
+    Flow.price_not_found
   end
 
   # returns price tied to local experience
-  def flow_local_price(experience)
-    raw_price = flow_raw_price(experience)
+  def flow_local_price(flow_exp)
+    raw_price = flow_raw_price(flow_exp)
 
     return flow_rescue_price unless raw_price
 
@@ -53,28 +45,11 @@ Spree::Variant.class_eval do
   # gets flow catalog item, and imports it
   # it is intentionally here
   def import_flow_item(item)
-    country_id = item.local.experience.key
-    rate = item.local.rates[0]
-
-    # be sure to get right exchange rate
-    # if we miss rate from api, extract it from first item
-    if rate
-      ex_rate     = rate.value
-      ex_currency = rate.base.downcase
-    else
-      price       = item.local.prices[0]
-      ex_rate     = price.amount / price.base.amount
-      ex_currency = price.base.currency
-    end
+    experience_key = item.local.experience.key
 
     flow_cache['exp'] ||= {}
-    flow_cache['exp'][country_id] = {
-      rates: {
-        ex_currency => ex_rate
-      }
-    }
-
-    flow_cache['exp'][country_id]['prices'] = item.local.prices.map do |price|
+    flow_cache['exp'][experience_key] = {}
+    flow_cache['exp'][experience_key]['prices'] = item.local.prices.map do |price|
       price = price.to_hash
       price.delete :base
       price.delete :currency

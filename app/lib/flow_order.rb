@@ -5,6 +5,7 @@
 # - current customer, presetnt as  @current_spree_user controller instance variable
 
 class FlowOrder
+  attr_reader :response
 
   FLOW_CENTER = 'solidus-test'
 
@@ -19,8 +20,8 @@ class FlowOrder
       end
 
       flow_order.synchronize
+      flow_order
     end
-
   end
 
   ###
@@ -42,7 +43,6 @@ class FlowOrder
 
   def add_item(line_item)
     variant   = line_item.variant
-    # raw_price = variant.flow_raw_price(@experience)
 
     # create flow order line item
     item = {
@@ -50,8 +50,8 @@ class FlowOrder
       number: variant.flow_number,
       quantity: line_item.quantity,
       price: {
-        amount:   variant.cost_price, # raw_price['amount'].to_f,
-        currency: variant.cost_currency # @experience.currency
+        amount:   variant.cost_price,
+        currency: variant.cost_currency
       }
     }
 
@@ -139,6 +139,16 @@ class FlowOrder
 
   def total_price
     @response['total']['label']
+  end
+
+  # accepts line item
+  def line_item_price(line_item, total=false)
+    id = line_item.variant.id.to_s
+
+    item = @response['lines'].select{ |item| item['item_number'] == id }.first
+    return Flow.price_not_found unless item
+
+    total ? item['total']['label'] : item['price']['label']
   end
 end
 

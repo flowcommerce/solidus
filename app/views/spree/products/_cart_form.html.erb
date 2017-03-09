@@ -66,9 +66,9 @@
 
     value = _spree_variants[String(price_id)]
 
-    parts = value.split('(')
+    parts = value.split(', ')
     if (parts[1]) {
-      value = parts[0] + '<br /><small>('+parts[1]+'</small>'
+      value = parts.shift() + '<br /><small style="margin-top: 5px; display: block; font-weight: normal;">'+parts.join(', ')+'</small>'
     }
 
     $('span.price.selling').html(value);
