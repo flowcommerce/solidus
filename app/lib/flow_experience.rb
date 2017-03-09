@@ -5,6 +5,8 @@
 class FlowExperience < Hash
   EXPERIENCES_PATH = './config/flow_experiences.yml'
 
+  attr_accessor :session
+
   class << self
     raise StandardError, 'Experiences yaml not found in %s' % EXPERIENCES_PATH unless File.exists?(EXPERIENCES_PATH)
 
@@ -13,7 +15,7 @@ class FlowExperience < Hash
     # "https://flowcdn.io/util/icons/flags/32/%s.png" % el['region']['id']
     def all
       YAML.load_file(EXPERIENCES_PATH).map { |el|
-        ActiveSupport::HashWithIndifferentAccess.new(el)
+        new ActiveSupport::HashWithIndifferentAccess.new(el)
       }
     end
 
@@ -23,7 +25,7 @@ class FlowExperience < Hash
 
     # get only local country codes
     def keys
-      all.map{ |el| el['key'] }
+      all.map{ |el| el.key }
     end
 
     # get country defaults
@@ -33,6 +35,12 @@ class FlowExperience < Hash
       data.first
     end
 
+    # gets Flow session
+    def get_flow_session_id(spree_user=nil)
+      response = Flow.api :post, '/sessions/organizations/:organization'
+      response['id']
+    end
+
     # get experience for an IP or get first one cached as default experience
     # croatia '188.129.64.124'
     # canada  '192.206.151.131'
@@ -40,18 +48,13 @@ class FlowExperience < Hash
     def key_by_ip(ip)
       FlowCommerce.instance.experiences.get(organization, ip: ip).first.key
     rescue
-      all.first['key']
-    end
-
-    # gets Flow session by IP
-    def session_by_ip
-      # r FlowCommerce::Models::V0::OrganizationSessionForm( organization: organization, ip: request.ip)
+      all.first.key
     end
 
     def init_by_key(experience_key)
-      current_exp = all.select { |exp| exp['key'] == experience_key }[0]
-      raise StandardError, 'Experience "%s" not found' % current_key unless current_exp
-      new current_exp
+      current_exp = all.select { |exp| exp.key == experience_key }[0]
+      raise StandardError, 'Experience "%s" not found' % experience_key unless current_exp
+      current_exp
     end
 
   end
@@ -70,12 +73,20 @@ class FlowExperience < Hash
     self[:key]
   end
 
+  def name
+    self[:name]
+  end
+
   def currency
     self[:currency]
   end
 
   def organization
     self.class.organization
+  end
+
+  def flag(size=32)
+    'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, self[:region_id]]
   end
 
   # gets item by number or just pass spree variant or spree product

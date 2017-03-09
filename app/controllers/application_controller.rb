@@ -29,7 +29,12 @@ class ApplicationController < ActionController::Base
 
     # set session exp unless set
     session[:flow_exp_key] ||= FlowExperience.key_by_ip(request.ip)
-    @flow_exp = FlowExperience.init_by_key(session[:flow_exp_key]) || Flow.experiences.first
+
+    # set flow experince cookie
+    cookies.permanent[:_f60_session] ||= FlowExperience.get_flow_session_id
+
+    @flow_exp = FlowExperience.init_by_key(session[:flow_exp_key]) || FlowExperience.all.first
+    @flow_exp.session = cookies.permanent[:_f60_session]
   end
 
   ###

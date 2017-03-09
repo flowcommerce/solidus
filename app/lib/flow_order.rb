@@ -152,5 +152,6 @@ class FlowOrder
   end
 end
 
-
-
+# Flow.api :post, '/:organization/cards', BODY:{"name": "Joe Smith","number":"4111111111111111","expiration_month":8,"expiration_year":2018,"cvv":"737"}
+# Flow.api :post, '/sessions/organizations/:organization', BODY:{ discriminator: 'organization_session_form', experience: 'canada' }
+# Flow.api :post, '/:organization/authorizations', BODY:{"token":"F96Jxcp4YQwIiBOpEPhf7qCcOvqfiM05ZZpM9ELTVa48DDhldDpkglkjFVsXMPon","discriminator":"merchant_of_record_authorization_form","order_number":'o123'}
