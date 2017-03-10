@@ -21,11 +21,7 @@ namespace :flow do
     variants.each_with_index do |variant, i|
       product = variant.product
 
-      image_base = 'http://cdn.color-mont.com'
-
       sku   = variant.flow_number
-      price = variant.cost_price.to_f
-      price = product.price.to_f if price == 0
 
       # skip sync if allready synced to last price
       variant.flow_cache ||= {}
@@ -33,19 +29,7 @@ namespace :flow do
 
       total_sum += 1
 
-      flow_item = Io::Flow::V0::Models::ItemForm.new(
-        number:      sku,
-        locale:      'en_US',
-        language:    'en',
-        name:        product.name,
-        description: product.description,
-        currency:    variant.cost_currency,
-        price:       price,
-        images: [
-          { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
-          { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
-        ]
-      )
+      flow_item = variant.flow_api_item
 
       # multiprocess upload
       thread_pool.process do
@@ -116,7 +100,7 @@ namespace :flow do
           variant    = Spree::Variant.find sku.split('-').last.to_i
           next unless variant
 
-          variant.import_flow_item item
+          variant.flow_import_item item
 
           print '%s, ' % sku
         end
@@ -144,9 +128,9 @@ namespace :flow do
       items.each do |item|
         sku = item['number']
 
-        do_remove   = false
-        do_remove   = true if sku.to_i == 0 || sku.to_i.to_s != sku
-        do_remove ||= true unless Spree::Variant.find(sku.to_i)
+        do_remove = false
+        do_remove = true if sku.to_i == 0 || sku.to_i.to_s != sku
+        do_remove = true if !do_remove && !Spree::Variant.find(sku.to_i)
 
         next unless do_remove
 
@@ -158,6 +142,16 @@ namespace :flow do
     end
 
     thread_pool.shutdown
+  end
+
+  desc 'Check if we have all the data in DB we need'
+  task :check => :environment do |t|
+    # it 'ensures that we have zone per experience'
+    FlowExperience.all.each do |exp|
+      zone = Spree::Zone.find_by name: exp.key
+      raise 'Spree::Zone "%s" is not defiend'.red % exp.key unless zone
+      puts 'Spree::Zone name:"%s" found'.green % zone.name
+    end
   end
 end
 

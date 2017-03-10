@@ -9,7 +9,7 @@ RSpec.describe Flow do
     exp = FlowExperience.all.first
 
     expect(exp[:name].length > 3).to be(true)
-    expect(exp[:region][:id].length > 1).to be(true)
+    expect(exp[:region_id].length > 1).to be(true)
   end
 
   it 'ensures we can fetch flow api data' do

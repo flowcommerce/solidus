@@ -89,12 +89,4 @@ class FlowExperience < Hash
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, self[:region_id]]
   end
 
-  # gets item by number or just pass spree variant or spree product
-  def get_item(object)
-    number = object.respond_to?(:flow_number) ? object.flow_number : object.to_s
-
-    # raise ArgumentError, 'Flow number "%s" is not prefixed by s-variant' % number unless number[0,9] == 's-variant'
-
-    FlowCommerce.instance.experiences.get_items_by_number organization, number, country: key
-  end
 end

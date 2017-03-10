@@ -7,6 +7,8 @@ RSpec.configure do |config|
   # Filter lines from Rails gems in backtraces.
   # config.filter_rails_from_backtrace!
 
+  # config.before { allow($stdout).to receive(:puts) } if ENV['SILENT']
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
