@@ -26,6 +26,7 @@ module DemoShop
     config.to_prepare do
       overload  = Dir.glob('./app/**/*_decorator*.rb')
       overload += Dir.glob('./app/overrides/*.rb')
+      overload += Dir.glob('./app/lib/*.rb')
       overload.each { |c| load(c) }
     end
 

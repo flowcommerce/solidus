@@ -49,10 +49,11 @@
             <% end %>
           </ul>
           -->
+          <input type="hidden" name="flow_order_id" value="<%= Flow::Crypt.encrypt(@order.id) %>" />
           <% @flow_order.deliveries.each do |delivery| %>
             <p style="margin-top: 0;">
               <label>
-                <input type="radio" name="flow_delivery" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
+                <input type="checkbox" name="flow_selection[]" value="<%= delivery[:id] %>" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
               </label>
             </p>
           <% end %>

@@ -154,21 +154,21 @@ class FlowOrder
   def deliveries
     opts_list = @response['deliveries'][0]['options']
 
-    out = opts_list.map do |opts|
-      name = opts['tier']['name']
-      name += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
+    @order.flow_cache ||= {}
+    @order.flow_cache['selection'] ||= []
+
+    opts_list.map do |opts|
+      name         = opts['tier']['name']
+      name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
+      selection_id = opts['id']
+
       {
-        id:    opts['id'],
+        id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: false,
+        active: @order.flow_cache['selection'].include?(selection_id),
         name: name
       }
-    end
-
-    # temporary
-    out[0][:active] = true if out[0]
-
-    out
+    end.to_a
   end
 
 end

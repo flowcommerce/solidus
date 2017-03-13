@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery    with: :exception
-  before_action           :check_and_set_flow_experience
+  before_action           :flow_check_and_set_experience, :flow_update_selection
 
   # before render trigger
   # rails does not have before_render filter so we create it like this
@@ -20,8 +20,17 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # update selection (delivery options) on /checkout/update/delivery
+  def flow_update_selection
+    if params[:flow_order_id] && params[:flow_selection]
+      order_id = Flow::Crypt.decrypt(params[:flow_order_id])
+      order = Spree::Order.find(order_id)
+      order.update_column :flow_cache, order.flow_cache.merge('selection'=>params[:flow_selection])
+    end
+  end
+
   # checks current experience (defiend by parameter) and sets default one unless one preset
-  def check_and_set_flow_experience
+  def flow_check_and_set_experience
     if exp = params[:exp]
       session[:flow_exp_key] = exp if FlowExperience.keys.include?(exp)
       return redirect_to request.path
@@ -56,4 +65,5 @@ class ApplicationController < ActionController::Base
   def flow_filter_spree_checkout_edit
     # r @flow_order.deliveries
   end
+
 end

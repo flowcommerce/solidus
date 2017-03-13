@@ -30,6 +30,8 @@ tr.line-item { font-size: 15px;  }
           <%= total_cart_breakdown %>
 
           <div class="links columns sixteen alpha omega" data-hook="cart_buttons">
+            <button name="button" type="submit" class="button checkout primary" id="update-button">Update</button>
+            or
             <%= button_tag :class => 'button checkout primary large', :id => 'checkout-link', :name => 'checkout' do %>
               <%= Spree.t(:checkout) %>
             <% end %>
