@@ -13,3 +13,6 @@ puts 'db url: %s' % ENV['DB_URL']
 
 # ensure we are in test env
 abort 'The Rails environment is not running in test mode!' unless Rails.env.test?
+
+# load app libs
+Dir.glob('./app/lib/**.rb').sort.each { |lib| require lib }
