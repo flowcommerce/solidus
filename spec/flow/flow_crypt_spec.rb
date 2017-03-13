@@ -1,6 +1,6 @@
 require 'spec_init'
 
-RSpec.describe Flow do
+RSpec.describe Flow::Crypt do
   it 'ensures that String data can be enc & decrypted' do
     data = 'abcdefg'
     enc  = Flow::Crypt.encrypt(data)

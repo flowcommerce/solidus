@@ -103,6 +103,11 @@ class FlowOrder
       end
     end
 
+    # add selection (delivery options) from flow_cache
+    @order.flow_cache['selection'] ||= []
+    @order.flow_cache['selection'].delete('placeholder')
+    opts[:selection] = @order.flow_cache['selection']
+
     @response = Flow.api(:put, '/:organization/orders/%s' % flow_number, opts)
 
     # set cache for total order ammount
@@ -115,6 +120,7 @@ class FlowOrder
         @order.update_column :flow_cache, @order.flow_cache
       end
     end
+
 
     sync_and_update_product_prices!
 

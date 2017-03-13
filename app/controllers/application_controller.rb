@@ -23,6 +23,9 @@ class ApplicationController < ActionController::Base
   # update selection (delivery options) on /checkout/update/delivery
   def flow_update_selection
     if params[:flow_order_id] && params[:flow_selection]
+      # empty array is nil, so we allways send placeholder
+      params[:flow_selection].delete('placeholder')
+
       order_id = Flow::Crypt.decrypt(params[:flow_order_id])
       order = Spree::Order.find(order_id)
       order.update_column :flow_cache, order.flow_cache.merge('selection'=>params[:flow_selection])
@@ -52,6 +55,7 @@ class ApplicationController < ActionController::Base
   # flow total price
   def sync_flow_order
     return unless @order
+
     @flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
     @flow_render = { json: JSON.pretty_generate(@flow_order.response) } if params[:debug] == 'flow'
   end
