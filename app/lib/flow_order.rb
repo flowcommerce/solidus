@@ -150,6 +150,27 @@ class FlowOrder
 
     total ? item['total']['label'] : item['price']['label']
   end
+
+  def deliveries
+    opts_list = @response['deliveries'][0]['options']
+
+    out = opts_list.map do |opts|
+      name = opts['tier']['name']
+      name += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
+      {
+        id:    opts['id'],
+        price: { label: opts['price']['label'] },
+        active: false,
+        name: name
+      }
+    end
+
+    # temporary
+    out[0][:active] = true if out[0]
+
+    out
+  end
+
 end
 
 # Flow.api :post, '/sessions/organizations/:organization', BODY:{ discriminator: 'organization_session_form', experience: 'canada' }

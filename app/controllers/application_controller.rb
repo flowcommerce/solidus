@@ -52,4 +52,8 @@ class ApplicationController < ActionController::Base
     @flow_render = { json: JSON.pretty_generate(@flow_exp.get_item(@product).to_hash) } if params[:debug] == 'flow'
     # @product.variants.first.update_column :flow_cache, nil
   end
+
+  def flow_filter_spree_checkout_edit
+    # r @flow_order.deliveries
+  end
 end

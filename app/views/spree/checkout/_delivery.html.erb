@@ -35,7 +35,8 @@
             </tbody>
           </table>
 
-          <h5 class="stock-shipping-method-title"><%= Spree.t(:shipping_method) %></h5>
+          <h5 class="stock-shipping-method-title" style="text-align: left;"><%= Spree.t(:shipping_method) %></h5>
+          <!--
           <ul class="field radios shipping-methods">
             <% ship_form.object.shipping_rates.each do |rate| %>
               <li class="shipping-method">
@@ -47,6 +48,14 @@
               </li>
             <% end %>
           </ul>
+          -->
+          <% @flow_order.deliveries.each do |delivery| %>
+            <p style="margin-top: 0;">
+              <label>
+                <input type="radio" name="flow_delivery" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
+              </label>
+            </p>
+          <% end %>
         </div>
 
       <% end %>
@@ -90,6 +99,8 @@
         <%= form.text_area :special_instructions, :cols => 40, :rows => 7 %>
       </p>
     <% end %>
+
+
   </div>
 </fieldset>
 
