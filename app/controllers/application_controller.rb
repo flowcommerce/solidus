@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery    with: :exception
-  before_action           :flow_check_and_set_experience, :flow_update_selection
+  before_action           :flow_check_and_set_country, :flow_update_selection
 
   # before render trigger
   # rails does not have before_render filter so we create it like this
@@ -32,21 +32,50 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # checks current experience (defiend by parameter) and sets default one unless one preset
-  def flow_check_and_set_experience
-    if exp = params[:exp]
-      session[:flow_exp_key] = exp if FlowExperience.keys.include?(exp)
-      return redirect_to request.path
+  # If we have a flow session, return an instance of Io::Flow::V0::Models::Session
+  def flow_session
+    if value = cookies.permanent[flow_session_cookie_name]
+      begin
+        Io::Flow::V0::Models::Session.new(JSON.parse(value))
+      rescue Exception => e
+        # TODO: Log warning
+      end
+    else
+      nil
+    end
+  end
+
+  def flow_session=(session)
+    cookies.permanent[flow_session_cookie_name] = session.to_json
+  end
+
+  def flow_session_cookie_name
+    :_f60_session
+  end
+  
+  # checks current experience (defined by parameter) and sets default one unless one preset
+  def flow_check_and_set_country
+    session = flow_session
+    if session.nil? && request.ip
+      ## Create session from IP address
+      flow_session = Flow.instance(ENV['ORG_ID']).sessions.post(
+        Io::Flow::V0::Models::SessionForm(:ip => request.ip)
+      )
+    end
+      
+    if session
+      if country = params[:flow_country]
+        ## User is changing country. Update sesssion
+        session = flow_session = Flow.instance(ENV['ORG_ID']).sessions.put_by_session(
+          session.id,
+          Io::Flow::V0::Models::SessionPutForm(:country => country)
+        )
+      end
     end
 
-    # set session exp unless set
-    session[:flow_exp_key] ||= FlowExperience.key_by_ip(request.ip)
-
-    # set flow experince cookie
-    cookies.permanent[:_f60_session] ||= FlowExperience.get_flow_session_id
-
-    @flow_exp = FlowExperience.init_by_key(session[:flow_exp_key]) || FlowExperience.all.first
-    @flow_exp.session = cookies.permanent[:_f60_session]
+    if session && session.local
+      @flow_exp = session.local.experience
+    end
   end
 
   ###
