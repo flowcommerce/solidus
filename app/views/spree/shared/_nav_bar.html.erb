@@ -1,19 +1,19 @@
 <nav id="top-nav-bar" class="columns sixteen">
   <img
     style="width:32px; height: 32px; cursor: pointer;"
-    onclick="$('#choose-expirience').toggle();"
+    onclick="$('#choose-experience').toggle();"
     src="<%= @flow_exp.flag(32) %>"
   />
   <br />
-  <div id="choose-expirience" style="display: none;">
+  <div id="choose-experience" style="display: none;">
     <div
       style="position: absolute; margin-top: -30px; margin-left: -220px; width: 200px;  border: 1px solid #aaa; background-color:#eee; padding: 10px 10px 0 10px; display: inline-block; text-align: left;"
-      onclick="$('#choose-expirience').toggle(200);"
+      onclick="$('#choose-experience').toggle(200);"
     >
-      <% for exp in FlowExperience.all %>
-        <a href="?exp=<%= exp.key %>" style="display: block; margin-bottom: 10px;">
-          <img style="width:32px; height: 32px; vertical-align: middle;" src="<%= exp.flag(32) %>" />
-          <%= exp.name %>
+      <% for country in Flow.instance.organization.countries(ENV['FLOW_ORG']) %>
+        <a href="?flow_country=<%= country.iso_3166_3 %>" style="display: block; margin-bottom: 10px;">
+          <img style="width:32px; height: 32px; vertical-align: middle;" src="<%= FlowUiHelpers.flag(country, 32) %>" />
+          <%= country.name %>
         </a>
       <% end %>
     </div>
