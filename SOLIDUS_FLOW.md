@@ -1,114 +1,99 @@
-# Integration Solidus with Flow.io - notes
+# Integration Solidus with Flow.io
 
-Integration is easy :)
+## Setup:
 
-## basic steps
+1. Install flow database migrations
 
-1. ensure all your products in spree have valid sku / number / unique id
-1. in flow
-  * create desired experiences
-  * create at least one distribution method in each experience (contact flow)
-1. upload local spreee catalog to flow (rake task)
-1. Get localized catalog items
-1. set up web hooks to point to https://YOUR_SITE/flow-event-target
-1. define distribution centers for expericences
-1. in spree allow global delivery to all products, because delivery is handled by flow now
-1. run migrations
-   * adds flow_number to spree_order - radom string - secure hash
-   * adds flow_catalog_caches table
-1. in app
-   * ensure all prices are rendered with all available options (VAT, ...)
-1. ...
+   - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170302153604_add_flow_number_to_spree_order.rb
+   - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170303102052_add_flow_cache_to_spree_variants.rb
+   - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170306223619_add_flow_cache_to_spree_order.rb
+
+   - TODO: Add rake task named [`flow:migrate`](https://github.com/flowcommerce/solidus/blob/master/lib/tasks/flow.rake)
+
+2. Setup environment variables for your flow organization_id and flow API key
+
+   - FLOW_TOKEN=xxx
+
+   - Setup api keys at: https://console.flow.io/:organization/organization/api-keys
+
+3. `gem install 'flowcommerce'`
+
+4. Verify that connection is valid with tests by running `rspec`
+
+5. rake flow:upload_catalog
+
+   - TODO: Remove variant.flow_number - use variant.id directly
+   - TODO: remove `.limit` incodes
+   - TODO: Move image_base to environment variable or remove
+   - TODO: https://github.com/flowcommerce/solidus/blob/master/lib/tasks/flow.rake#L20
+   - TODO:
+      - REMOVE 'force'
+
+   - TODO: add attributes to upload_catalog
+       :attributes => {
+         :weight =>
+         :height =>
+         :width =>
+         :depth =>
+         :is_master =>
+         :product_id =>
+         :tax_category =>
+         :product_description =>
+         :product_shipping_category =>
+         :product_meta_title =>
+         :product_meta_description =>
+         :product_meta_keywords =>
+         :product_slug =>
+       }
+
+6. Verify that your catalog is uploaded by visiting https://console.flow.io/:organization/catalog/items
+
+In production system, schedule job to run rake:upload_catalog -
+ideally picking up incremental changes so that job can be run
+frequently
+
+## Configure Flow
+
+  1. Login to https://console.flow.io
+  2. Create 1 or more experiences
+
+## Add a flag to your UI
+
+Flags are a common UI element used to highlight the currently selected
+experience, and to allow users to change their country.
+
+  1. When a user lands on the website, need to ensure there is a Flow
+  session. we do this with a before filter in the application
+  controller.
+
+    -- TODO fix code :)
+
+  2. Add UI to display the flag, and set a `flow_country` query
+  parameter to change
+
+    https://github.com/flowcommerce/solidus/blob/master/app/views/spree/shared/_nav_bar.html.erb
+
+## Displaying local pricing
+
+  TODO: Remove rake  get_experiences
+  TODO: Rename precache_catalog_items => sync_localized_items
+  TODO: Remove args[:clean]
+
+  TODO: Fix this as item.number is now the variant.id
+   - sku        = item.number.downcase
+   - variant    = Spree::Variant.find sku.split('-').last.to_i
+
+  TODO:
+    Fix: variant.import_flow_item - should be flow_import_item
+
+  1. run rake flow:sync_localized_items
 
 
-## Basic requirements
-
-* Ruby 2.2 + - 2.4 recommended
-* Rails 5.0 +
-* Solidus/Spree v2.1 + (for Rails 5)
-* Database
-
-
-### Install gem
-
-* Migrate database and create cache tables in your shop
-* replace all calls in frontend templates from "link_to_cart" to "flow_link_to_cart"
-* replace all calls in frontend templates from "order.display_item_total.to_html" to "flow_cart_total"
-
-
-### flow.io requirements
-
-* create catalog
-* create experiences in flow.io
-* create at least one distribution center in every experience
-* defined flow ENV variables, FLOW_API_KEY and FLOW_ORG
-
-
-### Sync your catalog to and from Flow.io
-
-Products in solidus are automatically refreshed from flow,
-but it is good practise to refresh all products at least once a week.
-
-Reason for that is that products in cache are refreshed only when they are in cart.
-If you have products that where not in a cart for long time, it is possible that
-their price in listing will not match one in cart.
-
-Of course, once product is in cart we will get fresh prices and show only fresh data.
-
-
-### Methods to manualy upload and download products from flow
-
-* "rake flow:upload_catalog" will upload local catalog to flow
-* "rake flow:get_catalog_items" will localy cache all flow catalog items
+Other:
+  * replace all calls in frontend templates from "link_to_cart" to "flow_link_to_cart"
+  * replace all calls in frontend templates from "order.display_item_total.to_html" to "flow_cart_total"
 
 ## Create at least one shipping method
 
-* /admin/shipping_methods
-* if you do not, you will not be able to proceed to step 2 in Checkout process
-
-
-## Centers
-
-Docs state that "Organizations are required to set up at least one center in order to generate quotes."
-`https://docs.flow.io/#/module/logistics/resource/centers`
-
-To Create a center;
-`https://docs.flow.io/#/module/logistics/resource/centers`
-
-Based on docs for Order Estimates:
-`https://docs.flow.io/#/module/localization/resource/order-estimates`
-
-code should determine the geolocation (i.e. using IP or explicit country), then we can request the estimate:
-```curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic <encrypted_api_key>" -d '{
-    "items": [
-        {
-            "number": "GILT-M-3587157",
-            "quantity": 2,
-            "center": ENV['FLOW_ORG']
-        }
-    ]
-}' "https://api.flow.io/solidus-demo-sandbox/order-estimates?experience=canada"```
-
-### New client
-
-we have to set up a `ratecard` - its an internal between flow and the carrier (i.e. DHL) that specifies shipping costs for a particular option.
-Since this is always a manual step, since its based on client contract - we have a way to create “mock” ratecards in demo orgs right now at:
-
-https://github.com/flowcommerce/misc/tree/master/ratecards
-
-Run `ruby card.rb $FLOW_ORG` and it will create all the ratecards for org
-
-[3:35]
-then, I was able to go into your shipping tiers, in console at set one like:
-https://console.flow.io/solidus-demo-sandbox/experience/canada/logistics
-
-
-### Order and checkout flow
-
-This is tmp reminder no how to organize checkout process
-
-* localize all the prices all the time
-* get real time data from flow_api, once in cart
-* if flow realtime data is not matching local cache, hot update local cache
-
-this all happens in FlowHelper.flow_line_item_price
+  * /admin/shipping_methods
+  * if you do not, you will not be able to proceed to step 2 in Checkout process

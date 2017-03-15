@@ -8,7 +8,7 @@ namespace :flow do
   # run like 'rake flow:upload_catalog[:force]'
   # if you want to force update all products
   desc 'Upload catalog'
-  task :upload_catalog, [:force] => :environment do |t, args|
+  task :upload_catalog => :environment do |t|
     flow_client   = FlowCommerce.instance
     flow_org      = ENV.fetch('FLOW_ORG')
 
@@ -21,11 +21,10 @@ namespace :flow do
     variants.each_with_index do |variant, i|
       product = variant.product
 
-      sku   = variant.flow_number
+      sku   = variant.id
 
-      # skip sync if allready synced to last price
-      variant.flow_cache ||= {}
-      next if !args[:force] && variant.flow_cache['last_sync_price'] == price
+      # skip if sync not needed
+      next unless variant.flow_do_sync?
 
       total_sum += 1
 
@@ -33,7 +32,7 @@ namespace :flow do
 
       # multiprocess upload
       thread_pool.process do
-        puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, price]
+        puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, variant.cost_price]
 
         # response = Flow.api :put, '/:organization/catalog/items/%s' % sku, BODY: flow_item.to_hash
         # https://github.com/flowcommerce/ruby-sdk/blob/master/examples/create_items.rb
@@ -62,15 +61,10 @@ namespace :flow do
     Pathname.new(FlowExperience::EXPERIENCES_PATH).write(api_data.map(&:to_hash).to_yaml)
   end
 
-  desc 'Get localized catalog items'
-  task :precache_catalog, [:clean]=> :environment do |t, args|
+  desc 'Sync localized catalog items'
+  task :sync_localized_items => :environment do |t|
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
-
-    if args[:clean]
-      # clean complete product catalog from cache
-      Spree::Variant.all.each { |v| v.update_column :flow_cache, {};'' }
-    end
 
     total = 0
 
@@ -144,13 +138,28 @@ namespace :flow do
     thread_pool.shutdown
   end
 
-  desc 'Check if we have all the data in DB we need'
-  task :check => :environment do |t|
-    # it 'ensures that we have zone per experience'
-    FlowExperience.all.each do |exp|
-      zone = Spree::Zone.find_by name: exp.key
-      raise 'Spree::Zone "%s" is not defiend'.red % exp.key unless zone
-      puts 'Spree::Zone name:"%s" found'.green % zone.name
+  desc 'Ensure we have DB prepared for flow'
+  task :migrate => :environment do |t|
+    # FlowExperience.all.each do |exp|
+    #   zone = Spree::Zone.find_by name: exp.key
+    #   raise 'Spree::Zone "%s" is not defiend'.red % exp.key unless zone
+    #   puts 'Spree::Zone name:"%s" found'.green % zone.name
+    # end
+
+    migrate = []
+    migrate.push [:spree_orders, :flow_number, :string]
+    migrate.push [:spree_orders,  :flow_cache, :jsonb, default: {}]
+    migrate.push [:spree_variants, :flow_cache_14, :jsonb, default: {}]
+
+    migrate.each do |table, field, type, opts={}|
+      klass = table.to_s.sub('spree_','spree/').classify.constantize
+
+      if klass.new.respond_to?(field)
+        puts 'Field %s in table %s exists'.green % [field, table]
+      else
+        ActiveRecord::Migration.add_column table, field, type, opts
+        puts 'Field %s in table %s added'.green % [field, table]
+      end
     end
   end
 end

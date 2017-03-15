@@ -38,4 +38,10 @@ module Flow
     end
   end
 
+  # for debugging
+  def get_item(flow_exp, number)
+    # FlowCommerce.instance.experiences.get_items_and_price_by_key_and_number(FLOW_ORG, flow_exp, '100')
+    # api :get, ''
+  end
+
 end

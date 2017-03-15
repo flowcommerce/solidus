@@ -2,6 +2,12 @@
 
 module FlowHelper
 
+  def flow_flag(experience, size=32)
+    exp = experience.respond_to?(:region) ? experience : FlowExperience.get(experience.key)
+    return unless exp
+    'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, exp.region.id]
+  end
+
   # Renders tree on the left
   def flow_taxons_tree(root_taxon, current_taxon)
     return '' if root_taxon.children.empty?

@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  FLOW_SESSION_KEY = :_f60_session
+
   protect_from_forgery    with: :exception
   before_action           :flow_check_and_set_country, :flow_update_selection
 
@@ -20,6 +22,33 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # If we have a flow session, return an instance of Io::Flow::V0::Models::Session
+  def set_flow_session(experience=nil)
+    value = cookies.permanent[FLOW_SESSION_KEY]
+
+    @flow_session = if value.present?
+      FlowSession.new hash: JSON.load(value)
+    else
+      session = FlowSession.new ip: request.ip, experience: experience
+      cookies.permanent[FLOW_SESSION_KEY] = session.to_json
+      session
+    end
+    @flow_exp = @flow_session.local.experience
+  end
+
+  # checks current experience (defined by parameter) and sets default one unless one preset
+  def flow_check_and_set_country
+    set_flow_session
+
+    if flow_exp_key = params[:flow_exp]
+      @flow_session.change_experience(flow_exp_key)
+      cookies.permanent[FLOW_SESSION_KEY] = @flow_session.to_json
+      redirect_to request.path
+    end
+  end
+
+  ###
+
   # update selection (delivery options) on /checkout/update/delivery
   def flow_update_selection
     if params[:flow_order_id] && params[:flow_selection]
@@ -31,54 +60,6 @@ class ApplicationController < ActionController::Base
       order.update_column :flow_cache, order.flow_cache.merge('selection'=>params[:flow_selection])
     end
   end
-
-  # If we have a flow session, return an instance of Io::Flow::V0::Models::Session
-  def flow_session
-    if value = cookies.permanent[flow_session_cookie_name]
-      begin
-        Io::Flow::V0::Models::Session.new(JSON.parse(value))
-      rescue Exception => e
-        # TODO: Log warning
-      end
-    else
-      nil
-    end
-  end
-
-  def flow_session=(session)
-    cookies.permanent[flow_session_cookie_name] = session.to_json
-  end
-
-  def flow_session_cookie_name
-    :_f60_session
-  end
-  
-  # checks current experience (defined by parameter) and sets default one unless one preset
-  def flow_check_and_set_country
-    session = flow_session
-    if session.nil? && request.ip
-      ## Create session from IP address
-      flow_session = Flow.instance(ENV['ORG_ID']).sessions.post(
-        Io::Flow::V0::Models::SessionForm(:ip => request.ip)
-      )
-    end
-      
-    if session
-      if country = params[:flow_country]
-        ## User is changing country. Update sesssion
-        session = flow_session = Flow.instance(ENV['ORG_ID']).sessions.put_by_session(
-          session.id,
-          Io::Flow::V0::Models::SessionPutForm(:country => country)
-        )
-      end
-    end
-
-    if session && session.local
-      @flow_exp = session.local.experience
-    end
-  end
-
-  ###
 
   # we need to prepare @order and sync to flow.io before render because we need
   # flow total price

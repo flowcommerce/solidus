@@ -32,26 +32,6 @@ Spree::Variant.class_eval do
     end
   end
 
-  # creates object for flow api
-  # TODO: Remove and use the one in rakefile
-  def flow_api_item
-    image_base = 'http://cdn.color-mont.com'
-
-    Io::Flow::V0::Models::ItemForm.new(
-      number:      flow_number,
-      locale:      'en_US',
-      language:    'en',
-      name:        product.name,
-      description: product.description,
-      currency:    cost_currency,
-      price:       cost_price.to_f,
-      images: [
-        { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
-        { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
-      ]
-    )
-  end
-
   # gets flow catalog item, and imports it
   # it is intentionally here
   def flow_import_item(item)
@@ -65,6 +45,11 @@ Spree::Variant.class_eval do
     end
 
     update_column :flow_cache, flow_cache.dup
+  end
+
+  def flow_do_sync?
+    # check updated_at ?
+    true
   end
 
 end
