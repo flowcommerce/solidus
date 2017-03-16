@@ -19,11 +19,5 @@ Spree::Order.class_eval do
     number
   end
 
-  def total_price_cache(flow_exp)
-    flow_cache['total'][flow_exp.key]
-  rescue
-    Flow.price_not_found
-  end
-
 end
 

@@ -2,19 +2,27 @@
 
 ## Setup:
 
-1. Install flow database migrations
+1. `gem install 'flowcommerce'`
 
-  rake flow:migrate
+   - install custom flow libs for Spree::Variant, Spree::Order, Spree::User and other as FlowOrder
 
-2. Setup environment variables for your flow organization_id and flow API key
+2. Install flow database migrations
+
+  - DONE TODO: Add rake task named [`flow:migrate`](https://github.com/flowcommerce/solidus/blob/master/lib/tasks/flow.rake)
+
+  * run rake task `rake flow:migrate`
+
+  * or manually run migrations
+    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170302153604_add_flow_number_to_spree_order.rb
+    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170303102052_add_flow_cache_to_spree_variants.rb
+    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170306223619_add_flow_cache_to_spree_order.rb
+
+3. Setup environment variables for your flow organization_id and flow API key
 
    - FLOW_TOKEN
    - FLOW_ORG
    - FLOW_BASE_COUNTRY
-
    - Setup api keys at: https://console.flow.io/:organization/organization/api-keys
-
-3. `gem install 'flowcommerce'`
 
 4. Verify that connection is valid with tests by running
   * `rake flow:check`
@@ -28,7 +36,7 @@
     flow_api_item is Spree::Variant method that can and should be replaced by clients.
     image_base is variabe present inside that method.
 
-   - TODO: add attributes to upload_catalog
+   - DONE TODO: add attributes to upload_catalog
        :attributes => {
          :weight =>
          :height =>
@@ -75,25 +83,20 @@ experience, and to allow users to change their country.
 
 ## Displaying local pricing
 
-  TODO: Remove rake  get_experiences
-  TODO: Rename precache_catalog_items => sync_localized_items
-  TODO: Remove args[:clean]
+  DONE TODO: Remove rake  get_experiences
+  DONE TODO: Rename precache_catalog_items => sync_localized_items
+  DONE TODO: Remove args[:clean]
 
-  TODO: Fix this as item.number is now the variant.id
+  DONE TODO: Fix this as item.number is now the variant.id
    - sku        = item.number.downcase
    - variant    = Spree::Variant.find sku.split('-').last.to_i
 
-  TODO:
+  DONE TODO:
     Fix: variant.import_flow_item - should be flow_import_item
 
   1. run rake flow:sync_localized_items
 
-
 Other:
-  * replace all calls in frontend templates from "link_to_cart" to "flow_link_to_cart"
-  * replace all calls in frontend templates from "order.display_item_total.to_html" to "flow_cart_total"
+  * DONE: replace all calls in frontend templates from "link_to_cart" to "flow_link_to_cart"
+  * DONE: replace all calls in frontend templates from "order.display_item_total.to_html" to "flow_cart_total"
 
-## Create at least one shipping method
-
-  * /admin/shipping_methods
-  * if you do not, you will not be able to proceed to step 2 in Checkout process

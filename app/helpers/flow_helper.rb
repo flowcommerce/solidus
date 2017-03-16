@@ -4,7 +4,9 @@ module FlowHelper
 
   def flow_flag(experience, size=32)
     exp = experience.respond_to?(:region) ? experience : FlowExperience.get(experience.key)
-    return unless exp
+
+    return 'http://i.imgur.com/GwFYycA.png' if !exp || exp.key == 'world'
+
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, exp.region.id]
   end
 
@@ -70,8 +72,11 @@ module FlowHelper
 
   def flow_cart_total
     return @flow_order.total_price if @flow_order
-    return simple_current_order.total_price_cache(@flow_exp) if simple_current_order
-    Flow.price_not_found
+    total = nil
+    if simple_current_order && simple_current_order.flow_cache['total']
+      total = simple_current_order.flow_cache['total'][@flow_exp.key]
+    end
+    total || Flow.price_not_found
   end
 
   # this renders link to cart with total cart price
