@@ -58,6 +58,7 @@ Info: modify @spree_variant.flow_do_sync?
 
   1. Login to https://console.flow.io
   2. Create 1 or more experiences
+  3. Define at least one tier per experience
 
 ## Add a flag to your UI
 

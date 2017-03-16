@@ -47,7 +47,7 @@ class FlowOrder
     # create flow order line item
     item = {
       center: FLOW_CENTER,
-      number: variant.flow_number,
+      number: variant.id.to_s,
       quantity: line_item.quantity,
       price: {
         amount:   variant.cost_price,
@@ -64,7 +64,7 @@ class FlowOrder
 
     opts = {}
     opts[:organization] = ENV.fetch('FLOW_ORG')
-    opts[:experience] = @experience[:key]
+    opts[:experience] = @experience.key
     opts[:BODY] = {
       items:  @items,
       number: flow_number
@@ -115,12 +115,11 @@ class FlowOrder
     if (total = @response['total'])
       @order.flow_cache ||= {}
       @order.flow_cache['total'] ||= {}
-      if @order.flow_cache['total'][total['currency']] != total['label']
-        @order.flow_cache['total'][total['currency']] = total['label']
+      if @order.flow_cache['total'][@experience.key] != total['label']
+        @order.flow_cache['total'][@experience.key] = total['label']
         @order.update_column :flow_cache, @order.flow_cache
       end
     end
-
 
     sync_and_update_product_prices!
 
@@ -144,14 +143,15 @@ class FlowOrder
   end
 
   def total_price
-    @response['total']['label']
+    @response['total']['label'] rescue 'n/a'
   end
 
   # accepts line item
   def line_item_price(line_item, total=false)
     id = line_item.variant.id.to_s
 
-    item = @response['lines'].select{ |item| item['item_number'] == id }.first
+    @response['lines'] ||= []
+    item = @response['lines'].select{ |el| el['item_number'] == id }.first
     return Flow.price_not_found unless item
 
     total ? item['total']['label'] : item['price']['label']

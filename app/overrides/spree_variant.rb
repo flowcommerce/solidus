@@ -21,9 +21,8 @@ Spree::Variant.class_eval do
       if data = cache[flow_exp.key]
         return data['prices'] || []
       end
-    else
-      []
     end
+    []
   end
 
   # returns price tied to local experience

@@ -27,7 +27,7 @@ tr.line-item { font-size: 15px;  }
             <%= render :partial => 'form', :locals => { :order_form => order_form } %>
           </div>
 
-          <%= total_cart_breakdown %>
+          <%= total_cart_breakdown rescue show_error %>
 
           <div class="links columns sixteen alpha omega" data-hook="cart_buttons">
             <button name="button" type="submit" class="button checkout primary" id="update-button">Update</button>

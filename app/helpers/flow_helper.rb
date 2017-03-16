@@ -110,8 +110,7 @@ module FlowHelper
   # used in single product page to show complete price of a product
   def product_price_long(variant)
     prices      = variant.flow_prices(@flow_exp)
-
-    return variant.flow_spree_price unless prices.first.present?
+    return variant.flow_spree_price unless prices.try(:first).present?
 
     prices.map do |price|
       label = price['label']
@@ -148,6 +147,12 @@ module FlowHelper
 
     out.push '</table>'
     out.join('').html_safe
+  end
+
+  def show_error
+    return $!.message if Rails.env.developmemnt? || params[:debug]
+
+    'error'
   end
 
 end

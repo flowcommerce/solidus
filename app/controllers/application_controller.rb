@@ -70,10 +70,15 @@ class ApplicationController < ActionController::Base
   # we need to prepare @order and sync to flow.io before render because we need
   # flow total price
   def sync_flow_order
-    return unless @order
+    return unless @order && @order.id
 
     @flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
-    @flow_render = { json: JSON.pretty_generate(@flow_order.response) } if params[:debug] == 'flow'
+
+    if @flow_order.response['code'] == 'generic_error'
+      @flow_render =  { text: 'Flow error: %s' % @flow_order.response['messages'].join(', ') }
+    elsif params[:debug] == 'flow'
+      @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
+    end
   end
 
   def flow_filter_spree_products_show

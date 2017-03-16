@@ -20,7 +20,7 @@ Spree::Order.class_eval do
   end
 
   def total_price_cache(flow_exp)
-    flow_cache['total'][flow_exp.currency]
+    flow_cache['total'][flow_exp.key]
   rescue
     Flow.price_not_found
   end
