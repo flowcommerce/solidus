@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
 
   protect_from_forgery    with: :exception
-  before_action           :flow_check_and_set_country, :flow_update_selection
+  before_action           :flow_set_experience, :flow_update_selection
 
   # before render trigger
   # rails does not have before_render filter so we create it like this
@@ -22,29 +22,35 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # If we have a flow session, return an instance of Io::Flow::V0::Models::Session
-  def set_flow_session(experience=nil)
-    value = cookies.permanent[FLOW_SESSION_KEY]
-
-    @flow_session = if value.present?
-      FlowSession.new hash: JSON.load(value)
-    else
-      session = FlowSession.new ip: request.ip, experience: experience
-      cookies.permanent[FLOW_SESSION_KEY] = session.to_json
-      session
-    end
-    @flow_exp = @flow_session.local.experience
-  end
-
   # checks current experience (defined by parameter) and sets default one unless one preset
-  def flow_check_and_set_country
-    set_flow_session
+  def flow_set_experience
+    if value = session[FLOW_SESSION_KEY]
+      begin
+        @flow_session = FlowSession.new(hash: JSON.load(value))
+      rescue JSON::ParserError
+        session.delete(FLOW_SESSION_KEY)
+      end
+    end
+
+    # get by IP unless we got it from session
+    @flow_session ||= FlowSession.new ip: request.ip unless @flow_session
 
     if flow_exp_key = params[:flow_exp]
       @flow_session.change_experience(flow_exp_key)
-      cookies.permanent[FLOW_SESSION_KEY] = @flow_session.to_json
       redirect_to request.path
     end
+
+    # try to get experience
+    @flow_exp = @flow_session.local.try(:experience)
+
+    # construct dummy objecy unless exp found, to make code
+    @flow_exp ||= Struct.new(:id, :key, :country).new('null', 'null', 'null')
+
+    # save flow session ID for client side usage
+    cookies.permanent[FLOW_SESSION_KEY] = @flow_exp.id
+
+    # save full cache for server side usage
+    session[FLOW_SESSION_KEY] = @flow_session.to_json
   end
 
   ###

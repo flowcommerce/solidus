@@ -4,30 +4,29 @@
 
 1. Install flow database migrations
 
-   - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170302153604_add_flow_number_to_spree_order.rb
-   - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170303102052_add_flow_cache_to_spree_variants.rb
-   - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170306223619_add_flow_cache_to_spree_order.rb
-
-   - TODO: Add rake task named [`flow:migrate`](https://github.com/flowcommerce/solidus/blob/master/lib/tasks/flow.rake)
+  rake flow:migrate
 
 2. Setup environment variables for your flow organization_id and flow API key
 
-   - FLOW_TOKEN=xxx
+   - FLOW_TOKEN
+   - FLOW_ORG
+   - FLOW_BASE_COUNTRY
 
    - Setup api keys at: https://console.flow.io/:organization/organization/api-keys
 
 3. `gem install 'flowcommerce'`
 
-4. Verify that connection is valid with tests by running `rspec`
+4. Verify that connection is valid with tests by running
+  * `rake flow:check`
+  * `rspec`
 
 5. rake flow:upload_catalog
 
-   - TODO: Remove variant.flow_number - use variant.id directly
-   - TODO: remove `.limit` incodes
-   - TODO: Move image_base to environment variable or remove
-   - TODO: https://github.com/flowcommerce/solidus/blob/master/lib/tasks/flow.rake#L20
-   - TODO:
-      - REMOVE 'force'
+   - DONE: TODO: Remove variant.flow_number - use variant.id directly
+   - DONE: TODO: remove `.limit` incodes
+   - DONE:? TODO: Move image_base to environment variable or remove
+    flow_api_item is Spree::Variant method that can and should be replaced by clients.
+    image_base is variabe present inside that method.
 
    - TODO: add attributes to upload_catalog
        :attributes => {
@@ -52,6 +51,9 @@ In production system, schedule job to run rake:upload_catalog -
 ideally picking up incremental changes so that job can be run
 frequently
 
+Info: modify @spree_variant.flow_do_sync?
+
+
 ## Configure Flow
 
   1. Login to https://console.flow.io
@@ -66,12 +68,9 @@ experience, and to allow users to change their country.
   session. we do this with a before filter in the application
   controller.
 
-    -- TODO fix code :)
-
-  2. Add UI to display the flag, and set a `flow_country` query
+  2. Add UI to display the flag, and set a `flow_exp` query
   parameter to change
 
-    https://github.com/flowcommerce/solidus/blob/master/app/views/spree/shared/_nav_bar.html.erb
 
 ## Displaying local pricing
 

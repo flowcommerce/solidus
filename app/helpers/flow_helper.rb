@@ -109,7 +109,11 @@ module FlowHelper
 
   # used in single product page to show complete price of a product
   def product_price_long(variant)
-    variant.flow_prices(@flow_exp).map do |price|
+    prices      = variant.flow_prices(@flow_exp)
+
+    return variant.flow_spree_price unless prices.first.present?
+
+    prices.map do |price|
       label = price['label']
 
       case price['key']

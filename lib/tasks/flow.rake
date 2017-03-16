@@ -1,6 +1,6 @@
-
 require 'flowcommerce'
 require 'thread/pool'
+require 'digest/sha1'
 
 namespace :flow do
   # uploads catalog to flow api
@@ -13,52 +13,57 @@ namespace :flow do
     flow_org      = ENV.fetch('FLOW_ORG')
 
     # do reqests in paralel
-    thread_pool = Thread.pool(5)
-    total_sum   = 0
+    thread_pool  = Thread.pool(5)
+    update_sum   = 0
+    total_sum    = 0
+    current_page = 0
+    variants     = []
 
-    variants = Spree::Variant.order('updated_at desc').limit(10_000).all
+    while current_page == 0 || variants.length > 0
+      current_page += 1
+      variants = Spree::Variant.order('updated_at desc').page(current_page).per(100).all
 
-    variants.each_with_index do |variant, i|
-      product = variant.product
+      variants.each_with_index do |variant, i|
+        total_sum    += 1
+        product       = variant.product
+        sku           = variant.id.to_s
+        flow_item     = variant.flow_api_item
+        flow_item_sh1 = Digest::SHA1.hexdigest flow_item.to_json
 
-      sku   = variant.id
+        # skip if sync not needed
+        if variant.flow_cache['last_sync_sh1'] == flow_item_sh1
+          print '.'
+          next
+        end
 
-      # skip if sync not needed
-      next unless variant.flow_do_sync?
+        update_sum += 1
 
-      total_sum += 1
+        # multiprocess upload
+        thread_pool.process do
+          flow_client.items.put_by_number flow_org, sku, flow_item
 
-      flow_item = variant.flow_api_item
+          # after successful put, write cache
+          variant.update_column :flow_cache,  flow_cache.merge('last_sync_sh1'=>flow_item_sh1)
 
-      # multiprocess upload
-      thread_pool.process do
-        puts '%s. %s: %s (%s $)' % [i.to_s.rjust(3), sku, product.name, variant.cost_price]
-
-        # response = Flow.api :put, '/:organization/catalog/items/%s' % sku, BODY: flow_item.to_hash
-        # https://github.com/flowcommerce/ruby-sdk/blob/master/examples/create_items.rb
-        flow_client.items.put_by_number flow_org, sku, flow_item
-
-        # after successful put, write cache
-        variant.flow_cache['last_sync_price'] = price
-        variant.save
+          puts "\n%s: %s (%s %s)" % [sku, product.name, variant.price, variant.cost_currency]
+        end
       end
     end
 
     thread_pool.shutdown
 
-    puts 'For total of %s products, %s needed update' % [variants.length.to_s.blue, (total_sum == 0 ? 'none' : total_sum).to_s.green]
+    puts "\nFor total of %s products, %s needed update" % [total_sum.to_s.blue, (update_sum == 0 ? 'none' : update_sum).to_s.green]
   end
 
   desc 'Gets and cache experiences from flow'
-  task get_experiences: :environment do
-    puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
+  task check: :environment do
+    required_env_variables = ['FLOW_TOKEN', 'FLOW_ORG', 'FLOW_BASE_COUNTRY']
+    required_env_variables.each { |el| puts 'ENV: %s - %s ' % [el, ENV[el].present? ? 'present'.green : 'MISSING'.red]  }
 
+    puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
     client   = FlowCommerce.instance
     api_data = client.experiences.get(ENV.fetch('FLOW_ORG'))
-
-    puts 'Saved %d experinences - %s'.green % [api_data.length, api_data.map(&:country).join(', ')]
-
-    Pathname.new(FlowExperience::EXPERIENCES_PATH).write(api_data.map(&:to_hash).to_yaml)
+    puts 'Got %d experinences - %s'.green % [api_data.length, api_data.map(&:country).join(', ')]
   end
 
   desc 'Sync localized catalog items'
@@ -149,7 +154,7 @@ namespace :flow do
     migrate = []
     migrate.push [:spree_orders, :flow_number, :string]
     migrate.push [:spree_orders,  :flow_cache, :jsonb, default: {}]
-    migrate.push [:spree_variants, :flow_cache_14, :jsonb, default: {}]
+    migrate.push [:spree_variants, :flow_cache, :jsonb, default: {}]
 
     migrate.each do |table, field, type, opts={}|
       klass = table.to_s.sub('spree_','spree/').classify.constantize

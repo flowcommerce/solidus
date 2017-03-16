@@ -58,13 +58,10 @@
     <% end %>
   </div>
 <% end %>
-
 <!-- spreee custom select instead of radio select boxes -->
 <script>
   window.show_localized_price = function(price_id) {
-    var value;
-
-    value = _spree_variants[String(price_id)]
+    var value = _spree_variants[String(price_id)]
 
     parts = value.split(', ')
     if (parts[1]) {
@@ -75,6 +72,5 @@
   }
 
   window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = product_price_long(v); h }.to_json.html_safe %>;
-
   show_localized_price($('#variant_select').val());
 </script>
