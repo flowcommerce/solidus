@@ -17,7 +17,6 @@ require "sprockets/railtie"
 Bundler.require(*Rails.groups)
 
 require './lib/ruby_core/object'
-require './lib/ruby_core/string'
 
 module DemoShop
   class Application < Rails::Application
