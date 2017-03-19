@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
     @flow_exp ||= Struct.new(:id, :key, :country).new('world', 'world', 'World')
 
     # save flow session ID for client side usage
-    cookies.permanent[FLOW_SESSION_KEY] = @flow_exp.id
+    cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
 
     # save full cache for server side usage
     session[FLOW_SESSION_KEY] = @flow_session.to_json

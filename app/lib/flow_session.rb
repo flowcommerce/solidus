@@ -3,6 +3,7 @@
 # to basic shop frontend and backend needs
 
 class FlowSession
+  attr_accessor :session
 
   def get(opts)
     session_model = ::Io::Flow::V0::Models::SessionForm.new(opts)
@@ -12,16 +13,14 @@ class FlowSession
   # flow session can ve created via IP or local cached OrganizationSession dump
   # FlowExperience.all.first.key
   def initialize(ip: nil, hash: nil, experience: nil)
-    @session = if ip
-      session = get ip: ip
-
-      # if local is not found based on IP, get session by first defined experience
-      #session = get experience: FlowExperience.all.first.key unless session.local
-      session
+    @session = if experience
+      get experience: experience
+    elsif ip
+      get ip: ip
     elsif hash
       ::Io::Flow::V0::Models::OrganizationSession.new(hash)
-    elsif experience
-      get experience: experience
+    else
+      raise 'IP, hash or experience needed'
     end
   end
 
@@ -30,6 +29,8 @@ class FlowSession
       @session.id,
       ::Io::Flow::V0::Models::SessionPutForm.new(experience: experience)
     )
+  rescue
+    new experience: experience
   end
 
   # we dump this to session and recreate one from
