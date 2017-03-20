@@ -30,7 +30,7 @@ class FlowSession
       ::Io::Flow::V0::Models::SessionPutForm.new(experience: experience)
     )
   rescue
-    new experience: experience
+    @session = FlowSession.new(experience: experience).session
   end
 
   # we dump this to session and recreate one from

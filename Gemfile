@@ -31,6 +31,7 @@ group :development do
   gem 'spring'                           # fast console and tests
   gem 'puma'
   gem 'listen', '~> 3.0.5'
+  gem 'letter_opener'                     # preview email in development
 
   # css and js block
   gem 'therubyracer', platforms: :ruby
@@ -38,8 +39,6 @@ group :development do
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.2'
   gem 'turbolinks', '~> 5'
-
-  # gem 'smarter_csv'
 end
 
 group :production do

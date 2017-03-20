@@ -100,7 +100,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffaker (2.5.0)
     ffi (1.9.17)
-    flowcommerce (0.1.22)
+    flowcommerce (0.2.0)
       bigdecimal
       json
     font-awesome-rails (4.7.0.1)
@@ -128,6 +128,10 @@ GEM
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    launchy (2.4.3)
+      addressable (~> 2.3)
+    letter_opener (1.4.1)
+      launchy (~> 2.2)
     libv8 (3.16.14.17)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -367,6 +371,7 @@ DEPENDENCIES
   faraday
   flowcommerce
   hashie
+  letter_opener
   listen (~> 3.0.5)
   newrelic_rpm
   pg

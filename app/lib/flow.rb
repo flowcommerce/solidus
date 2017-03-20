@@ -1,6 +1,8 @@
 # module for communication and customization based on flow api
 # for now all in same class
 
+require 'logger'
+
 module Flow
   extend self
 
@@ -42,6 +44,10 @@ module Flow
   def get_item(flow_exp, number)
     # FlowCommerce.instance.experiences.get_items_and_price_by_key_and_number(FLOW_ORG, flow_exp, '100')
     # api :get, ''
+  end
+
+  def logger
+    @logger ||= Logger.new('./log/flow.log') # or nil for no logging
   end
 
 end

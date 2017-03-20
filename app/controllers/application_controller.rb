@@ -24,6 +24,8 @@ class ApplicationController < ActionController::Base
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
+    # r params
+
     if value = session[FLOW_SESSION_KEY]
       begin
         @flow_session = FlowSession.new(hash: JSON.load(value))
@@ -74,8 +76,13 @@ class ApplicationController < ActionController::Base
 
     @flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
 
-    if @flow_order.response['code'] == 'generic_error'
-      @flow_render =  { text: 'Flow error: %s' % @flow_order.response['messages'].join(', ') }
+    if @flow_order.error?
+      if @flow_order.error.includes?('been submitted')
+        @order.finalize!
+        redirect_to '/'
+      else
+        @flow_render =  { text: 'Flow error: %s' % @flow_order.error }
+      end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
     end

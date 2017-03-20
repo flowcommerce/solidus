@@ -12,6 +12,8 @@ Spree::Variant.class_eval do
     puts 'Truncated %d records' % all_records.length
   end
 
+  ###
+
   def flow_spree_price
     '%s %s' % [self.price, self.cost_currency]
   end
