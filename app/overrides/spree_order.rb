@@ -4,6 +4,10 @@ require 'digest/sha1'
 
 Spree::Order.class_eval do
 
+  before_save do
+    # ap self
+  end
+
   # defines uniqe flow number per order
   # format "solidus-order-hash" -> "s-o-hash"
   def flow_number

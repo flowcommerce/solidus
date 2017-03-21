@@ -76,7 +76,7 @@ module FlowHelper
     if simple_current_order && simple_current_order.flow_cache['total']
       total = simple_current_order.flow_cache['total'][@flow_exp.key]
     end
-    total || Flow.price_not_found
+    total || FlowRoot.price_not_found
   end
 
   # this renders link to cart with total cart price

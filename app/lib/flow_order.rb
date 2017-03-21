@@ -151,7 +151,7 @@ class FlowOrder
 
     @response['lines'] ||= []
     item = @response['lines'].select{ |el| el['item_number'] == id }.first
-    return Flow.price_not_found unless item
+    return FlowRoot.price_not_found unless item
 
     total ? item['total']['label'] : item['price']['label']
   end

@@ -4,7 +4,7 @@ require "awesome_print"
 Pry.print = proc { |output, value| output.puts value.ai }
 
 # exit on ctrl+c
-Signal.trap('INT') { puts; exit }
+# Signal.trap('INT') { puts; exit }
 
 # show db we are useing
 puts "DB: #{ENV['DB_URL']}"

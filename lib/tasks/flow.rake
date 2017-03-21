@@ -153,8 +153,9 @@ namespace :flow do
 
     migrate = []
     migrate.push [:spree_orders, :flow_number, :string]
-    migrate.push [:spree_orders,  :flow_cache, :jsonb, default: {}]
-    migrate.push [:spree_variants, :flow_cache, :jsonb, default: {}]
+    migrate.push [:spree_credit_cards, :flow_cache, :jsonb, default: {}]
+    migrate.push [:spree_variants,     :flow_cache, :jsonb, default: {}]
+    migrate.push [:spree_orders,       :flow_cache, :jsonb, default: {}]
 
     migrate.each do |table, field, type, opts={}|
       klass = table.to_s.sub('spree_','spree/').classify.constantize
@@ -163,7 +164,7 @@ namespace :flow do
         puts 'Field %s in table %s exists'.green % [field, table]
       else
         ActiveRecord::Migration.add_column table, field, type, opts
-        puts 'Field %s in table %s added'.green % [field, table]
+        puts 'Field %s in table %s added'.blue % [field, table]
       end
     end
   end

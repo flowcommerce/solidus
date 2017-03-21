@@ -3,7 +3,7 @@
 
 require 'logger'
 
-module Flow
+module FlowRoot
   extend self
 
   # this method is not a constant so it can be replaced

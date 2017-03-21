@@ -10,20 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306223619) do
+ActiveRecord::Schema.define(version: 20170302153604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "flow_catalog_caches", force: :cascade do |t|
-    t.string   "sku"
-    t.string   "country"
-    t.string   "remote_id"
-    t.jsonb    "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["sku", "country"], name: "index_flow_catalog_caches_on_sku_and_country", using: :btree
-  end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string   "slug",                      null: false
@@ -164,6 +154,7 @@ ActiveRecord::Schema.define(version: 20170306223619) do
     t.integer  "payment_method_id"
     t.boolean  "default",                     default: false, null: false
     t.integer  "address_id"
+    t.jsonb    "flow_cache",                  default: {}
     t.index ["payment_method_id"], name: "index_spree_credit_cards_on_payment_method_id", using: :btree
     t.index ["user_id"], name: "index_spree_credit_cards_on_user_id", using: :btree
   end
@@ -317,6 +308,8 @@ ActiveRecord::Schema.define(version: 20170306223619) do
     t.boolean  "frontend_viewable",                                          default: true,    null: false
     t.string   "flow_number"
     t.jsonb    "flow_cache",                                                 default: {}
+    t.jsonb    "flow_cache_2",                                               default: {}
+    t.jsonb    "flow_cache_3",                                               default: {}
     t.index ["approver_id"], name: "index_spree_orders_on_approver_id", using: :btree
     t.index ["bill_address_id"], name: "index_spree_orders_on_bill_address_id", using: :btree
     t.index ["completed_at"], name: "index_spree_orders_on_completed_at", using: :btree
@@ -1143,6 +1136,7 @@ ActiveRecord::Schema.define(version: 20170306223619) do
     t.datetime "updated_at"
     t.datetime "created_at"
     t.jsonb    "flow_cache",                               default: {}
+    t.jsonb    "flow_cache_14",                            default: {}
     t.index ["position"], name: "index_spree_variants_on_position", using: :btree
     t.index ["product_id"], name: "index_spree_variants_on_product_id", using: :btree
     t.index ["sku"], name: "index_spree_variants_on_sku", using: :btree

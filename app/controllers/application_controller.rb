@@ -14,10 +14,15 @@ class ApplicationController < ActionController::Base
     send(filter_method) if self.class.private_instance_methods.include?(filter_method)
 
     # call all this methods
-    sync_flow_order
+    flow_sync_order
 
     # return our data or call super render
-    @flow_render ? super(@flow_render) : super
+    if @flow_render
+      return redirect_to @flow_render[:redirect_to] if @flow_render[:redirect_to]
+      super(@flow_render)
+    else
+      super
+    end
   end
 
   private
@@ -71,20 +76,30 @@ class ApplicationController < ActionController::Base
 
   # we need to prepare @order and sync to flow.io before render because we need
   # flow total price
-  def sync_flow_order
+  def flow_sync_order
     return unless @order && @order.id
+
+    # r @order.customers
+
+    return if request.path.include?('/admin/')
 
     @flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
 
     if @flow_order.error?
-      if @flow_order.error.includes?('been submitted')
+      if @flow_order.error.include?('been submitted')
         @order.finalize!
-        redirect_to '/'
+        @flow_render = { redirect_to: '/'}
       else
         @flow_render =  { text: 'Flow error: %s' % @flow_order.error }
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
+    end
+  end
+
+  def flow_authorize_cc
+    if params['payment_source']
+
     end
   end
 
