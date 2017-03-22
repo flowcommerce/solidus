@@ -107,7 +107,7 @@ class FlowOrder
     @spree_order.flow_cache['selection'].delete('placeholder')
     opts[:selection] = @spree_order.flow_cache['selection']
 
-    @response = Flow.api(:put, '/:organization/orders/%s' % flow_number, opts)
+    @response = FlowRoot.api(:put, '/:organization/orders/%s' % flow_number, opts)
 
     # set cache for total order ammount
     # written in flow_cache field inside spree_orders table
@@ -206,11 +206,11 @@ class FlowOrder
       # maybe it is better to have extra field in spree_orders as we have for flow_number
       @spree_order.update_column :flow_cache, flow_cache.merge('authorization_id': response['id'])
 
-      Flow.logger.info('Flow order "%s" finalized' % @order.token)
+      FlowRoot.logger.info('Flow order "%s" finalized' % @order.token)
 
       @spree_order.finalize!
     else
-      Flow.logger.error(response.to_json)
+      FlowRoot.logger.error(response.to_json)
     end
   end
 

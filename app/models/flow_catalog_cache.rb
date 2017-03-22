@@ -21,7 +21,7 @@ class FlowCatalogCache < ApplicationRecord
 
       # localized product not found in cache, get it
       unless cache.id
-        item = Flow.api(:get, '/:organization/experiences/items', country: country, number: sku).first
+        item = FlowRoot.api(:get, '/:organization/experiences/items', country: country, number: sku).first
         cache.data = item
         cache.save
       end

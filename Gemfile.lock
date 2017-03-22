@@ -314,8 +314,6 @@ GEM
       solidus_core (= 2.1.0)
     solidus_sample (2.1.0)
       solidus_core (= 2.1.0)
-    spring (2.0.1)
-      activesupport (>= 4.2)
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -383,7 +381,6 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   solidus (= 2.1.0)
   solidus_auth_devise
-  spring
   therubyracer
   thread
   turbolinks (~> 5)

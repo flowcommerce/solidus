@@ -28,7 +28,7 @@ group :manual_load do
 end
 
 group :development do
-  gem 'spring'                           # fast console and tests
+  # gem 'spring'                           # fast console and tests
   gem 'puma'
   gem 'listen', '~> 3.0.5'
   gem 'letter_opener'                     # preview email in development
