@@ -2,7 +2,7 @@
 
 Spree::CreditCard.class_eval do
 
-  before_save :flow_fetch_cc_token
+  validate :flow_fetch_cc_token
 
   def flow_fetch_cc_token
     # build cc hash
@@ -10,18 +10,20 @@ Spree::CreditCard.class_eval do
     data[:number]           = number
     data[:name]             = name
     data[:cvv]              = verification_value
-    data[:expiration_year]  = year
-    data[:expiration_month] = month
+    data[:expiration_year]  = year.to_i
+    data[:expiration_month] = month.to_i
 
-    # result = FlowRoot.api :post, '/:organization/cards', BODY: data
-    card_form = ::Io::Flow::V0::Models::CardForm data
+    card_form = ::Io::Flow::V0::Models::CardForm.new(data)
     result    = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORG'), card_form)
-    result    = FlowCommerce.org.cards.post(card_form)
 
     # cache the result
     flow_cache['cc_token'] = result.token
 
     true
+  rescue Io::Flow::V0::HttpClient::ServerError
+    puts $!.message
+    flow_error = $!.message.split(':', 2).first
+    errors.add(:base, flow_error)
   end
 
 end

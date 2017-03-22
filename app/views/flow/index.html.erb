@@ -1,0 +1,25 @@
+<h3>Orders</h3>
+
+<br />
+
+<table class="table table-striped">
+<tr>
+  <th style="width: 110px;">ID</th>
+  <th>Number</th>
+  <th style="text-align: right;">Total</th>
+</tr>
+<% @orders.each do |order| %>
+  <tr>
+    <td>
+      <%= link_to order.id, '/admin/orders/%s/payments' % order.number, target: :_new %>
+      &bull;
+      <%= link_to 'Flow', 'https://console.flow.io/%s/orders/%s' % [ENV.fetch('FLOW_ORG'), order.flow_number], target: :_new %>
+    </td>
+    <td><%= order.number %></td>
+    <td style="text-align: right;"><%= '%s %s ' % [order.total, order.currency] %></td>
+  </tr>
+<% end %>
+
+</table>
+
+<%= paginate @orders %>
