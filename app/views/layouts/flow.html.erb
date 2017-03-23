@@ -17,14 +17,24 @@
         </div>
       </div>
     </header>
+    <div></div>
 
     <div class="container">
+      <small style="float: right; margin-top: -35px;"><%= ENV.fetch('FLOW_ORG') %></small>
       <%= yield %>
     </div>
 
+
+    <footer class="container">
+    <hr />
+    <a href="https://www.flow.io">Flow.io</a>
+    </footer>
+
     <style>
+      .error { color: #800; }
       .pagination span { display: inline-block; border: 1px solid #ddd; padding: 5px 14px; margin-right: -1px; }
       .pagination span.current { background-color: #eee; }
+      footer { padding-bottom: 20px; margin-top: 50px; }
     </style>
   </body>
 </html>

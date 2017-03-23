@@ -17,7 +17,28 @@ class FlowController < ApplicationController
   def index
     return unless user_is_admin
 
-    @orders = Spree::Order.order('id desc').page(params[:page]).per(20)
+    if action = params[:flow]
+      order = Spree::Order.find(params[:o_id])
+
+      case action
+        when 'order'
+          response = FlowRoot.api(:get, '/:organization/orders/%s' % order.flow_number)
+        when 'raw'
+          response = order.attributes
+        when 'auth'
+          response = order.flow_cc_authorization
+        when 'capture'
+          response = order.flow_cc_capture
+        else
+          return render text: 'Ation %s not supported' % action
+      end
+
+      render json: response
+    else
+      @orders = Spree::Order.order('id desc').page(params[:page]).per(20)
+    end
+  rescue
+    render text: '%s: %s' % [$!.class.to_s, $!.message]
   end
 
   private

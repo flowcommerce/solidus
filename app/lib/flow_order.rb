@@ -29,7 +29,7 @@ class FlowOrder
 
   ###
 
-  def initialize(experience:, spree_order:, customer:)
+  def initialize(experience: nil, spree_order:, customer: nil)
     @experience  = experience
     @spree_order = spree_order
     @customer    = customer
@@ -193,25 +193,6 @@ class FlowOrder
     # Flow.api :post, '/:organization/cards', BODY: hash_data
     card_form = ::Io::Flow::V0::Models::CardForm.new(hash_data)
     @card = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORG'), card_form)
-  end
-
-  def finalize!
-    # http://docs.solidus.io/Spree/Order.html
-    raise FlowError, 'Card is not added' unless @card
-
-    response = Flow.api :post, '/:organization/authorizations', BODY:{"token":@card.token,"order_number":@spree_order.flow_number,"discriminator":"merchant_of_record_authorization_form"}
-    if response['result']['status'] == 'authorized'
-
-      # add authorization_id to flow_cache in order
-      # maybe it is better to have extra field in spree_orders as we have for flow_number
-      @spree_order.update_column :flow_cache, flow_cache.merge('authorization_id': response['id'])
-
-      FlowRoot.logger.info('Flow order "%s" finalized' % @order.token)
-
-      @spree_order.finalize!
-    else
-      FlowRoot.logger.error(response.to_json)
-    end
   end
 
 end
