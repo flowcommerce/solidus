@@ -26,9 +26,9 @@ class FlowController < ApplicationController
         when 'raw'
           response = order.attributes
         when 'auth'
-          response = order.flow_cc_authorization
+          response = order.flow_cc_authorization.to_hash
         when 'capture'
-          response = order.flow_cc_capture
+          response = order.flow_cc_capture.to_hash
         else
           return render text: 'Ation %s not supported' % action
       end

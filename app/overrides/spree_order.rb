@@ -46,10 +46,11 @@ Spree::Order.class_eval do
       store['currency']         = response.currency
       store['amount']           = response.amount
       store['key']              = response.key
+
       update_column :flow_cache, flow_cache.merge('authorization': store)
     end
 
-    response.to_hash
+    response
   end
 
   # capture authorised funds
@@ -61,11 +62,10 @@ Spree::Order.class_eval do
     # response     = FlowRoot.api :post, '/:organization/captures', BODY: data
     capture_form = ::Io::Flow::V0::Models::CaptureForm.new(data)
     response     = FlowCommerce.instance.captures.post(ENV.fetch('FLOW_ORG'), capture_form)
-    body         = response.to_hash
 
-    update_column :flow_cache, flow_cache.merge('capture': body)
+    update_column :flow_cache, flow_cache.merge('capture': response.to_hash)
 
-    body
+    response
   end
 
 end

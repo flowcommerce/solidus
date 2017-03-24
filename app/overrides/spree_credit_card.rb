@@ -5,6 +5,9 @@ Spree::CreditCard.class_eval do
   validate :flow_fetch_cc_token
 
   def flow_fetch_cc_token
+    return if flow_cache['cc_token']
+    return unless verification_value
+
     # build cc hash
     data = {}
     data[:number]           = number
