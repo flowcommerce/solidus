@@ -63,7 +63,10 @@ Spree::Order.class_eval do
     capture_form = ::Io::Flow::V0::Models::CaptureForm.new(data)
     response     = FlowCommerce.instance.captures.post(ENV.fetch('FLOW_ORG'), capture_form)
 
-    update_column :flow_cache, flow_cache.merge('capture': response.to_hash)
+    if response.id
+      update_column :flow_cache, flow_cache.merge('capture': response.to_hash)
+      finalize!
+    end
 
     response
   end

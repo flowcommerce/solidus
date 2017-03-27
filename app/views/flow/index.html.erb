@@ -13,7 +13,7 @@
 <% @orders.each do |order| %>
   <tr>
     <td>
-      <%= order.id %>
+      <%= order.id %> <small>- <%= order.state %></small>
       <br />
       <small><%= order.created_at.to_s.reverse.split(':',2).last.reverse %></small>
     </td>
