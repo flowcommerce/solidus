@@ -100,7 +100,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffaker (2.5.0)
     ffi (1.9.17)
-    flowcommerce (0.2.0)
+    flowcommerce (0.2.2)
       bigdecimal
       json
     font-awesome-rails (4.7.0.1)
