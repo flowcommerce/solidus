@@ -6,11 +6,6 @@ require 'logger'
 module FlowRoot
   extend self
 
-  # this method is not a constant so it can be replaced
-  def price_not_found
-    'n/a'
-  end
-
   # builds curl command and gets remote data
   def api(action, path, params={})
     body  = params.delete(:BODY)

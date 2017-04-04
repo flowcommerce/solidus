@@ -28,6 +28,8 @@ Spree::Order.class_eval do
 
   # authorises credit card and prepares for capture
   def flow_cc_authorization
+    raise StandarError, 'Flow credit card token not found' unless flow_number
+
     data = {
       'order_number':  flow_number,
       'currency':      currency,
@@ -69,7 +71,6 @@ Spree::Order.class_eval do
 
     raise ArgumentError, 'No Authorization data, please authorize first' unless data
 
-    # response     = FlowRoot.api :post, '/:organization/captures', BODY: data
     capture_form = ::Io::Flow::V0::Models::CaptureForm.new(data)
     response     = FlowCommerce.instance.captures.post(ENV.fetch('FLOW_ORGANIZATION'), capture_form)
 

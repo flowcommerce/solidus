@@ -10,7 +10,7 @@ end
 class FlowOrder
   attr_reader   :response
 
-  FLOW_CENTER = 'solidus-test'
+  FLOW_CENTER = 'default'
 
   class << self
 
@@ -36,6 +36,7 @@ class FlowOrder
 
       @card
     end
+
   end
 
   ###
@@ -44,8 +45,8 @@ class FlowOrder
     if experience
       # update order experience unless defined
       # we need this for orders, to make accurate order in defined experience
-      if flow_cache['experience_key'] != experience.key
-        spree_order.update_column flow_cache: flow_cache.merge(experience_key: experience.key)
+      if spree_order.flow_cache['experience_key'] != experience.key
+        spree_order.update_column :flow_cache, spree_order.flow_cache.merge(experience_key: experience.key)
       end
     else
       experience = flow_cache['experience_key']

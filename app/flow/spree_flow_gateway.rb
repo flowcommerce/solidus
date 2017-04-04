@@ -14,6 +14,11 @@ module Spree
       %w(capture authorize purchase refund void)
     end
 
+    # if user wants to force auto capture
+    # def auto_capture?
+    #   true
+    # end
+
     def payment_profiles_supported?
       true
     end
