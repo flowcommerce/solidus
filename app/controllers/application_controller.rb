@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
       # empty array is nil, so we allways send placeholder
       params[:flow_selection].delete('placeholder')
 
-      order_id = FlowCrypt.decrypt(params[:flow_order_id])
+      order_id = EasyCrypt.decrypt(params[:flow_order_id])
       order = Spree::Order.find(order_id)
       order.update_column :flow_cache, order.flow_cache.merge('selection'=>params[:flow_selection])
     end

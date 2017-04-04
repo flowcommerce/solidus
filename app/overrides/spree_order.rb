@@ -29,15 +29,25 @@ Spree::Order.class_eval do
   # authorises credit card and prepares for capture
   def flow_cc_authorization
     data = {
-      'discriminator': 'merchant_of_record_authorization_form',
       'order_number':  flow_number,
       'currency':      currency,
       'amount':        total,
       'token':         flow_cc_token,
     }
-    # response = FlowRoot.api(:post, '/:organization/authorizations', BODY: data
-    auth_form = ::Io::Flow::V0::Models::DirectAuthorizationForm.new(data)
-    response  = FlowCommerce.instance.authorizations.post(ENV.fetch('FLOW_ORG'), auth_form)
+
+    # not used in MerchantOfRecordAuthorizationForm
+    # data['custumer'] = {
+    #   name: {
+    #     first: billing_address.first_name,
+    #     last: billing_address.last_name
+    #   },
+    # }
+    # data['custumer']['phone'] = billing_address.phone if billing_address.phone
+    # data['custumer']['email'] = created_by.email
+
+    # we allways have order id so we allways use MerchantOfRecordAuthorizationForm
+    auth_form = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
+    response  = FlowCommerce.instance.authorizations.post(ENV.fetch('FLOW_ORGANIZATION'), auth_form)
 
     if response.result.status.value == 'authorized'
       # what store this in spree order object, for capure
@@ -61,7 +71,7 @@ Spree::Order.class_eval do
 
     # response     = FlowRoot.api :post, '/:organization/captures', BODY: data
     capture_form = ::Io::Flow::V0::Models::CaptureForm.new(data)
-    response     = FlowCommerce.instance.captures.post(ENV.fetch('FLOW_ORG'), capture_form)
+    response     = FlowCommerce.instance.captures.post(ENV.fetch('FLOW_ORGANIZATION'), capture_form)
 
     if response.id
       update_column :flow_cache, flow_cache.merge('capture': response.to_hash)

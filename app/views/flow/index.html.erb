@@ -25,7 +25,7 @@
       <small><%= order.user.try(:email) %></small>
     </td>
     <td>
-      <%= link_to 'Flow', 'https://console.flow.io/%s/orders/%s' % [ENV.fetch('FLOW_ORG'), order.flow_number], target: :_new %>
+      <%= link_to 'Flow', 'https://console.flow.io/%s/orders/%s' % [ENV.fetch('FLOW_ORGANIZATION'), order.flow_number], target: :_new %>
       &bull;
       <%= link_to 'JSON', '?flow=order&o_id=%s' % order.id, target: :_raw %>
     </td>

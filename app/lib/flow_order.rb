@@ -25,11 +25,34 @@ class FlowOrder
       flow_order.synchronize
       flow_order
     end
+
+    # adds cc and gets cc token
+    def add_card(cc_hash:, credit_card:)
+      raise ArgumentError, 'Credit card card class is not %s' % Spree::CreditCard unless credit_card.class == Spree::CreditCard
+
+      # {"cvv":"737","expiration_month":8,"expiration_year":2018,"name":"Joe Smith","number":"4111111111111111"}
+      card_form = ::Io::Flow::V0::Models::CardForm.new(cc_hash)
+      @card = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORGANIZATION'), card_form)
+
+      @card
+    end
   end
 
   ###
 
-  def initialize(experience: nil, spree_order:, customer: nil)
+  def initialize(spree_order:, experience: nil, customer: nil)
+    if experience
+      # update order experience unless defined
+      # we need this for orders, to make accurate order in defined experience
+      if flow_cache['experience_key'] != experience.key
+        spree_order.update_column flow_cache: flow_cache.merge(experience_key: experience.key)
+      end
+    else
+      experience = flow_cache['experience_key']
+
+      raise(ArgumentError, 'Experience not defined and not found in flow cache.') unless experience
+    end
+
     @experience  = experience
     @spree_order = spree_order
     @customer    = customer
@@ -62,7 +85,7 @@ class FlowOrder
     flow_number = @spree_order.flow_number
 
     opts = {}
-    opts[:organization] = ENV.fetch('FLOW_ORG')
+    opts[:organization] = ENV.fetch('FLOW_ORGANIZATION')
     opts[:experience] = @experience.key
     opts[:BODY] = {
       items:  @items,
@@ -107,6 +130,12 @@ class FlowOrder
     @spree_order.flow_cache['selection'].delete('placeholder')
     opts[:selection] = @spree_order.flow_cache['selection']
 
+    # body = opts.delete(:BODY)
+    # body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
+    # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(body)
+    # FlowCommerce.instance.orders.put_by_number(ENV.fetch('FLOW_ORGANIZATION'), flow_number, order_put_form, opts)
+    # return
+
     @response = FlowRoot.api(:put, '/:organization/orders/%s' % flow_number, opts)
 
     # set cache for total order ammount
@@ -120,25 +149,7 @@ class FlowOrder
       end
     end
 
-    sync_and_update_product_prices!
-
     @response
-  end
-
-
-  # closes - completes order
-  def close_order
-
-  end
-
-  # closes - completes order
-  def delete_order
-
-  end
-
-  def sync_and_update_product_prices!
-    #puts @response.to_json
-    # r @response['items'][0]['local']['prices']
   end
 
   def total_price
@@ -157,12 +168,12 @@ class FlowOrder
   end
 
   def deliveries
-    opts_list = @response['deliveries'][0]['options']
+    delivery_list = @response['deliveries'][0]['options']
 
     @spree_order.flow_cache ||= {}
     @spree_order.flow_cache['selection'] ||= []
 
-    opts_list.map do |opts|
+    delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
       name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
       selection_id = opts['id']
@@ -174,6 +185,11 @@ class FlowOrder
         name: name
       }
     end.to_a
+
+    # make first one active unless we have active element
+    delivery_list.first[:active] = true unless delivery_list.select{ |el| el[:active] }.first
+
+    delivery_list
   end
 
   def delivery
@@ -186,13 +202,6 @@ class FlowOrder
 
   def error
     @response['messages'].join(', ')
-  end
-
-  def add_card(hash_data)
-    # {"cvv":"737","expiration_month":8,"expiration_year":2018,"name":"Joe Smith","number":"4111111111111111"}
-    # Flow.api :post, '/:organization/cards', BODY: hash_data
-    card_form = ::Io::Flow::V0::Models::CardForm.new(hash_data)
-    @card = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORG'), card_form)
   end
 
 end

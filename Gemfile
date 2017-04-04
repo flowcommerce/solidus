@@ -13,9 +13,9 @@ gem 'rails', '5.0.1'
 gem 'pg'
 gem 'hashie'
 gem 'flowcommerce'
+gem 'activemerchant_flow'
 gem 'pry-rails'                # better console
 gem 'awesome_print'
-# gem 'redcarpet'              # abandoned
 
 # solidus fw
 gem 'solidus', '2.1.0'

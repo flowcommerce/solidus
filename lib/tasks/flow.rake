@@ -10,7 +10,7 @@ namespace :flow do
   desc 'Upload catalog'
   task :upload_catalog => :environment do |t|
     flow_client   = FlowCommerce.instance
-    flow_org      = ENV.fetch('FLOW_ORG')
+    flow_org      = ENV.fetch('FLOW_ORGANIZATION')
 
     # do reqests in paralel
     thread_pool  = Thread.pool(5)
@@ -57,12 +57,12 @@ namespace :flow do
 
   desc 'Gets and cache experiences from flow'
   task check: :environment do
-    required_env_variables = ['FLOW_TOKEN', 'FLOW_ORG', 'FLOW_BASE_COUNTRY']
+    required_env_variables = ['FLOW_API_KEY', 'FLOW_ORGANIZATION', 'FLOW_BASE_COUNTRY']
     required_env_variables.each { |el| puts 'ENV: %s - %s ' % [el, ENV[el].present? ? 'present'.green : 'MISSING'.red]  }
 
-    puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORG')
+    puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORGANIZATION')
     client   = FlowCommerce.instance
-    api_data = client.experiences.get(ENV.fetch('FLOW_ORG'))
+    api_data = client.experiences.get(ENV.fetch('FLOW_ORGANIZATION'))
     puts 'Got %d experinences - %s'.green % [api_data.length, api_data.map(&:country).join(', ')]
   end
 
@@ -73,7 +73,7 @@ namespace :flow do
 
     total = 0
 
-    org = ENV.fetch('FLOW_ORG')
+    org = ENV.fetch('FLOW_ORGANIZATION')
     experiences = FlowCommerce.instance.experiences.get(org)
 
     experiences.each do |experience|

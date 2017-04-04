@@ -6,7 +6,7 @@ Spree::CreditCard.class_eval do
 
   def flow_fetch_cc_token
     return false if flow_cache['cc_token']
-    return false unless verification_value
+    return errors.add(:verification_value, 'CVV verification value is required') unless verification_value.present?
 
     # build cc hash
     data = {}
@@ -17,7 +17,7 @@ Spree::CreditCard.class_eval do
     data[:expiration_month] = month.to_i
 
     card_form = ::Io::Flow::V0::Models::CardForm.new(data)
-    result    = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORG'), card_form)
+    result    = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORGANIZATION'), card_form)
 
     # cache the result
     flow_cache['cc_token'] = result.token

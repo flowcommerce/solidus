@@ -7,7 +7,7 @@ class FlowSession
 
   def get(opts)
     session_model = ::Io::Flow::V0::Models::SessionForm.new(opts)
-    FlowCommerce.instance.sessions.post_organizations_by_organization(ENV.fetch('FLOW_ORG'), session_model)
+    FlowCommerce.instance.sessions.post_organizations_by_organization(ENV.fetch('FLOW_ORGANIZATION'), session_model)
   end
 
   # flow session can ve created via IP or local cached OrganizationSession dump

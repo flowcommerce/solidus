@@ -49,7 +49,7 @@
             <% end %>
           </ul>
           -->
-          <input type="hidden" name="flow_order_id" value="<%= FlowCrypt.encrypt(@order.id) %>" />
+          <input type="hidden" name="flow_order_id" value="<%= EasyCrypt.encrypt(@order.id) %>" />
           <input type="hidden" name="flow_selection[]" value="placeholder" />
           <% @flow_order.deliveries.each do |delivery| %>
             <p style="margin-top: 0;">

@@ -26,7 +26,7 @@ module FlowExperience
   def get_from_flow
     # cache experinces in current thread for 1 minute
     return @cache[0] if @cache && @cache[1] > Time.now - 1.minute
-    experiences = FlowCommerce.instance.experiences.get(ENV.fetch('FLOW_ORG'))
+    experiences = FlowCommerce.instance.experiences.get(ENV.fetch('FLOW_ORGANIZATION'))
     @cache = [experiences, Time.now]
     experiences
   end

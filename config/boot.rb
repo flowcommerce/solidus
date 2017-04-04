@@ -21,5 +21,9 @@ ENV['RAILS_ENV'] ||= ENV['RACK_ENV']
 ENV.fetch('RAILS_ENV')
 ENV.fetch('SECRET_TOKEN')
 ENV.fetch('SECRET_KEY_BASE')
+ENV.fetch('FLOW_API_KEY')
+ENV.fetch('FLOW_ORGANIZATION')
 ENV.fetch('FLOW_BASE_COUNTRY')
 
+# for comaptibility with flowcommrece gem
+ENV['FLOW_TOKEN'] = ENV['FLOW_API_KEY']

@@ -16,12 +16,12 @@ module FlowRoot
     body  = params.delete(:BODY)
 
     remote_params = URI.encode_www_form params
-    remote_path   = path.sub('%o', ENV.fetch('FLOW_ORG')).sub(':organization', ENV.fetch('FLOW_ORG'))
+    remote_path   = path.sub('%o', ENV.fetch('FLOW_ORGANIZATION')).sub(':organization', ENV.fetch('FLOW_ORGANIZATION'))
     remote_path  += '?%s' % remote_params unless remote_params.blank?
 
     curl = ['curl -s']
     curl.push '-X %s' % action.to_s.upcase
-    curl.push '-u %s:' % ENV.fetch('FLOW_TOKEN')
+    curl.push '-u %s:' % ENV.fetch('FLOW_API_KEY')
     if body
       body = body.to_json unless body.is_a?(Array)
       curl.push '-H "Content-Type: application/json"'

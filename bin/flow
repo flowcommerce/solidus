@@ -62,13 +62,13 @@ end
 
 opts = methods[ARGV[0].to_sym] || die('method %s not found' % ARGV[0])
 
-path = opts[:path].gsub('%o', ENV.fetch('FLOW_ORG'))
+path = opts[:path].gsub('%o', ENV.fetch('FLOW_ORGANIZATION'))
 path.gsub!(/:(\w+)/) {
   die "Opt --#{$1} not defined" unless params[$1]
   params[$1]
 }
 
-curl  = 'curl -i -s -X %s -u %s: ' % [opts[:method].to_s.upcase, ENV.fetch('FLOW_TOKEN')]
+curl  = 'curl -i -s -X %s -u %s: ' % [opts[:method].to_s.upcase, ENV.fetch('FLOW_API_KEY')]
 curl += '-H "Content-Type: application/json" ' if opts[:json]
 curl += 'https://api.flow.io%s' % path
 
