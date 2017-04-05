@@ -131,7 +131,7 @@ namespace :flow do
 
   desc 'Ensure we have DB prepared for flow'
   task :migrate => :environment do |t|
-    # FlowExperience.all.each do |exp|
+    # Flow::Experience.all.each do |exp|
     #   zone = Spree::Zone.find_by name: exp.key
     #   raise 'Spree::Zone "%s" is not defiend'.red % exp.key unless zone
     #   puts 'Spree::Zone name:"%s" found'.green % zone.name

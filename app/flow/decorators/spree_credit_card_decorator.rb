@@ -17,7 +17,7 @@ Spree::CreditCard.class_eval do
     data[:expiration_month] = month.to_i
 
     card_form = ::Io::Flow::V0::Models::CardForm.new(data)
-    result    = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORGANIZATION'), card_form)
+    result    = FlowCommerce.instance.cards.post(Flow.organization, card_form)
 
     # cache the result
     flow_cache['cc_token'] = result.token

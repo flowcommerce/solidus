@@ -25,7 +25,7 @@ module Spree
 
     def create_profile(payment)
       # binding.pry
-      # ActiveMerchant::Billing::FlowGateway.new(token: ENV.fetch('FLOW_API_KEY'), organization: ENV.fetch('FLOW_ORGANIZATION'))
+      # ActiveMerchant::Billing::FlowGateway.new(token: Flow.api_key, organization: Flow.organization)
 
       case payment.order.state
         when 'payment'
@@ -75,7 +75,7 @@ module Spree
     private
 
     def get_flow_order(options)
-      # fo = FlowOrder.sync_from_spree_order order: spree_order, experience: FlowExperience.all.first
+      # fo = Flow::Order.sync_from_spree_order order: spree_order, experience: Flow::Experience.all.first
       order_number = options[:order_id].split('-').first
 
       Spree::Order.find_by(number: order_number)

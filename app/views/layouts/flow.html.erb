@@ -12,7 +12,7 @@
             <li class="nav-item active">
               <a class="nav-item nav-link " href="/admin/flow">Flow Admin</a>
             </li>
-            <li class="nav-item"><a class="nav-item nav-link " href="https://console.flow.io/<%= ENV.fetch('FLOW_ORGANIZATION') %>" target="_new">Flow console &rarr;</a></li>
+            <li class="nav-item"><a class="nav-item nav-link " href="https://console.flow.io/<%= Flow.organization %>" target="_new">Flow console &rarr;</a></li>
           </ul>
         </div>
       </div>
@@ -20,7 +20,7 @@
     <div></div>
 
     <div class="container">
-      <small style="float: right; margin-top: -35px;"><%= ENV.fetch('FLOW_ORGANIZATION') %></small>
+      <small style="float: right; margin-top: -35px;"><%= Flow.organization %></small>
       <%= yield %>
     </div>
 

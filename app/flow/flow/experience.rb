@@ -2,7 +2,7 @@
 # communicates with flow api, easy access
 # to basic shop frontend and backend needs
 
-module FlowExperience
+module Flow::Experience
   extend self
 
   def all(no_world=nil)
@@ -26,7 +26,7 @@ module FlowExperience
   def get_from_flow
     # cache experinces in current thread for 1 minute
     return @cache[0] if @cache && @cache[1] > Time.now - 1.minute
-    experiences = FlowCommerce.instance.experiences.get(ENV.fetch('FLOW_ORGANIZATION'))
+    experiences = FlowCommerce.instance.experiences.get(Flow.organization)
     @cache = [experiences, Time.now]
     experiences
   end

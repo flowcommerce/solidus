@@ -24,11 +24,15 @@ module DemoShop
     # solidus overrides
     config.to_prepare do
       overload = Dir.glob('./app/flow/**/*.rb')
-      overload.each { |c| load(c) }
+      overload.reverse.each { |c| load(c) }
     end
 
     config.after_initialize do |app|
       app.config.spree.payment_methods << Spree::Gateway::Flow
+
+      Flow.organization = ENV.fetch('FLOW_ORGANIZATION')
+      Flow.base_country = ENV.fetch('FLOW_BASE_COUNTRY')
+      Flow.api_key      = ENV.fetch('FLOW_API_KEY')
     end
 
     # Settings in config/environments/* take precedence over those specified here.

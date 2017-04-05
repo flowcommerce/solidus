@@ -33,14 +33,14 @@ class ApplicationController < ActionController::Base
 
     if value = session[FLOW_SESSION_KEY]
       begin
-        @flow_session = FlowSession.new(hash: JSON.load(value))
+        @flow_session = Flow::Session.new(hash: JSON.load(value))
       rescue JSON::ParserError
         session.delete(FLOW_SESSION_KEY)
       end
     end
 
     # get by IP unless we got it from session
-    @flow_session ||= FlowSession.new ip: request.ip unless @flow_session
+    @flow_session ||= Flow::Session.new ip: request.ip unless @flow_session
 
     if flow_exp_key = params[:flow_exp]
       @flow_session.change_experience(flow_exp_key)
@@ -83,7 +83,7 @@ class ApplicationController < ActionController::Base
 
     return if request.path.include?('/admin/')
 
-    @flow_order = FlowOrder.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
+    @flow_order = Flow::Order.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
 
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')

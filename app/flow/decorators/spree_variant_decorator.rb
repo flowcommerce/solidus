@@ -28,7 +28,7 @@ Spree::Variant.class_eval do
     # skip if sync not needed
     return nil if flow_cache['last_sync_sh1'] == flow_item_sh1
 
-    response = FlowCommerce.instance.items.put_by_number ENV.fetch('FLOW_ORGANIZATION'), id.to_s, flow_item
+    response = FlowCommerce.instance.items.put_by_number(Flow.organization, id.to_s, flow_item)
 
     # after successful put, write cache
     update_column :flow_cache, flow_cache.merge('last_sync_sh1'=>flow_item_sh1)

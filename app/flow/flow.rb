@@ -3,20 +3,24 @@
 
 require 'logger'
 
-module FlowRoot
+module Flow
+  mattr_accessor :organization
+  mattr_accessor :base_country
+  mattr_accessor :api_key
+
   extend self
 
   # builds curl command and gets remote data
-  def api(action, path, params={})
-    body  = params.delete(:BODY)
+  def api(action, path, params={}, body=nil)
+    body ||= params.delete(:BODY)
 
     remote_params = URI.encode_www_form params
-    remote_path   = path.sub('%o', ENV.fetch('FLOW_ORGANIZATION')).sub(':organization', ENV.fetch('FLOW_ORGANIZATION'))
+    remote_path   = path.sub('%o', Flow.organization).sub(':organization', Flow.organization)
     remote_path  += '?%s' % remote_params unless remote_params.blank?
 
     curl = ['curl -s']
     curl.push '-X %s' % action.to_s.upcase
-    curl.push '-u %s:' % ENV.fetch('FLOW_API_KEY')
+    curl.push '-u %s:' % api_key
 
     if body
       body = body.to_json unless body.is_a?(Array)
@@ -39,6 +43,10 @@ module FlowRoot
 
   def logger
     @logger ||= Logger.new('./log/flow.log') # or nil for no logging
+  end
+
+  def price_not_found
+    'n/a'
   end
 
 end

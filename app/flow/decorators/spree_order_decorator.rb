@@ -49,7 +49,7 @@ Spree::Order.class_eval do
 
     # we allways have order id so we allways use MerchantOfRecordAuthorizationForm
     auth_form = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
-    response  = FlowCommerce.instance.authorizations.post(ENV.fetch('FLOW_ORGANIZATION'), auth_form)
+    response  = FlowCommerce.instance.authorizations.post(Flow.organization, auth_form)
 
     if response.result.status.value == 'authorized'
       # what store this in spree order object, for capure

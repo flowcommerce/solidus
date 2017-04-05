@@ -2,16 +2,16 @@
 # communicates with flow api, easy access to session
 # to basic shop frontend and backend needs
 
-class FlowSession
+class Flow::Session
   attr_accessor :session
 
   def get(opts)
     session_model = ::Io::Flow::V0::Models::SessionForm.new(opts)
-    FlowCommerce.instance.sessions.post_organizations_by_organization(ENV.fetch('FLOW_ORGANIZATION'), session_model)
+    FlowCommerce.instance.sessions.post_organizations_by_organization(Flow.organization, session_model)
   end
 
   # flow session can ve created via IP or local cached OrganizationSession dump
-  # FlowExperience.all.first.key
+  # Flow::Experience.all.first.key
   def initialize(ip: nil, hash: nil, experience: nil)
     @session = if experience
       get experience: experience
@@ -30,7 +30,7 @@ class FlowSession
       ::Io::Flow::V0::Models::SessionPutForm.new(experience: experience)
     )
   rescue
-    @session = FlowSession.new(experience: experience).session
+    @session = Flow::Session.new(experience: experience).session
   end
 
   # we dump this to session and recreate one from

@@ -4,10 +4,7 @@
 # - solidus / spree order
 # - current customer, presetnt as  @current_spree_user controller instance variable
 
-class FlowError < StandardError
-end
-
-class FlowOrder
+class Flow::Order
   attr_reader   :response
 
   FLOW_CENTER ||= 'default'
@@ -134,10 +131,10 @@ class FlowOrder
     # body = opts.delete(:BODY)
     # body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
     # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(body)
-    # FlowCommerce.instance.orders.put_by_number(ENV.fetch('FLOW_ORGANIZATION'), flow_number, order_put_form, opts)
+    # FlowCommerce.instance.orders.put_by_number(Flow.organization, flow_number, order_put_form, opts)
     # return
 
-    @response = FlowRoot.api(:put, '/:organization/orders/%s' % flow_number, opts)
+    @response = Flow.api(:put, '/:organization/orders/%s' % flow_number, opts)
 
     # set cache for total order ammount
     # written in flow_cache field inside spree_orders table
@@ -154,7 +151,7 @@ class FlowOrder
   end
 
   def total_price
-    @response['total']['label'] rescue 'n/a'
+    @response['total']['label'] rescue Flow.price_not_found
   end
 
   # accepts line item
@@ -163,7 +160,7 @@ class FlowOrder
 
     @response['lines'] ||= []
     item = @response['lines'].select{ |el| el['item_number'] == id }.first
-    return FlowRoot.price_not_found unless item
+    return Flow.price_not_found unless item
 
     total ? item['total']['label'] : item['price']['label']
   end

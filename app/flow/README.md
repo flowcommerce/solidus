@@ -32,21 +32,21 @@ in ./config/application.rb to enable payments with Flow.
 
 Classes that begin with Flow are responsible for comunicating with flow API.
 
-### FlowExperience
+### Flow
+
+Helper class that offeres low level flow api access and few helper methods.
+
+### Flow::Experience
 
 Responsible for selecting current experience. You have to define available experiences in flow console.
 
-### FlowOrder
+### Flow::Order
 
 Maintain and synchronizes Spree::Order with Flow API.
 
-### FlowSession
+### Flow::Session
 
 Every shop user has a session. This class helps in creating and maintaining session with Flow.
-
-### FlowRoot
-
-Helper class that will be removed in gem.
 
 ## Decorators
 

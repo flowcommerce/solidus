@@ -3,7 +3,7 @@
 module FlowHelper
 
   def flow_flag(experience, size=32)
-    exp = experience.respond_to?(:region) ? experience : FlowExperience.get(experience.key)
+    exp = experience.respond_to?(:region) ? experience : Flow::Experience.get(experience.key)
 
     return 'http://i.imgur.com/GwFYycA.png' if !exp || exp.key == 'world'
 
@@ -78,7 +78,7 @@ module FlowHelper
       total = simple_current_order.flow_cache['total'][@flow_exp.key]
     end
 
-    total || 'n/a'
+    total || Flow.price_not_found
   end
 
   # this renders link to cart with total cart price
