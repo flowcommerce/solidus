@@ -97,7 +97,7 @@ Spree::Variant.class_eval do
   end
 
   # gets flow catalog item, and imports it
-  # it is intentionally here
+  # called from flow:sync_localized_items rake task
   def flow_import_item(item)
     experience_key = item.local.experience.key
     flow_cache['exp'] ||= {}
@@ -109,18 +109,6 @@ Spree::Variant.class_eval do
     end
 
     update_column :flow_cache, flow_cache.dup
-  end
-
-  def flow_do_sync?(after_upload=false)
-    @item_sh1 ||= Digest::SHA1.hexdigest flow_api_item.to_json
-
-    flow_cache ||= {}
-
-    if after_upload
-      variant.update_column :flow_hash, flow_cache.merge('last_sync_sh1'=>@item_sh1)
-    else
-      flow_cache['last_sync_sh1'] != @item_sh1
-    end
   end
 
 end

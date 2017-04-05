@@ -1,20 +1,20 @@
 require 'spec_init'
 
-RSpec.describe Flow::Crypt do
+RSpec.describe EasyCrypt do
   it 'ensures that String data can be enc & decrypted' do
     data = 'abcdefg'
-    enc  = Flow::Crypt.encrypt(data)
-    expect(Flow::Crypt.decrypt(enc)).to eq data
+    enc  = EasyCrypt.encrypt(data)
+    expect(EasyCrypt.decrypt(enc)).to eq data
   end
 
   it 'ensures that Integer data can be enc & decrypted' do
     data = 12345678
-    enc  = Flow::Crypt.encrypt(data)
-    expect(Flow::Crypt.decrypt(enc)).to eq data
+    enc  = EasyCrypt.encrypt(data)
+    expect(EasyCrypt.decrypt(enc)).to eq data
   end
 
   it 'fails in right excpetion for bad data' do
-    enc  = Flow::Crypt.encrypt('abc')
-    expect{ Flow::Crypt.decrypt(enc+'X') }.to raise_exception(ActiveSupport::MessageVerifier::InvalidSignature)
+    enc  = EasyCrypt.encrypt('abc')
+    expect{ EasyCrypt.decrypt(enc+'X') }.to raise_exception(ActiveSupport::MessageVerifier::InvalidSignature)
   end
 end

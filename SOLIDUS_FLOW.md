@@ -59,9 +59,6 @@ In production system, schedule job to run rake:upload_catalog -
 ideally picking up incremental changes so that job can be run
 frequently
 
-Info: modify @spree_variant.flow_do_sync?
-
-
 ## Configure Flow
 
   1. Login to https://console.flow.io
