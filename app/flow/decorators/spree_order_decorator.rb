@@ -62,7 +62,9 @@ Spree::Order.class_eval do
       update_column :flow_cache, flow_cache.merge('authorization': store)
     end
 
-    response
+    ActiveMerchant::Billing::Response.new(true, 'success', {response: response}, {authorization: store})
+  rescue Io::Flow::V0::HttpClient::ServerError => exception
+    flow_error_response(exception)
   end
 
   # capture authorised funds
@@ -79,8 +81,17 @@ Spree::Order.class_eval do
       finalize!
     end
 
-    response
+    ActiveMerchant::Billing::Response.new(true, 'success', {response: response})
+  rescue => exception
+    flow_error_response(exception)
   end
 
+  private
+
+  # we want to return errors in standardized format
+  def flow_error_response(exception_object, message=nil)
+    message ||= exception_object.message
+    ActiveMerchant::Billing::Response.new(false, message, exception: exception_object)
+  end
 end
 

@@ -35,8 +35,6 @@ module Spree
           # cc.flow_fetch_cc_token
           # cc.save
         when 'confirm'
-          # payment.order.flow_cc_authorization
-          # payment.order.flow_cc_capture if Spree::Config[:auto_capture]
       end
     end
 
@@ -46,18 +44,24 @@ module Spree
     end
 
     def authorize(amount, payment_method, options={})
-      # fo.response['total']
-
-      order = find_order options
-      binding.pry
+      order = get_flow_order options
+      order.flow_cc_authorization
     end
 
     def capture(amount, payment_method, options={})
-      binding.pry
+      order = get_flow_order options
+      order.flow_cc_capture
     end
 
     def purchase(amount, payment_method, options={})
-      binding.pry
+      order = get_flow_order options
+      flow_auth = order.flow_cc_authorization
+
+      if flow_auth.success?
+        order.flow_cc_capture
+      else
+        flow_auth
+      end
     end
 
     def refund(money, authorization_key, options={})
@@ -71,10 +75,15 @@ module Spree
     private
 
     def get_flow_order(options)
+      # fo = FlowOrder.sync_from_spree_order order: spree_order, experience: FlowExperience.all.first
       order_number = options[:order_id].split('-').first
-      spree_order  = Spree::Order.find_by(order_number: order_number)
 
-      fo = FlowOrder.sync_from_spree_order order: spree_order, experience: FlowExperience.all.first
+      Spree::Order.find_by(number: order_number)
+    end
+
+    def error_response(exception_object, message=nil)
+      message ||= exception_object.message
+      Response.new(false, message, exception: exception_object)
     end
 
   end
