@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # basics
-gem 'rails', '5.0.1'
+gem 'rails', '5.0.2'
 gem 'pg'
 gem 'hashie'
 gem 'flowcommerce'

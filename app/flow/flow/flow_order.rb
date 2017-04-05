@@ -10,7 +10,7 @@ end
 class FlowOrder
   attr_reader   :response
 
-  FLOW_CENTER = 'default'
+  FLOW_CENTER ||= 'default'
 
   class << self
 

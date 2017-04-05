@@ -5,11 +5,35 @@
 
 Spree::Variant.class_eval do
 
+  # after every save we sync product
+  # we generate sh1 checksums to update only when change happend
+  after_save :flow_sync_product
+
   # clears flow cache from all records
   def self.flow_truncate
     all_records = all
     all_records.each { |o| o.update_column :flow_cache, {} }
     puts 'Truncated %d records' % all_records.length
+  end
+
+  ###
+
+  # syncs product variant with flow
+  def flow_sync_product
+    # flow_client.items.put_by_number flow_org, sku, flow_item
+
+    flow_item     = flow_api_item
+    flow_item_sh1 = Digest::SHA1.hexdigest flow_api_item.to_json
+
+    # skip if sync not needed
+    return nil if flow_cache['last_sync_sh1'] == flow_item_sh1
+
+    response = FlowCommerce.instance.items.put_by_number ENV.fetch('FLOW_ORGANIZATION'), id.to_s, flow_item
+
+    # after successful put, write cache
+    update_column :flow_cache, flow_cache.merge('last_sync_sh1'=>flow_item_sh1)
+
+    response
   end
 
   ###

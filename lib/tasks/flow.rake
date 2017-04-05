@@ -9,9 +9,6 @@ namespace :flow do
   # if you want to force update all products
   desc 'Upload catalog'
   task :upload_catalog => :environment do |t|
-    flow_client   = FlowCommerce.instance
-    flow_org      = ENV.fetch('FLOW_ORGANIZATION')
-
     # do reqests in paralel
     thread_pool  = Thread.pool(5)
     update_sum   = 0
@@ -25,27 +22,16 @@ namespace :flow do
 
       variants.each_with_index do |variant, i|
         total_sum    += 1
-        product       = variant.product
-        sku           = variant.id.to_s
-        flow_item     = variant.flow_api_item
-        flow_item_sh1 = Digest::SHA1.hexdigest flow_item.to_json
-
-        # skip if sync not needed
-        if variant.flow_cache['last_sync_sh1'] == flow_item_sh1
-          print '.'
-          next
-        end
-
-        update_sum += 1
 
         # multiprocess upload
         thread_pool.process do
-          flow_client.items.put_by_number flow_org, sku, flow_item
-
-          # after successful put, write cache
-          variant.update_column :flow_cache,  flow_cache.merge('last_sync_sh1'=>flow_item_sh1)
-
-          puts "\n%s: %s (%s %s)" % [sku, product.name, variant.price, variant.cost_currency]
+          # skip if sync not needed
+          if variant.flow_sync_product
+            update_sum += 1
+            $stdout.print "\n%s: %s (%s %s)" % [variant.id.to_s, variant.product.name, variant.price, variant.cost_currency]
+          else
+            $stdout.print '.'
+          end
         end
       end
     end
