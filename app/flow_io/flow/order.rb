@@ -192,10 +192,12 @@ class Flow::Order
   # written in flow_cache field inside spree_orders table
   def write_total_in_cache
     total = @response['total'] || return
-    @spree_order.flow_cache ||= {}
+    check = @spree_order.flow_cache.to_json
     @spree_order.flow_cache['total'] ||= {}
-    if @spree_order.flow_cache['total'][@experience.key] != total['label']
-      @spree_order.flow_cache['total'][@experience.key] = total['label']
+    @spree_order.flow_cache['total']['current']       = total.slice('currency','amount')
+    @spree_order.flow_cache['total'][@experience.key] = total['label']
+
+    unless check == @spree_order.flow_cache.to_json
       @spree_order.update_column :flow_cache, @spree_order.flow_cache
     end
   end

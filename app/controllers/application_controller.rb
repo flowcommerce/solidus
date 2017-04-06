@@ -98,12 +98,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def flow_authorize_cc
-    if params['payment_source']
-
-    end
-  end
-
   def flow_filter_spree_products_show
     # r @product.variants.first.flow_cache
     @flow_render = { json: JSON.pretty_generate(@flow_exp.get_item(@product).to_hash) } if params[:debug] == 'flow'

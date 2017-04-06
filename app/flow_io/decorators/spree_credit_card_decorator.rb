@@ -6,6 +6,7 @@ Spree::CreditCard.class_eval do
 
   def flow_fetch_cc_token
     return false if flow_cache['cc_token']
+    return false unless number
     return errors.add(:verification_value, 'CVV verification value is required') unless verification_value.present?
 
     # build cc hash

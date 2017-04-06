@@ -1,7 +1,7 @@
 # Flow.io (2017)
 # adapter for Solidus/Spree that talks to activemerchant_flow
 
-load '/Users/dux/dev/org/flow.io/activemerchant_flow/lib/active_merchant/billing/gateways/flow.rb'
+# load '/Users/dux/dev/org/flow.io/activemerchant_flow/lib/active_merchant/billing/gateways/flow.rb'
 
 module Spree
   class Gateway::Flow < Gateway
