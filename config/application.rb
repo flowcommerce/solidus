@@ -23,7 +23,7 @@ module DemoShop
 
     # solidus overrides
     config.to_prepare do
-      overload = Dir.glob('./app/flow/**/*.rb')
+      overload = Dir.glob('./app/flow_io/**/*.rb')
       overload.reverse.each { |c| load(c) }
     end
 
