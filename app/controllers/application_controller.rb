@@ -79,8 +79,6 @@ class ApplicationController < ActionController::Base
   def flow_sync_order
     return unless @order && @order.id
 
-    # r @order.customers
-
     return if request.path.include?('/admin/')
 
     @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
@@ -99,13 +97,11 @@ class ApplicationController < ActionController::Base
   end
 
   def flow_filter_spree_products_show
-    # r @product.variants.first.flow_cache
     @flow_render = { json: JSON.pretty_generate(@flow_exp.get_item(@product).to_hash) } if params[:debug] == 'flow'
-    # @product.variants.first.update_column :flow_cache, nil
   end
 
   def flow_filter_spree_checkout_edit
-    # r @flow_order.deliveries
+
   end
 
 end

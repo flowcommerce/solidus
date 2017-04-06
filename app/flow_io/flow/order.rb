@@ -5,15 +5,18 @@
 # - current customer, presetnt as  @current_spree_user controller instance variable
 #
 # example:
-#  flow_order = Flow::Order.new
+#  flow_order = Flow::Order.new    # init flow-order object
 #    order: Spree::Order.last,
 #    experience: Flow::Experience.default,
 #    customer: Spree::User.last
-#  fo.build_flow_body
-#  fo.synchronize!
+#  fo.build_flow_body              # builds json body to be posted to flow api
+#  fo.synchronize!                 # sends order to flow
+#  fo.order.flow_cache['total']    # inspects flow_cache['total']
 
 class Flow::Order
   attr_reader   :response
+  attr_reader   :order
+  attr_reader   :customer
 
   FLOW_CENTER ||= 'default'
 
@@ -30,10 +33,10 @@ class Flow::Order
       raise(ArgumentError, 'Experience not defined and not found in flow cache.') unless experience
     end
 
-    @experience  = experience
-    @spree_order = order
-    @customer    = customer
-    @items       = []
+    @experience = experience
+    @order      = order
+    @customer   = customer
+    @items      = []
   end
 
   # if customer is defined, add customer info
@@ -75,11 +78,11 @@ class Flow::Order
 
   # builds object that can be sent to api.flow.io to sync order data
   def build_flow_body
-    @spree_order.line_items.each do |line_item|
+    @order.line_items.each do |line_item|
       add_item line_item
     end
 
-    flow_number = @spree_order.flow_number
+    flow_number = @order.flow_number
 
     opts = {}
     opts[:organization] = ENV.fetch('FLOW_ORGANIZATION')
@@ -92,9 +95,9 @@ class Flow::Order
     add_customer opts if @customer
 
     # add selection (delivery options) from flow_cache
-    @spree_order.flow_cache['selection'] ||= []
-    @spree_order.flow_cache['selection'].delete('placeholder')
-    opts[:selection] = @spree_order.flow_cache['selection']
+    @order.flow_cache['selection'] ||= []
+    @order.flow_cache['selection'].delete('placeholder')
+    opts[:selection] = @order.flow_cache['selection']
     opts
   end
 
@@ -135,8 +138,8 @@ class Flow::Order
   def deliveries
     delivery_list = @response['deliveries'][0]['options']
 
-    @spree_order.flow_cache ||= {}
-    @spree_order.flow_cache['selection'] ||= []
+    @order.flow_cache ||= {}
+    @order.flow_cache['selection'] ||= []
 
     delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
@@ -146,7 +149,7 @@ class Flow::Order
       {
         id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: @spree_order.flow_cache['selection'].include?(selection_id),
+        active: @order.flow_cache['selection'].include?(selection_id),
         name: name
       }
     end.to_a
@@ -192,13 +195,13 @@ class Flow::Order
   # written in flow_cache field inside spree_orders table
   def write_total_in_cache
     total = @response['total'] || return
-    check = @spree_order.flow_cache.to_json
-    @spree_order.flow_cache['total'] ||= {}
-    @spree_order.flow_cache['total']['current']       = total.slice('currency','amount')
-    @spree_order.flow_cache['total'][@experience.key] = total['label']
+    check = @order.flow_cache.to_json
+    @order.flow_cache['total'] ||= {}
+    @order.flow_cache['total']['current']       = total.slice('currency','amount')
+    @order.flow_cache['total'][@experience.key] = total['label']
 
-    unless check == @spree_order.flow_cache.to_json
-      @spree_order.update_column :flow_cache, @spree_order.flow_cache
+    unless check == @order.flow_cache.to_json
+      @order.update_column :flow_cache, @order.flow_cache
     end
   end
 end

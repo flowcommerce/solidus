@@ -4,15 +4,26 @@
 module Flow::Api
   extend self
 
-  # adds cc and gets cc token
-  def add_card cc_hash:, credit_card:
-    raise ArgumentError, 'Credit card card class is not %s' % Spree::CreditCard unless credit_card.class == Spree::CreditCard
+  # adds cc and gets cc flow object
+  # Flow::Api.credit_card(number:'4111111111111111', name:'Foo Bar', cvv:'123', expiration_year:2022, expiration_month:11)
+  def credit_card credit_card
+    cc_hash = case credit_card
+      when Spree::CreditCard
+        cc = {}
+        cc[:number]           = credit_card.number
+        cc[:name]             = credit_card.name
+        cc[:cvv]              = credit_card.verification_value
+        cc[:expiration_year]  = credit_card.year.to_i
+        cc[:expiration_month] = credit_card.month.to_i
+        cc
+      when Hash
+        credit_card
+      else
+        raise ArgumentError, 'Spree::CreditCard or Hash suported as credit card argument'
+    end
 
-    # {"cvv":"737","expiration_month":8,"expiration_year":2018,"name":"Joe Smith","number":"4111111111111111"}
     card_form = ::Io::Flow::V0::Models::CardForm.new(cc_hash)
-    @card = FlowCommerce.instance.cards.post(ENV.fetch('FLOW_ORGANIZATION'), card_form)
-
-    @card
+    FlowCommerce.instance.cards.post(Flow.organization, card_form)
   end
 
 end
