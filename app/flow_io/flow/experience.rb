@@ -21,6 +21,10 @@ module Flow::Experience
     nil
   end
 
+  def default
+    all.first
+  end
+
   private
 
   def get_from_flow

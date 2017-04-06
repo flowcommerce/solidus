@@ -75,7 +75,6 @@ module Spree
     private
 
     def get_flow_order(options)
-      # fo = Flow::Order.sync_from_spree_order order: spree_order, experience: Flow::Experience.all.first
       order_number = options[:order_id].split('-').first
 
       Spree::Order.find_by(number: order_number)

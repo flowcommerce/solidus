@@ -83,7 +83,8 @@ class ApplicationController < ActionController::Base
 
     return if request.path.include?('/admin/')
 
-    @flow_order = Flow::Order.sync_from_spree_order(experience: @flow_exp, order: @order, customer: @current_spree_user)
+    @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
+    @flow_order.synchronize!
 
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')
