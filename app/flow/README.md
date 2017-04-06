@@ -18,11 +18,24 @@ FLOW_ORGANIZATION='solidus-app-sandbox'
 FLOW_BASE_COUNTRY='usa'
 ```
 
-Add
+In ```./config/application.rb``` this is the only peace of code that is needed to
+init complete flow app
 
 ```
+  config.to_prepare do
+    # add all flow libs
+    overload = Dir.glob('./app/flow/**/*.rb')
+    overload.reverse.each { |c| require(c) }
+  end
+
   config.after_initialize do |app|
+    # init Flow payments as an option
     app.config.spree.payment_methods << Spree::Gateway::Flow
+
+    # define defaults
+    Flow.organization = ENV.fetch('FLOW_ORGANIZATION')
+    Flow.base_country = ENV.fetch('FLOW_BASE_COUNTRY')
+    Flow.api_key      = ENV.fetch('FLOW_API_KEY')
   end
 ```
 

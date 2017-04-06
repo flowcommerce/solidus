@@ -24,11 +24,20 @@ module Flow::Experience
   private
 
   def get_from_flow
-    # cache experinces in current thread for 1 minute
-    return @cache[0] if @cache && @cache[1] > Time.now - 1.minute
+    return cached_experinces if cache_valid?
+
     experiences = FlowCommerce.instance.experiences.get(Flow.organization)
     @cache = [experiences, Time.now]
     experiences
+  end
+
+  def cache_valid?
+    # cache experinces in worker memory for 1 minute
+    @cache && @cache[1] > Time.now.ago(1.minute)
+  end
+
+  def cached_experinces
+    @cache[0]
   end
 
 end

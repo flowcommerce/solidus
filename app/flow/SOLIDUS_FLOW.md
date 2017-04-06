@@ -6,8 +6,8 @@ I plan to be concise as possible, but cover all important topics.
 
 ## Instalation
 
-In ```./config/application.rb``` this is only peace of code that is needed to
-init complete flow app
+In ```./config/application.rb``` this is the only peace of code that is needed to
+init complete flow app.
 
 ```
   config.to_prepare do
@@ -29,26 +29,21 @@ init complete flow app
 
 ## Things to take into account
 
-Flow supports many modes of payments, with or without payments, in many currencies, etc.
-
-One of better, more infomative ways of working with Flow API is using Sessions and Orders. Solidus and
-probably any other online shop can support this features. I assume that Worst way of working with is
-to charge this amount from that credit card, but we support that as well.
-
-The thing is that ActiveMerchent is not supporting sessions and orders, natively. If one wants
+ActiveMerchent is not supporting sessions and orders, natively. If one wants
 to maintain sessions and orders in Flow, you have to do it outside the ActiveMerchant
 terminology which focuses around purchases, voids and refunds.
 
 Another thing to have in mind is that Solidus/Spree can't work with ActiveMerchent directly, it has to have
-an adapter. Adapter can be "stupid" and light, and can forward all the "heavy lifting" to ActiveMerchant gem.
+an adapter. Adapter can be "stupid" and light, and can forward all the "heavy lifting" to ActiveMerchant gem
+but it can also have all the logic localy.
 
 In http://guides.spreecommerce.org/developer/payments.html at the bottom of the page Spree authors say
 
 "better_spree_paypal_express and spree-adyen are good examples of standalone
 custom gateways. No dependency on spree_gateway or activemerchant required."
 
-Reading that we can see this is even considered good approach. What came to my undestanding,
-is that is is also preffered mode for us.
+Reading that we can see this is even considered good approach. For us, this is a possibility
+but we consume ActiveMerchatFlow gem.
 
 ## ActiveMerchant gem into more detail
 
@@ -94,15 +89,11 @@ From product list to purchase, complete chain v1
       Product prices that are shown in cart come directly from Flow API.
   * in checkout, when customer address is added or shipping method defined,
     all is synced with flow order.
-  * when order is complete, we trigger flow-cc-authorize or flow-cc-capture
-    * this can be done in two ways
-      * directly on Spree::Order object instance. This is good because all actions
-        are functions of the order object anyway
-      * using ActiveMerchant adapter. possible, but not so elegant
-
-What it is important to say here is that we do not use ActiveMerchant::Flow directly,
-because Solidus/Spree is not sending localized prices. We have to capture the request to
-ActiveMerchant and follow with our own localized total amount and currency.
+  * when order is complete, we trigger flow-cc-authorize or flow-cc-capture directly
+    on Spree::Order object instance. This is good because all gateway actions
+    are functions of the order object anyway.
+    * flow-cc-authorize or flow-cc-capture use ActiveMerchantFlow to execute this actions
+    * ActiveMerchantFlow included flow-reference gem
 
 ## What can be better
 
@@ -125,14 +116,12 @@ What I did not see but thing is great idea is to have custom light Flow admin pr
 /admin/flow
 
 that will ease the way of working with Flow. Code can be made to be Rails 4 and Rails 5 compatibile.
-Part of that is allready done as can be seen here https://i.imgur.com/FXbPrwK.png
+Part of that is allready done as can be seen here [Flow admin screenshot](https://i.imgur.com/FXbPrwK.png)
 
-By default flow Admin is anybody that is Solidus admin.
+By default Flow Admin (on /admin/flow) is anybody that is Solidus admin.
 
 This way we provide good frontend info, some integration notes in realtime as opposed to running
 rake tests to check for integrity of Flow integration.
 
-I suggest we make it part of flow-solidus gem
-
-
+I suggest we make it part of flow-solidus gem.
 
