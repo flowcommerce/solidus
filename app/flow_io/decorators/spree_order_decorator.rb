@@ -1,6 +1,8 @@
 # added flow specific methods to Spree::Order
 # http://docs.solidus.io/Spree/Order.html
 
+require '/Users/dux/dev/org/flow.io/activemerchant_flow/lib/activemerchant_flow.rb'
+
 require 'digest/sha1'
 
 Spree::Order.class_eval do
@@ -30,22 +32,18 @@ Spree::Order.class_eval do
   def flow_cc_authorization
     raise StandarError, 'Flow credit card token not found' unless flow_number
 
+    flow_currency = flow_cache['total']['current']['currency']
+    flow_amount   = flow_cache['total']['current']['amount']
+
+    raise StandarError, 'Currency not found in flow cache' unless flow_currency
+    raise StandarError, 'Amount not found in flow cache' unless flow_amount
+
     data = {
       'order_number':  flow_number,
-      'currency':      currency,
-      'amount':        total,
+      'currency':      flow_currency,
+      'amount':        flow_amount,
       'token':         flow_cc_token,
     }
-
-    # not used in MerchantOfRecordAuthorizationForm
-    # data['custumer'] = {
-    #   name: {
-    #     first: billing_address.first_name,
-    #     last: billing_address.last_name
-    #   },
-    # }
-    # data['custumer']['phone'] = billing_address.phone if billing_address.phone
-    # data['custumer']['email'] = created_by.email
 
     # we allways have order id so we allways use MerchantOfRecordAuthorizationForm
     auth_form = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
