@@ -1,6 +1,8 @@
 # added flow specific methods to Spree::Order
 # http://docs.solidus.io/Spree/Order.html
 
+require '/Users/dux/dev/org/flow.io/activemerchant_flow/lib/activemerchant_flow.rb'
+
 require 'digest/sha1'
 
 Spree::Order.class_eval do
