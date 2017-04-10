@@ -12,7 +12,7 @@ module Flow::Api
         cc = {}
         cc[:number]           = credit_card.number
         cc[:name]             = credit_card.name
-        cc[:cvv]              = credit_card.verification_value
+        cc[:cvv]              = credit_card.verification_value.to_s
         cc[:expiration_year]  = credit_card.year.to_i
         cc[:expiration_month] = credit_card.month.to_i
         cc
