@@ -83,8 +83,8 @@ class Flow::Order
     flow_number = @order.flow_number
 
     opts = {}
-    opts[:organization] = ENV.fetch('FLOW_ORGANIZATION')
-    opts[:experience] = @experience.key
+    opts[:organization] = Flow.organization
+    opts[:experience]   = @experience.key
 
     body = {}
     body = {

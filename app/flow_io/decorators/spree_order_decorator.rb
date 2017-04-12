@@ -44,9 +44,10 @@ Spree::Order.class_eval do
     }
 
     # we allways have order id so we allways use MerchantOfRecordAuthorizationForm
-    auth_form = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
-    response  = FlowCommerce.instance.authorizations.post(Flow.organization, auth_form)
-    status    = response.result.status.value
+    auth_form      = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
+    response       = FlowCommerce.instance.authorizations.post(Flow.organization, auth_form)
+    status_message = response.result.status.value
+    status         = status_message == ::Io::Flow::V0::Models::AuthorizationStatus.authorized.value
 
     store = {}
     store['authorization_id'] = response.id
@@ -56,7 +57,7 @@ Spree::Order.class_eval do
 
     update_column :flow_cache, flow_cache.merge('authorization': store)
 
-    ActiveMerchant::Billing::Response.new(status == 'authorized', status, {response: response}, {authorization: store})
+    ActiveMerchant::Billing::Response.new(status, status_message, {response: response}, {authorization: store})
   rescue Io::Flow::V0::HttpClient::ServerError => exception
     flow_error_response(exception)
   end
@@ -68,7 +69,7 @@ Spree::Order.class_eval do
     raise ArgumentError, 'No Authorization data, please authorize first' unless data
 
     capture_form = ::Io::Flow::V0::Models::CaptureForm.new(data)
-    response     = FlowCommerce.instance.captures.post(ENV.fetch('FLOW_ORGANIZATION'), capture_form)
+    response     = FlowCommerce.instance.captures.post(Flow.organization, capture_form)
 
     if response.id
       update_column :flow_cache, flow_cache.merge('capture': response.to_hash)

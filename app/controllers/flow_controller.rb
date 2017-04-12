@@ -22,7 +22,7 @@ class FlowController < ApplicationController
 
       case action
         when 'order'
-          # response = FlowCommerce.instance.orders.get_by_number(ENV.fetch('FLOW_ORGANIZATION'), order.flow_number)
+          # response = FlowCommerce.instance.orders.get_by_number(Flow.organization, order.flow_number)
           response = Flow.api(:get, '/:organization/orders/%s' % order.flow_number)
         when 'raw'
           response = order.attributes
