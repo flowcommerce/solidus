@@ -79,11 +79,5 @@ module Spree
 
       Spree::Order.find_by(number: order_number)
     end
-
-    def error_response(exception_object, message=nil)
-      message ||= exception_object.message
-      Response.new(false, message, exception: exception_object)
-    end
-
   end
 end

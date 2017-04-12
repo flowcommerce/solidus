@@ -46,21 +46,17 @@ Spree::Order.class_eval do
     # we allways have order id so we allways use MerchantOfRecordAuthorizationForm
     auth_form = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
     response  = FlowCommerce.instance.authorizations.post(Flow.organization, auth_form)
+    status    = response.result.status.value
 
-    # binding.pry
-    # if response.authorized
-    if response.result.status.value == 'authorized'
-      # what store this in spree order object, for capure
-      store = {}
-      store['authorization_id'] = response.id
-      store['currency']         = response.currency
-      store['amount']           = response.amount
-      store['key']              = response.key
+    store = {}
+    store['authorization_id'] = response.id
+    store['currency']         = response.currency
+    store['amount']           = response.amount
+    store['key']              = response.key
 
-      update_column :flow_cache, flow_cache.merge('authorization': store)
-    end
+    update_column :flow_cache, flow_cache.merge('authorization': store)
 
-    ActiveMerchant::Billing::Response.new(true, 'success', {response: response}, {authorization: store})
+    ActiveMerchant::Billing::Response.new(status == 'authorized', status, {response: response}, {authorization: store})
   rescue Io::Flow::V0::HttpClient::ServerError => exception
     flow_error_response(exception)
   end
@@ -79,7 +75,7 @@ Spree::Order.class_eval do
       finalize!
     end
 
-    ActiveMerchant::Billing::Response.new(true, 'success', {response: response})
+    ActiveMerchant::Billing::Response.new(!!response.id, 'success', {response: response})
   rescue => exception
     flow_error_response(exception)
   end
@@ -88,7 +84,13 @@ Spree::Order.class_eval do
 
   # we want to return errors in standardized format
   def flow_error_response(exception_object, message=nil)
-    message ||= exception_object.message
+    message = if exception_object.respond_to?(:body) && exception_object.body.length > 0
+      description  = JSON.load(exception_object.body)['messages'].to_sentence
+      '%s: %s (%s)' % [exception_object.details, description, exception_object.code]
+    else
+      exception_object.message
+    end
+
     ActiveMerchant::Billing::Response.new(false, message, exception: exception_object)
   end
 end
