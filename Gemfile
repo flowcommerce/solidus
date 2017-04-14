@@ -13,7 +13,7 @@ gem 'rails', '5.0.2'
 gem 'pg'
 gem 'hashie'
 gem 'flowcommerce'
-gem 'activemerchant_flow'
+# gem 'activemerchant_flow'
 gem 'pry-rails'                # better console
 gem 'awesome_print'
 

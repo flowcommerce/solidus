@@ -41,15 +41,35 @@ namespace :flow do
     puts "\nFor total of %s products, %s needed update" % [total_sum.to_s.blue, (update_sum == 0 ? 'none' : update_sum).to_s.green]
   end
 
-  desc 'Gets and cache experiences from flow'
+  desc 'Check if ENV vars, center and tier per experience is set'
   task check: :environment do
     required_env_variables = ['FLOW_API_KEY', 'FLOW_ORGANIZATION', 'FLOW_BASE_COUNTRY']
     required_env_variables.each { |el| puts 'ENV: %s - %s ' % [el, ENV[el].present? ? 'present'.green : 'MISSING'.red]  }
 
-    puts 'Getting experiences for flow org: %s' % ENV.fetch('FLOW_ORGANIZATION')
-    client   = FlowCommerce.instance
-    api_data = client.experiences.get(ENV.fetch('FLOW_ORGANIZATION'))
-    puts 'Got %d experinences - %s'.green % [api_data.length, api_data.map(&:country).join(', ')]
+    # experiences
+    puts 'Getting experiences for flow org: %s' % Flow.organization
+    client      = FlowCommerce.instance
+    experiences = client.experiences.get(Flow.organization)
+    puts 'Got %d experinences - %s'.green % [experiences.length, experiences.map(&:country).join(', ')]
+
+    # create detault experience unless one exists
+    center_name     = 'default'
+    current_cetners = client.centers.get(Flow.organization).map(&:key)
+    if current_cetners.include?(center_name)
+      puts 'Default center: %s' % 'present'.green
+    else
+      Flow.api :put, '/:organization/centers/%s' % center_name, {}, {'key':center_name,'address':{'contact':{'name':{'first':'Kinto','last':'Doe'},'company':'XYZ Corporation, Inc','email':'dcone@test.flow.io','phone':'1-555-444-0001'},'location':{'streets':['88 East Broad Street'],'city':'Columbus','province':'OH','postal':'43215','country':'USA'}},'packaging':[{'dimensions':{'packaging':{'depth':{'value':'9','units':'inch'},'length':{'value':'13','units':'inch'},'weight':{'value':'1','units':'pound'},'width':{'value':'3','units':'inch'}}},'name':'Big Box','number':'box1'}],'name':'Solidus Test','services':[{'service':'dhl-express-worldwide'},{'service':'landmark-global'}],'schedule':{'holiday':'us_bank_holidays','exception':[{'type':'closed','datetime_range':{'from':'2016-05-05T18:30:00.000Z','to':'2016-05-06T18:30:00.000Z'}}],'calendar':'weekdays','cutoff':'16:30'},'timezone':'US/Eastern'}
+      puts 'Default center: %s (run again)' % 'created'.blue
+    end
+
+    # tiers
+    tiers = FlowCommerce.instance.tiers.get(Flow.organization)
+    experiences.each do |exp|
+      count      = tiers.select{ |tier| tier.experience.id == exp.key }.length
+      count      = 0 if count == 3
+      count_desc = count == 0 ? '0 (error!)'.red : count.to_s.green
+      puts 'Experience %s has %s devivery tiers defined' % [exp.key.yellow, count_desc]
+    end
   end
 
   desc 'Sync localized catalog items'
@@ -59,8 +79,7 @@ namespace :flow do
 
     total = 0
 
-    org = ENV.fetch('FLOW_ORGANIZATION')
-    experiences = FlowCommerce.instance.experiences.get(org)
+    experiences = FlowCommerce.instance.experiences.get(Flow.organization)
 
     experiences.each do |experience|
 
