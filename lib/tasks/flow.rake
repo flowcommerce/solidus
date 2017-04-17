@@ -66,7 +66,6 @@ namespace :flow do
     tiers = FlowCommerce.instance.tiers.get(Flow.organization)
     experiences.each do |exp|
       count      = tiers.select{ |tier| tier.experience.id == exp.key }.length
-      count      = 0 if count == 3
       count_desc = count == 0 ? '0 (error!)'.red : count.to_s.green
       puts 'Experience %s has %s devivery tiers defined' % [exp.key.yellow, count_desc]
     end
@@ -93,7 +92,7 @@ namespace :flow do
         puts "\nGetting items: %s, rows %s - %s" % [country_id.upcase.green, offset, offset + page_size]
 
         # items = Flow.api(:get, '/:organization/experiences/items', country: country_id, limit: country_id, offset: offset)
-        items = FlowCommerce.instance.experiences.get_items org, :country => country_id, :limit => page_size, :offset => offset
+        items = FlowCommerce.instance.experiences.get_items Flow.organization, :country => country_id, :limit => page_size, :offset => offset
 
         offset += page_size
 
@@ -140,7 +139,7 @@ namespace :flow do
 
         thread_pool.process do
           Flow.api :delete, '/:organization/catalog/items/%s' % sku
-          puts 'Removed item: %s' % sku.red
+          $stdout.puts 'Removed item: %s' % sku.red
         end
       end
     end
