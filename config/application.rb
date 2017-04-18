@@ -33,6 +33,8 @@ module DemoShop
       Flow.organization = ENV.fetch('FLOW_ORGANIZATION')
       Flow.base_country = ENV.fetch('FLOW_BASE_COUNTRY')
       Flow.api_key      = ENV.fetch('FLOW_API_KEY')
+
+      ActionMailer::Base.default_url_options[:host] = Spree::Store.find_by(default:true).url
     end
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -40,3 +42,4 @@ module DemoShop
     # -- all .rb files in that directory are automatically loaded.
   end
 end
+
