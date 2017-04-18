@@ -14,5 +14,7 @@ Rails.application.routes.draw do
     get  '/order_update', to: '/flow#order_update'
   end
 
+  get '/about', to: 'flow#about'
+
   get '/admin/flow', to:'flow#index'
 end

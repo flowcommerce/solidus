@@ -44,6 +44,10 @@ class FlowController < ApplicationController
     render text: '%s: %s' % [$!.class.to_s, $!.message]
   end
 
+  def about
+    'xx'
+  end
+
   private
 
   def user_is_admin
