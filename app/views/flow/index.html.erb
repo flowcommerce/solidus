@@ -38,7 +38,7 @@
         <small class="error">No flow token</small>
       <% end %>
     </td>
-    <td style="text-align: right;"><%= '%s - <b>%s</b> %s '.html_safe % [pluralize(order.line_items.sum(:quantity), 'item'), order.total, order.currency] %></td>
+    <td style="text-align: right;"><%= '%s - <b>%s</b>'.html_safe % [pluralize(order.line_items.sum(:quantity), 'item'), order.flow_total] %></td>
   </tr>
 <% end %>
 

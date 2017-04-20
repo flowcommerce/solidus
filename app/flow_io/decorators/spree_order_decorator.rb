@@ -20,6 +20,23 @@ Spree::Order.class_eval do
     number
   end
 
+  # shows localized total, if possible. if not, fall back to Solidus default
+  def flow_total
+    experience_key = flow_cache['experience_key']
+    cache_total    = flow_cache['total']
+    total          = nil
+
+    if cache_total
+      total = cache_total[experience_key]
+
+      if cache_total['current'].is_a?(Hash)
+        total ||= '%s %s' % [cache_total['current']['amount'], cache_total['current']['currency']]
+      end
+    end
+
+    total && total =~ /\d/ ? total : '%s %s' % [self.total, currency]
+  end
+
   def flow_cc_token
     cards = credit_cards.select{ |cc| cc[:flow_cache]['cc_token'] }
     return unless cards.first
