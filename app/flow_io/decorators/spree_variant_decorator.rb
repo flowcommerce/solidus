@@ -66,6 +66,14 @@ Spree::Variant.class_eval do
   def flow_api_item
     image_base = 'http://cdn.color-mont.com'
 
+    # add product categories
+    categories = []
+    taxon = product.taxons.first
+    while taxon
+      categories.unshift taxon.name
+      taxon = taxon.parent
+    end
+
     Io::Flow::V0::Models::ItemForm.new(
       number:      id.to_s,
       locale:      'en_US',
@@ -78,6 +86,7 @@ Spree::Variant.class_eval do
         { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
         { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
       ],
+      categories: categories,
       attributes: {
         weight: weight.to_s,
         height: height.to_s,
