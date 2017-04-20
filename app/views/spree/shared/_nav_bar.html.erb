@@ -11,7 +11,7 @@
       onclick="$('#choose-experience').toggle(200);"
       >
       <% for experience in Flow::Experience.all(:no_world) %>
-        <a href="?flow_exp=<%= experience.key %>" style="display: block; margin-bottom: 10px;">
+        <a href="?flow_experience=<%= experience.key %>" style="display: block; margin-bottom: 10px;">
           <img style="width:32px; height: 32px; vertical-align: middle;" src="<%= flow_flag(experience, 32) %>" />
           <%= experience.name %>
         </a>

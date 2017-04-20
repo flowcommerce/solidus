@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     # get by IP unless we got it from session
     @flow_session ||= Flow::Session.new ip: request.ip unless @flow_session
 
-    if flow_exp_key = params[:flow_exp]
+    if flow_exp_key = params[:flow_experience]
       @flow_session.change_experience(flow_exp_key)
       redirect_to request.path
     end
