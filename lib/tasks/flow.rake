@@ -69,9 +69,17 @@ namespace :flow do
     puts 'Tiers:'
     tiers = FlowCommerce.instance.tiers.get(Flow.organization)
     experiences.each do |exp|
-      count      = tiers.select{ |tier| tier.experience.id == exp.key }.length
-      count_desc = count == 0 ? '0 (error!)'.red : count.to_s.green
-      puts ' Experience %s has %s devivery tiers defined' % [exp.key.yellow, count_desc]
+      exp_tiers    = tiers.select{ |tier| tier.experience.id == exp.key }
+      count        = exp_tiers.length
+      count_desc   = count == 0 ? '0 (error!)'.red : count.to_s.green
+      print ' Experience %s has %s devivery tiers defined, ' % [exp.key.yellow, count_desc]
+
+      exp_services = exp_tiers.inject([]) { |total, tier| total.push(*tier.services.map(&:id)) }
+      if exp_services.length == 0
+        puts 'and no delivery services defined!'.red
+      else
+        puts 'with %s devlivery services defined (%s)' % [exp_services.length.to_s.green, exp_services.join(', ')]
+      end
     end
 
     # default URL
