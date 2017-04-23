@@ -2,6 +2,7 @@ require 'flowcommerce'
 require 'thread/pool'
 require 'digest/sha1'
 
+desc 'lists all flow tasks'
 task :flow do |t|
   command = 'rake -T | grep flow'
   puts '    %s' % command

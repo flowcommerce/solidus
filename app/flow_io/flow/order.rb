@@ -98,23 +98,33 @@ class Flow::Order
     @order.flow_cache['selection'] ||= []
     @order.flow_cache['selection'].delete('placeholder')
     body[:selection] = @order.flow_cache['selection']
-    [opts, body]
+
+    # calculate digest body and cache it
+    digest = Digest::SHA1.hexdigest(body.to_json)
+
+    [opts, body, digest]
   end
 
   # helper method to send complete order from spreee to flow
   def synchronize!
-    opts, body = build_flow_request
+    opts, body, digest = build_flow_request
 
-    # replace when fixed integer error
-    # body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
-    # opts[:experience] = @experience.key
-    # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(body)
-    # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
+    if @order.flow_cache['digest_body'] != digest
+      @order.flow_cache['digest_body'] = digest
 
+      # replace when fixed integer error
+      # body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
+      # opts[:experience] = @experience.key
+      # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(body)
+      # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
 
-    @response = Flow.api(:put, '/:organization/orders/%s' % body[:number], opts, body)
+      @response = Flow.api(:put, '/:organization/orders/%s' % body[:number], opts, body)
 
-    write_total_in_cache
+      write_total_in_cache
+    else
+      # if digest body matches, use get to build request
+      @response = Flow.api(:get, '/:organization/orders/%s' % body[:number])
+    end
 
     @response
   end

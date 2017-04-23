@@ -79,6 +79,9 @@ class ApplicationController < ActionController::Base
   def flow_sync_order
     return unless @order && @order.id
 
+    # maybe delete order in flow if we have sync id
+    return if @order.line_items.length == 0
+
     return if request.path.include?('/admin/')
 
     @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
