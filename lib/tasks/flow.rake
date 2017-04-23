@@ -2,6 +2,29 @@ require 'flowcommerce'
 require 'thread/pool'
 require 'digest/sha1'
 
+task :flow do |t|
+  command = 'rake -T | grep flow'
+  puts '    %s' % command
+  puts '    -'
+
+  tasks = `#{command}`.split($/)
+  tasks.each_with_index do |task, index|
+    puts ' %d. %s' % [index + 1, task]
+  end
+
+  puts '    -'
+  print 'Task number: '
+  task = $stdin.gets.to_i
+  task = tasks[task - 1].to_s.split(/\s+/)[1]
+
+  if task.present?
+    puts 'Executing: %s' % task
+    Rake::Task[task].invoke
+  else
+    puts 'task not found'.red
+  end
+end
+
 namespace :flow do
   # uploads catalog to flow api
   # using local solidus database
