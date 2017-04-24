@@ -98,6 +98,14 @@ Spree::Order.class_eval do
     flow_error_response(exception)
   end
 
+  # clear invalid zero amount payments. Solidsus bug?
+  def clear_zero_amount_payments!
+    # class attribute that can be set to true
+    return unless Flow::Order.clear_zero_amount_payments
+
+    payments.where(amount:0, state: 'invalid').map(&:destroy)
+  end
+
   private
 
   # we want to return errors in standardized format

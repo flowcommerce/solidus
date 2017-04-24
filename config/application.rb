@@ -35,6 +35,8 @@ module DemoShop
       Flow.api_key      = ENV.fetch('FLOW_API_KEY')
 
       ActionMailer::Base.default_url_options[:host] = Spree::Store.find_by(default:true).try(:url)
+
+      Flow::Order.clear_zero_amount_payments = true
     end
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -42,4 +44,3 @@ module DemoShop
     # -- all .rb files in that directory are automatically loaded.
   end
 end
-

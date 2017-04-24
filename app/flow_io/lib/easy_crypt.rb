@@ -16,6 +16,7 @@ module EasyCrypt
   def encrypt_base(salt)
     local_secret = Rails.application.secrets.secret_key_base[0,32]
     key          = ActiveSupport::KeyGenerator.new(local_secret).generate_key(salt || '', 32)
+
     ActiveSupport::MessageEncryptor.new(key)
   end
 

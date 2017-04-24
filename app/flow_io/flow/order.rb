@@ -14,11 +14,13 @@
 #  fo.order.flow_cache['total']    # inspects flow_cache['total']
 
 class Flow::Order
-  attr_reader   :response
-  attr_reader   :order
-  attr_reader   :customer
+  FLOW_CENTER = 'default' unless defined?(::Flow::Order::FLOW_CENTER)
 
-  FLOW_CENTER ||= 'default'
+  class_attribute :clear_zero_amount_payments
+
+  attr_reader     :response
+  attr_reader     :order
+  attr_reader     :customer
 
   def initialize order:, experience: nil, customer: nil
     if experience
@@ -38,6 +40,67 @@ class Flow::Order
     @customer   = customer
     @items      = []
   end
+
+  # helper method to send complete order from spreee to flow
+  def synchronize!
+    sync_body!
+    @response
+  end
+
+  def error?
+    @response['code'] == 'generic_error'
+  end
+
+  def error
+    @response['messages'].join(', ')
+  end
+
+  def delivery
+    deliveries.select{ |el| el[:active] }.first
+  end
+
+  # delivery methods are defined in flow console
+  def deliveries
+    delivery_list = @response['deliveries'][0]['options']
+
+    @order.flow_cache ||= {}
+    @order.flow_cache['selection'] ||= []
+
+    delivery_list = delivery_list.map do |opts|
+      name         = opts['tier']['name']
+      name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
+      selection_id = opts['id']
+
+      {
+        id:    selection_id,
+        price: { label: opts['price']['label'] },
+        active: @order.flow_cache['selection'].include?(selection_id),
+        name: name
+      }
+    end.to_a
+
+    # make first one active unless we have active element
+    delivery_list.first[:active] = true unless delivery_list.select{ |el| el[:active] }.first
+
+    delivery_list
+  end
+
+  # accepts line item, usually called from views
+  def line_item_price line_item, total=false
+    id = line_item.variant.id.to_s
+
+    @response['lines'] ||= []
+    item = @response['lines'].select{ |el| el['item_number'] == id }.first
+    return Flow.price_not_found unless item
+
+    total ? item['total']['label'] : item['price']['label']
+  end
+
+  def total_price
+    @response['total']['label'] rescue Flow.price_not_found
+  end
+
+  private
 
   # if customer is defined, add customer info
   # it is possible to have order in solidus without customer info (new guest session)
@@ -105,11 +168,13 @@ class Flow::Order
     [opts, body, digest]
   end
 
-  # helper method to send complete order from spreee to flow
-  def synchronize!
+  def sync_body!
     opts, body, digest = build_flow_request
 
-    if @order.flow_cache['digest_body'] != digest
+    if @order.flow_cache['digest_body'] == digest
+      # if digest body matches, use get to build request
+      @response = Flow.api(:get, '/:organization/orders/%s' % body[:number])
+    else
       @order.flow_cache['digest_body'] = digest
 
       # replace when fixed integer error
@@ -121,68 +186,8 @@ class Flow::Order
       @response = Flow.api(:put, '/:organization/orders/%s' % body[:number], opts, body)
 
       write_total_in_cache
-    else
-      # if digest body matches, use get to build request
-      @response = Flow.api(:get, '/:organization/orders/%s' % body[:number])
     end
-
-    @response
   end
-
-  def total_price
-    @response['total']['label'] rescue Flow.price_not_found
-  end
-
-  # accepts line item, usually called from views
-  def line_item_price line_item, total=false
-    id = line_item.variant.id.to_s
-
-    @response['lines'] ||= []
-    item = @response['lines'].select{ |el| el['item_number'] == id }.first
-    return Flow.price_not_found unless item
-
-    total ? item['total']['label'] : item['price']['label']
-  end
-
-  # delivery methods are defined in flow console
-  def deliveries
-    delivery_list = @response['deliveries'][0]['options']
-
-    @order.flow_cache ||= {}
-    @order.flow_cache['selection'] ||= []
-
-    delivery_list = delivery_list.map do |opts|
-      name         = opts['tier']['name']
-      name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
-      selection_id = opts['id']
-
-      {
-        id:    selection_id,
-        price: { label: opts['price']['label'] },
-        active: @order.flow_cache['selection'].include?(selection_id),
-        name: name
-      }
-    end.to_a
-
-    # make first one active unless we have active element
-    delivery_list.first[:active] = true unless delivery_list.select{ |el| el[:active] }.first
-
-    delivery_list
-  end
-
-  def delivery
-    deliveries.select{ |el| el[:active] }.first
-  end
-
-  def error?
-    @response['code'] == 'generic_error'
-  end
-
-  def error
-    @response['messages'].join(', ')
-  end
-
-  private
 
   def add_item line_item
     variant   = line_item.variant
@@ -216,5 +221,6 @@ class Flow::Order
       @order.update_column :flow_cache, @order.flow_cache
     end
   end
+
 end
 
