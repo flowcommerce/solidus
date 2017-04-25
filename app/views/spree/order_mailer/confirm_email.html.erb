@@ -1,0 +1,51 @@
+<%
+  @flow_order = Flow::Order.new(order: @order)
+  @flow_order.synchronize!
+%>
+
+<style>
+  table.order td { padding: 4px; border-top: 1px solid #bbb; }
+</style>
+
+<h4><%= Spree.t('order_mailer.confirm_email.dear_customer') %></h4>
+
+<br>
+
+<p><%= Spree.t('order_mailer.confirm_email.instructions') %></p>
+<p><%= Spree.t('order_mailer.confirm_email.order_summary') %></p>
+
+<table class="order">
+  <tr>
+    <th>Product</th>
+    <th width="100" align="right">Price</th>
+    <th width="80" align="center">Quantity</th>
+    <th width="100" align="right">Total</th>
+  </tr>
+  <% @order.line_items.each do |line_item| %>
+    <tr>
+      <td><%= line_item.variant.product.name %></td>
+      <td align="right"><%= @flow_order.line_item_price(line_item) %></td>
+      <td align="center"><%= line_item.quantity %></td>
+      <td align="right"><%= @flow_order.line_item_price(line_item, :with_quantity) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<br>
+
+<p><b>Total</b></p>
+
+<table class="order">
+  <% @flow_order.response['prices'].each do |price| %>
+    <tr><td width="120"><%= price['key'].to_s.capitalize %></td><td align="right"><%= price['label'] %></td></tr>
+  <% end %>
+
+  <tr>
+    <td><%= Spree.t(:total) %></td>
+    <td align="right"><b><%= @flow_order.total_price %></b></td>
+  </tr>
+</table>
+
+<br>
+
+<p><%= Spree.t('order_mailer.confirm_email.thanks') %></p>

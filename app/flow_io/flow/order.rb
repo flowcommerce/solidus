@@ -30,7 +30,8 @@ class Flow::Order
         order.update_column :flow_cache, order.flow_cache.merge(experience_key: experience.key)
       end
     else
-      experience = flow_cache['experience_key']
+      experience = order.flow_cache['experience_key']
+      experience = Flow::Experience.get(experience)
 
       raise(ArgumentError, 'Experience not defined and not found in flow cache.') unless experience
     end
