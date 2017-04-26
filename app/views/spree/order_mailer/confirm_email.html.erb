@@ -36,13 +36,13 @@
 <p><b>Total</b></p>
 
 <table class="order">
-  <% @flow_order.response['prices'].each do |price| %>
+  <% @order.flow_cache['prices'].each do |price| %>
     <tr><td width="120"><%= price['key'].to_s.capitalize %></td><td align="right"><%= price['label'] %></td></tr>
   <% end %>
 
   <tr>
     <td><%= Spree.t(:total) %></td>
-    <td align="right"><b><%= @flow_order.total_price %></b></td>
+    <td align="right"><b><%= @order.flow_cache['total']['current']['label'] %></b></td>
   </tr>
 </table>
 

@@ -164,7 +164,7 @@ class Flow::Order
     body[:selection] = @order.flow_cache['selection']
 
     # calculate digest body and cache it
-    digest = Digest::SHA1.hexdigest(body.to_json)
+    digest = Digest::SHA1.hexdigest(opts.to_json + body.to_json)
 
     [opts, body, digest]
   end
@@ -172,7 +172,9 @@ class Flow::Order
   def sync_body!
     opts, body, digest = build_flow_request
 
-    if @order.flow_cache['digest_body'] == digest
+    use_get = @order.state == 'complete' || @order.flow_cache['digest_body'] == digest
+
+    if use_get
       # if digest body matches, use get to build request
       @response = Flow.api(:get, '/:organization/orders/%s' % body[:number])
     else
@@ -215,8 +217,11 @@ class Flow::Order
     total = @response['total'] || return
     check = @order.flow_cache.to_json
     @order.flow_cache['total'] ||= {}
-    @order.flow_cache['total']['current']       = total.slice('currency','amount')
+    @order.flow_cache['total']['current']       = total.slice('currency','amount', 'label')
     @order.flow_cache['total'][@experience.key] = total['label']
+
+    # we need to cache this so we can show total price breakdown it in order mailer
+    @order.flow_cache['prices'] = @response['prices'].map { |el| el.slice('key', 'label') }
 
     unless check == @order.flow_cache.to_json
       @order.update_column :flow_cache, @order.flow_cache
