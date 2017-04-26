@@ -45,7 +45,13 @@ class FlowController < ApplicationController
   end
 
   def about
-    'xx'
+  end
+
+  def restrictions
+    @list = {}
+    FlowOption.all.each do |flow_option|
+      @list[flow_option.experience_region_id] = Spree::Product.where('id in (select product_id from spree_variants where id in (?))', flow_option.restricted_ids)
+    end
   end
 
   private

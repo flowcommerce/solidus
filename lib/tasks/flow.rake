@@ -154,6 +154,40 @@ namespace :flow do
     puts 'Finished with total of %s rows.' % total.to_s.green
   end
 
+  desc 'Sync restricted products'
+  task :sync_restricted_products => :environment do |t|
+    page_size  = 100
+    offset     = 0
+    total      = 0
+    products   = {}
+    flow_data  = []
+
+    while offset == 0 || flow_data.length == 100
+      flow_data = Flow.api :get, '/:organization/item-restrictions', offset: offset, page_size: page_size
+      offset += page_size
+      total  += flow_data.length
+
+      # build hash of restricted products
+      #  key is experience id
+      #  value is array of restricted products
+      flow_data.each do |item|
+        number = item['item']['number']
+        item['regions'].each do |region|
+          products[region['id']] ||= []
+          products[region['id']].push number.to_i
+        end
+      end
+    end
+
+    products.each do |experience_id, list_of_restricted_products|
+      flow_option = FlowOption.find_or_initialize_by(experience_region_id: experience_id)
+      flow_option.restricted_ids = list_of_restricted_products
+      flow_option.save!
+    end
+
+    puts 'Added total of %s restricted products from Flow' % total.to_s.blue
+  end
+
   # checks existance of every item in local produt catalog
   # remove product from flow unless exists localy
   desc 'Remove unused items from flow catalog'
@@ -217,7 +251,7 @@ namespace :flow do
       puts 'Table flow_options exists'.green
     else
       ActiveRecord::Migration.create_table :flow_options do |t|
-        t.string  :experience
+        t.string  :experience_region_id
         t.integer :restricted_ids, array: true, default: []
       end
     end

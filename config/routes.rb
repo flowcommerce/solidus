@@ -17,4 +17,5 @@ Rails.application.routes.draw do
   get '/about', to: 'flow#about'
 
   get '/admin/flow', to:'flow#index'
+  get '/admin/flow/:action', controller: :flow
 end

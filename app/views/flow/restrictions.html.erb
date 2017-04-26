@@ -1,0 +1,15 @@
+<h3>Restrictions</h3>
+
+<br />
+
+<p>We are not showing this products in following experiences, defined by region id.</p>
+
+<% @list.each do |experience_region_id, products| %>
+  <h4><%= experience_region_id %></h4>
+
+  <ul>
+    <% products.each do |product| %>
+      <li><%= link_to product.name, spree.product_path(product) %></li>
+    <% end %>
+  </ul>
+<% end %>

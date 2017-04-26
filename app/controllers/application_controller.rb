@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
 
     # call all this methods
     flow_sync_order
+    flow_filter_products
 
     # return our data or call super render
     if @flow_render
@@ -26,6 +27,22 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  # filter out restricted products, defined in flow coonsole
+  # https://console.flow.io/:organization/restrictions
+  def flow_filter_products
+    return unless @products
+
+    experience = Flow::Experience.get @flow_exp.key
+    restricted = FlowOption.where(experience_region_id: experience.region.id).first
+    restricted = restricted ? restricted.restricted_ids : []
+    return if restricted.length == 0
+
+    restricted_product_ids = Spree::Product.select('id').where('spree_products.id in (select product_id from spree_variants where id in (?))', restricted).ids
+    return if restricted_product_ids.length == 0
+
+    @products = @products.where('spree_products.id not in (?)', restricted_product_ids)
+  end
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
@@ -50,7 +67,7 @@ class ApplicationController < ActionController::Base
     # try to get experience
     @flow_exp = @flow_session.local.try(:experience)
 
-    # construct dummy objecy unless exp found, to make code
+    # construct dummy objecy unless exp found, to make code work
     @flow_exp ||= Struct.new(:id, :key, :country).new('world', 'world', 'World')
 
     # save flow session ID for client side usage
