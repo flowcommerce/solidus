@@ -156,13 +156,13 @@ namespace :flow do
 
   desc 'Sync restricted products'
   task :sync_restricted_products => :environment do |t|
-    page_size  = 100
+    page_size  = 25
     offset     = 0
     total      = 0
     products   = {}
     flow_data  = []
 
-    while offset == 0 || flow_data.length == 100
+    while offset == 0 || flow_data.length == page_size
       flow_data = Flow.api :get, '/:organization/item-restrictions', offset: offset, page_size: page_size
       offset += page_size
       total  += flow_data.length
