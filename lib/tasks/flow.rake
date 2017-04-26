@@ -212,6 +212,15 @@ namespace :flow do
         puts 'Field %s in table %s added'.blue % [field, table]
       end
     end
+
+    if FlowOption.table_exists?
+      puts 'Table flow_options exists'.green
+    else
+      ActiveRecord::Migration.create_table :flow_options do |t|
+        t.string  :experience
+        t.integer :restricted_ids, array: true, default: []
+      end
+    end
   end
 end
 
