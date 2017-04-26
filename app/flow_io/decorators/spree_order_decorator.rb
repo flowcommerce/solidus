@@ -83,9 +83,28 @@ Spree::Order.class_eval do
     if response.id
       update_column :flow_cache, flow_cache.merge('capture': response.to_hash)
       finalize!
+      ActiveMerchant::Billing::Response.new(true, 'success', {response: response})
+    else
+      ActiveMerchant::Billing::Response.new(false, 'error', {response: response})
     end
+  rescue => exception
+    flow_error_response(exception)
+  end
 
-    ActiveMerchant::Billing::Response.new(!!response.id, 'success', {response: response})
+  def flow_cc_refund
+    raise ArgumentError, 'capture info is not available' unless flow_cache['capture']
+
+    # we allways have capture ID, so we use it
+    refund_data = { capture_id: flow_cache['capture']['id'] }
+    refund_form = ::Io::Flow::V0::Models::RefundForm.new(refund_data)
+    response    = FlowCommerce.instance.refunds.post(Flow.organization, refund_form)
+
+    if response.id
+      update_column :flow_cache, flow_cache.merge('refund': response.to_hash)
+      ActiveMerchant::Billing::Response.new(true, 'success', {response: response})
+    else
+      ActiveMerchant::Billing::Response.new(false, 'error', {response: response})
+    end
   rescue => exception
     flow_error_response(exception)
   end

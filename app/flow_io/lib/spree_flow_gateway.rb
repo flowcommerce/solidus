@@ -64,11 +64,13 @@ module Spree
     end
 
     def refund(money, authorization_key, options={})
-      binding.pry
+      order = get_spree_order options
+      order.clear_zero_amount_payments!
+      order.flow_cc_refund
     end
 
     def void(money, authorization_key, options={})
-      binding.pry
+      # binding.pry
     end
 
     private

@@ -27,11 +27,18 @@ class FlowController < ApplicationController
         when 'raw'
           response = order.attributes
         when 'auth'
-          response = order.flow_cc_authorization
-          response = response.success? ? response.params['response'].to_hash : response.message
+          flow_response = order.flow_cc_authorization
+          response      = flow_response.success? ? flow_response.params['response'].to_hash : flow_response.message
         when 'capture'
-          response = order.flow_cc_capture
-          response = response.success? ? response.params['response'].to_hash : response.message
+          flow_response = order.flow_cc_capture
+          response      = flow_response.success? ? flow_response.params['response'].to_hash : flow_response.message
+        when 'refund'
+          response = order.flow_cache['refund']
+
+          unless response
+            flow_response = order.flow_cc_refund
+            response = flow_response.success? ? order.flow_cache['refund'] : flow_response.message
+          end
         else
           return render text: 'Ation %s not supported' % action
       end

@@ -33,7 +33,13 @@
       <% if order.flow_cc_token %>
         <button class="btn btn-<%= order.flow_cache['authorization'] ? 'success' : 'secondary' %> btn-sm" onclick="window.open('?flow=auth&o_id=<%= order.id %>')">Auth</button>
         &bull;
-        <button class="btn btn-<%= order.flow_cache['capture'] ? 'success' : 'secondary' %> btn-sm" onclick="window.open('?flow=capture&o_id=<%= order.id %>')">Capture</button>
+        <% if order.flow_cache['capture'] %>
+          <button class="btn btn-success btn-sm" onclick="window.open('?flow=capture&o_id=<%= order.id %>')">Capture</button>
+          &bull;
+          <button class="btn btn-<%= order.flow_cache['refund'] ? 'success' : 'secondary' %> btn-sm" onclick="window.open('?flow=refund&o_id=<%= order.id %>')">Refund</button>
+        <% else %>
+          <button class="btn btn-secondary btn-sm" onclick="window.open('?flow=capture&o_id=<%= order.id %>')">Capture</button>
+        <% end %>
       <% else %>
         <small class="error">No flow token</small>
       <% end %>
