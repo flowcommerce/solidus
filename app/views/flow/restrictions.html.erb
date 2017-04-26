@@ -5,11 +5,33 @@
 <p>We are not showing this products in following experiences, defined by region id.</p>
 
 <% @list.each do |experience_region_id, products| %>
-  <h4><%= experience_region_id %></h4>
+  <br />
+  <h4>Experience region id: <%= experience_region_id %></h4>
 
-  <ul>
-    <% products.each do |product| %>
-      <li><%= link_to product.name, spree.product_path(product) %></li>
+  <table class="table">
+    <tr>
+      <th>ID</th>
+      <th>product</th>
+      <th>restrict</th>
+    </tr>
+    <% products[:products].each do |product| %>
+      <tr>
+        <td><%= product.id %></td>
+        <td>
+          <%= link_to product.name, spree.product_path(product) %>
+          <small style="display: block; margin-top:4px;">
+            Variant ids:
+            <%= product.variants.ids.map{ |id|
+              color = products[:keys].include?(id) ? :green : :red
+              %[<span style="color: %s;">%s</span>] % [color, id]
+            }.join(', ').html_safe %>
+          </small>
+        </td>
+        <td>
+          <button class="btn btn-secondary btn-sm">yes</button>
+          <button class="btn btn-secondary btn-sm">no</button>
+        </td>
+      </tr>
     <% end %>
-  </ul>
+  </table>
 <% end %>
