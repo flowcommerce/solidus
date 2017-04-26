@@ -83,6 +83,9 @@ Spree::Order.class_eval do
     if response.id
       update_column :flow_cache, flow_cache.merge('capture': response.to_hash)
       finalize!
+
+      # update_column :payment_state, 'completed'
+
       ActiveMerchant::Billing::Response.new(true, 'success', {response: response})
     else
       ActiveMerchant::Billing::Response.new(false, 'error', {response: response})

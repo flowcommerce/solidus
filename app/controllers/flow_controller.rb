@@ -17,6 +17,9 @@ class FlowController < ApplicationController
   def index
     return unless user_is_admin
 
+    # hard fix, bad
+    Spree::Payment.where(amount:0, state: 'invalid').map(&:destroy)
+
     if action = params[:flow]
       order = Spree::Order.find(params[:o_id])
 
