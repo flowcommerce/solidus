@@ -35,6 +35,7 @@ module DemoShop
       Flow.api_key      = ENV.fetch('FLOW_API_KEY')
 
       ActionMailer::Base.default_url_options[:host] = Spree::Store.find_by(default:true).try(:url)
+      Hashie.logger = Logger.new(nil)
 
       Flow::Order.clear_zero_amount_payments = true
     end

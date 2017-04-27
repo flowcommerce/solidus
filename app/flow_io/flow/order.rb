@@ -86,17 +86,6 @@ class Flow::Order
     delivery_list
   end
 
-  # accepts line item, usually called from views
-  def line_item_price line_item, total=false
-    id = line_item.variant.id.to_s
-
-    @response['lines'] ||= []
-    item = @response['lines'].select{ |el| el['item_number'] == id }.first
-    return Flow.price_not_found unless item
-
-    total ? item['total']['label'] : item['price']['label']
-  end
-
   def total_price
     @response['total']['label'] rescue Flow.price_not_found
   end
@@ -172,13 +161,14 @@ class Flow::Order
   def sync_body!
     opts, body, digest = build_flow_request
 
-    use_get = @order.state == 'complete' || @order.flow_cache['digest_body'] == digest
+    use_get = @order.state == 'complete' || @order.flow_cache['digest'] == digest
+    use_get = false unless @order.flow_cache['order']
 
     if use_get
       # if digest body matches, use get to build request
       @response = Flow.api(:get, '/:organization/orders/%s' % body[:number])
     else
-      @order.flow_cache['digest_body'] = digest
+      @order.flow_cache['digest'] = digest
 
       # replace when fixed integer error
       # body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
@@ -188,7 +178,7 @@ class Flow::Order
 
       @response = Flow.api(:put, '/:organization/orders/%s' % body[:number], opts, body)
 
-      write_total_in_cache
+      write_response_in_cache
     end
   end
 
@@ -213,15 +203,15 @@ class Flow::Order
 
   # set cache for total order ammount
   # written in flow_cache field inside spree_orders table
-  def write_total_in_cache
+  def write_response_in_cache
     total = @response['total'] || return
     check = @order.flow_cache.to_json
     @order.flow_cache['total'] ||= {}
     @order.flow_cache['total']['current']       = total.slice('currency','amount', 'label')
     @order.flow_cache['total'][@experience.key] = total['label']
 
-    # we need to cache this so we can show total price breakdown it in order mailer
-    @order.flow_cache['prices'] = @response['prices'].map { |el| el.slice('key', 'label') }
+      # we need to cache this so we can show total price breakdown it in order mailer
+    @order.flow_cache['order'] = @response.to_hash
 
     unless check == @order.flow_cache.to_json
       @order.update_column :flow_cache, @order.flow_cache

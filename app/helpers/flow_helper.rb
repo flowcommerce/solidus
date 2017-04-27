@@ -70,17 +70,6 @@ module FlowHelper
     taxon && taxon.icon_file_name ? taxon.icon.url : nil
   end
 
-  def flow_cart_total
-    return @flow_order.total_price if @flow_order
-    total = nil
-
-    if simple_current_order && simple_current_order.flow_cache['total']
-      total = simple_current_order.flow_cache['total'][@flow_exp.key]
-    end
-
-    total || Flow.price_not_found
-  end
-
   # this renders link to cart with total cart price
   def flow_link_to_cart(text=nil)
     text = text ? h(text) : Spree.t(:cart)
@@ -92,7 +81,7 @@ module FlowHelper
       text = '%s: (%s)' % [text, Spree.t(:empty)]
       css_class = :empty
     else
-      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, flow_cart_total]
+      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, simple_current_order.flow_total]
       css_class = :full
     end
 
@@ -142,15 +131,13 @@ module FlowHelper
     end.join(", ")
   end
 
-  # used in checkout to show complete price breakdown
+  # used in checkout and mailer to show complete price breakdown
   def total_cart_breakdown
     out =  ['<table style="float: right;">']
 
-    @flow_order.response['prices'].each do |price|
-      out.push '<tr><td>%s</td><td style="text-align: right;">%s</td></tr>' % [price['key'].to_s.capitalize , price['label']]
+    @order.flow_cart_breakdown.each do |price|
+      out.push '<tr><td>%s</td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
     end
-
-    out.push '<tr><td>%s</td><td style="text-align: right;"><b>%s</b></td></tr>' % [Spree.t(:total), flow_cart_total]
 
     out.push '</table>'
     out.join('').html_safe

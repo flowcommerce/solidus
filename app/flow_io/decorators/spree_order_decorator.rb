@@ -12,21 +12,50 @@ Spree::Order.class_eval do
     number
   end
 
-  # shows localized total, if possible. if not, fall back to Solidus default
-  def flow_total
-    experience_key = flow_cache['experience_key']
-    cache_total    = flow_cache['total']
-    total          = nil
+  def flow_order
+    @_flow_hashie ||= Hashie::Mash.new(flow_cache['order'])
+  end
 
-    if cache_total
-      total = cache_total[experience_key]
+  # accepts line item, usually called from views
+  def flow_line_item_price line_item, total=false
+    id = line_item.variant.id.to_s
 
-      if cache_total['current'].is_a?(Hash)
-        total ||= '%s %s' % [cache_total['current']['amount'], cache_total['current']['currency']]
-      end
+    return 'Not synced with flow!' unless flow_cache['order']
+
+    lines = flow_order.lines || []
+    item  = lines.select{ |el| el['item_number'] == id }.first
+
+    return Flow.price_not_found unless item
+
+    total ? item['total']['label'] : item['price']['label']
+  end
+
+  # prepares array of prices that can be easily renderd in templates
+  def flow_cart_breakdown
+    prices = []
+
+    price_model = Struct.new(:name, :label)
+
+    # duty, vat, ...
+    flow_order.prices.each do |price|
+      prices.push price_model.new(price['key'].to_s.capitalize , price['label'])
     end
 
-    total && total =~ /\d/ ? total : '%s %s' % [self.total, currency]
+    # total
+    prices.push price_model.new(Spree.t(:total), flow_total)
+
+    prices
+  end
+
+  # shows localized total, if possible. if not, fall back to Solidus default
+  def flow_total
+    if flow_order.total?
+      flow_order.total.label
+    elsif flow_cache['total']
+      flow_cache['total']['current']['label']
+    else
+      '%s %s' % [self.total, currency]
+    end
   end
 
   def flow_cc_token
@@ -39,8 +68,8 @@ Spree::Order.class_eval do
   def flow_cc_authorization
     raise StandarError, 'Flow credit card token not found' unless flow_number
 
-    flow_currency = flow_cache['total']['current']['currency']
-    flow_amount   = flow_cache['total']['current']['amount']
+    flow_currency = flow_order.total.currency
+    flow_amount   = flow_order.total.amount
 
     raise StandarError, 'Currency not found in flow cache' unless flow_currency
     raise StandarError, 'Amount not found in flow cache' unless flow_amount

@@ -1,6 +1,6 @@
 <%
-  @flow_order = Flow::Order.new(order: @order)
-  @flow_order.synchronize!
+  @prices      = @order.flow_cart_breakdown
+  @total_price = @prices.pop
 %>
 
 <%= Spree.t('order_mailer.confirm_email.dear_customer') %>
@@ -12,15 +12,15 @@
 ---
 Product | Price | Quantity |Total
 <% @order.line_items.each do |line_item| %>
-<%= line_item.variant.product.name %> | <%= @flow_order.line_item_price(line_item) %> | <%= line_item.quantity %> | <%= @flow_order.line_item_price(line_item, :with_quantity) %>
+<%= line_item.variant.product.name %> | <%= @order.flow_line_item_price(line_item) %> | <%= line_item.quantity %> | <%= @order.flow_line_item_price(line_item, :with_quantity) %>
 <% end %>
 
 Total
 ---
-<% @flow_order.response['prices'].each do |price| %>
-<%= price['key'].to_s.capitalize.ljust(10) %>: <%= price['label'] %>
+<% @prices.each do |price| %>
+<%= price.name.ljust(10) %>: <%= price.label %>
 <% end %>
 
-<%= Spree.t(:total).ljust(10) %>: <%= @flow_order.total_price %>
+<%= Spree.t(:total).ljust(10) %>: <%= @total_price[1] %>
 
 <%= Spree.t('order_mailer.confirm_email.thanks') %>

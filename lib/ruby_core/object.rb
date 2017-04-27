@@ -12,4 +12,16 @@ class Object
     end
   end
 
+  def pjson(object)
+    data = if object.respond_to?(:to_hash)
+      object.to_hash
+    elsif object.respond_to?(:save!)
+      object.attributes
+    else
+      object
+    end
+
+    JSON.pretty_generate data
+  end
+
 end
