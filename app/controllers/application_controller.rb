@@ -38,17 +38,12 @@ class ApplicationController < ActionController::Base
     restricted = restricted ? restricted.restricted_ids : []
     return if restricted.length == 0
 
-    restricted_product_ids = Spree::Product.select('id').where('spree_products.id in (select product_id from spree_variants where id in (?))', restricted).ids
-    return if restricted_product_ids.length == 0
-
     # filter out excluded product for particular experience
     @products = @products.where("coalesce(spree_products.flow_cache->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
   end
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
-    # r params
-
     if value = session[FLOW_SESSION_KEY]
       begin
         @flow_session = Flow::Session.new(hash: JSON.load(value))
@@ -97,6 +92,10 @@ class ApplicationController < ActionController::Base
   def flow_sync_order
     return unless @order && @order.id
     return if @order.line_items.length == 0
+
+    # tmp solution for demo (really)
+    @order.clear_zero_amount_payments!
+
     return if request.path.include?('/admin/')
 
     @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)

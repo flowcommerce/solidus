@@ -256,14 +256,16 @@ namespace :flow do
       end
     end
 
-    if FlowOption.table_exists?
-      puts 'Table flow_options exists'.green
-    else
-      ActiveRecord::Migration.create_table :flow_options do |t|
-        t.string  :experience_region_id
-        t.integer :restricted_ids, array: true, default: []
-      end
-    end
+    # I needed this for excluded products
+    # now it is solved by flow_cache field in spree_products
+    # if FlowOption.table_exists?
+    #   puts 'Table flow_options exists'.green
+    # else
+    #   ActiveRecord::Migration.create_table :flow_options do |t|
+    #     t.string  :experience_region_id
+    #     t.integer :restricted_ids, array: true, default: []
+    #   end
+    # end
   end
 end
 
