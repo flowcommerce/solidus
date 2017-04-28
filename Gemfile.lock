@@ -65,6 +65,7 @@ GEM
       activesupport (>= 3.0.0)
     cldr-plurals-runtime-rb (1.0.1)
     climate_control (0.1.0)
+    clipboard (1.1.1)
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.1)
@@ -364,6 +365,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  clipboard
   coffee-rails (~> 4.2)
   dotenv
   faraday

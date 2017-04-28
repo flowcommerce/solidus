@@ -18,8 +18,8 @@ gem 'pry-rails'                # better console
 gem 'awesome_print'
 
 # solidus fw
-gem 'solidus', '2.1.0'
-gem 'solidus_auth_devise'
+gem 'solidus', '2.1.0',    require: false
+gem 'solidus_auth_devise', require: false
 
 group :manual_load do
   gem 'dotenv'
@@ -32,6 +32,7 @@ group :development do
   gem 'puma'
   gem 'listen', '~> 3.0.5'
   gem 'letter_opener'                     # preview email in development
+  gem 'clipboard'
 
   # css and js block
   gem 'therubyracer', platforms: :ruby

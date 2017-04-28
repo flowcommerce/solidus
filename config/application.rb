@@ -12,6 +12,12 @@ require "sprockets/railtie"
 # require "active_job/railtie"
 # require "rails/test_unit/railtie"
 
+require 'solidus_core'
+require 'solidus_api'
+require 'solidus_backend'
+require 'solidus_frontend'
+require 'solidus_auth_devise'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)

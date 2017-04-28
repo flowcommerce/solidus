@@ -52,7 +52,7 @@ Spree::Order.class_eval do
     if flow_order.total?
       flow_order.total.label
     elsif flow_cache['total']
-      flow_cache['total']['current']['label']
+      flow_cache['total']['current']['label'] if flow_cache['total']['current']
     else
       '%s %s' % [self.total, currency]
     end

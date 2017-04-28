@@ -31,7 +31,7 @@ module Flow
     curl.push '"https://api.flow.io%s"' % remote_path
     command = curl.join(' ')
 
-    # puts command
+    puts command if defined?(Rails::Console)
 
     data = JSON.load `#{command}`
 

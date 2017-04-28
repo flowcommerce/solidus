@@ -111,6 +111,7 @@ Spree::Variant.class_eval do
     experience_key = item.local.experience.key
     flow_cache['exp'] ||= {}
     flow_cache['exp'][experience_key] = {}
+    flow_cache['exp'][experience_key]['status'] = item.local.status.value
     flow_cache['exp'][experience_key]['prices'] = item.local.prices.map do |price|
       price = price.to_hash
       [:includes, :adjustment].each { |el| price.delete(el) unless price[el] }
