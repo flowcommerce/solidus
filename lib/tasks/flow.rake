@@ -9,6 +9,9 @@ task :flow do |t|
   puts '    -'
 
   tasks = `#{command}`.split($/)
+
+  tasks.shift # first task is this on, rake flow
+
   tasks.each_with_index do |task, index|
     puts ' %d. %s' % [index + 1, task]
   end
@@ -122,27 +125,32 @@ namespace :flow do
     experiences = FlowCommerce.instance.experiences.get(Flow.organization)
 
     experiences.each do |experience|
-
-      country_id = experience.country.downcase
       page_size  = 100
       offset     = 0
       items      = []
 
       while offset == 0 || items.length == 100
         # show current list size
-        puts "\nGetting items: %s, rows %s - %s" % [country_id.upcase.green, offset, offset + page_size]
+        puts "\nGetting items: %s, rows %s - %s" % [experience.key.green, offset, offset + page_size]
 
-        # items = Flow.api(:get, '/:organization/experiences/items', country: country_id, limit: country_id, offset: offset)
-        items = FlowCommerce.instance.experiences.get_items Flow.organization, :country => country_id, :limit => page_size, :offset => offset
+        items = FlowCommerce.instance.experiences.get_items Flow.organization, experience: experience.key, limit: page_size, offset: offset
 
         offset += page_size
 
         items.each do |item|
-
           total += 1
           sku        = item.number.downcase
           variant    = Spree::Variant.find sku.split('-').last.to_i
           next unless variant
+
+          # if item is not included, mark it in product as excluded
+          # regardles if excluded or restricted
+          unless item.local.status.value == 'included'
+            print '[%s]:' % item.local.status.value.red
+            product = variant.product
+            product.flow_cache['%s.excluded' % experience.key] = 1
+            product.update_column :flow_cache, product.flow_cache.dup
+          end
 
           variant.flow_import_item item
 
@@ -233,6 +241,7 @@ namespace :flow do
     migrate = []
     migrate.push [:spree_orders, :flow_number, :string]
     migrate.push [:spree_credit_cards, :flow_cache, :jsonb, default: {}]
+    migrate.push [:spree_products,     :flow_cache, :jsonb, default: {}]
     migrate.push [:spree_variants,     :flow_cache, :jsonb, default: {}]
     migrate.push [:spree_orders,       :flow_cache, :jsonb, default: {}]
 
