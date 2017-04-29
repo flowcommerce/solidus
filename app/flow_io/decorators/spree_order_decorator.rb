@@ -45,7 +45,11 @@ Spree::Order.class_eval do
     else
       price_elements = [:item_total, :adjustment_total, :included_tax_total, :additional_tax_total, :tax_total, :shipment_total, :promo_total]
       price_elements.each do |el|
-        prices.push price_model.new(el.to_s.humanize.capitalize, send(el)) if send(el) > 0
+        price = send(el)
+        if price > 0
+          label = Flow.format_default_price price
+          prices.push price_model.new(el.to_s.humanize.capitalize, label)
+        end
       end
     end
 
@@ -59,7 +63,7 @@ Spree::Order.class_eval do
   def flow_total
     flow_order ?
       flow_order['total']['label']
-      : Flow.format_default_price(item_total)
+      : Flow.format_default_price(total)
   end
 
   def flow_cc_token

@@ -20,6 +20,7 @@ class Flow::Order
   attr_reader     :response
   attr_reader     :order
   attr_reader     :customer
+  attr_reader     :body
 
   def initialize order:, experience: nil, customer: nil
 
@@ -154,24 +155,24 @@ class Flow::Order
   end
 
   def sync_body!
-    opts, body, digest = build_flow_request
+    opts, @body, digest = build_flow_request
 
     use_get = @order.state == 'complete' || @order.flow_cache['digest'] == digest
     use_get = false unless @order.flow_cache['order']
 
     if use_get
-      # if digest body matches, use get to build request
-      @response = Flow.api(:get, '/:organization/orders/%s' % body[:number])
+      # if digest @body matches, use get to build request
+      @response = Flow.api(:get, '/:organization/orders/%s' % @body[:number])
     else
       @order.flow_cache['digest'] = digest
 
       # replace when fixed integer error
-      # body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
+      # @body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
       # opts[:experience] = @experience.key
-      # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(body)
+      # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(@body)
       # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
 
-      @response = Flow.api(:put, '/:organization/orders/%s' % body[:number], opts, body)
+      @response = Flow.api(:put, '/:organization/orders/%s' % @body[:number], opts, @body)
 
       write_response_in_cache
     end

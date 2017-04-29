@@ -54,7 +54,7 @@ Spree::Variant.class_eval do
   # returns price tied to local experience
   def flow_local_price(flow_exp)
     # TODO: Show all prices, not just first
-    if price = flow_prices(flow_exp).first
+    if flow_exp && (price = flow_prices(flow_exp).first)
       price['label']
     else
       flow_spree_price
