@@ -2,12 +2,17 @@
 
 module FlowHelper
 
-  def flow_flag(experience, size=32)
-    exp = experience.respond_to?(:region) ? experience : Flow::Experience.get(experience.key)
+  def flow_flag(exp, size=32)
+    return 'http://i.imgur.com/GwFYycA.png' if exp && exp.key == 'world'
 
-    return 'http://i.imgur.com/GwFYycA.png' if !exp || exp.key == 'world'
+    flag = unless exp
+      'usa'
+    else
+      exp = Flow::Experience.get(exp.key) unless exp.respond_to?(:region)
+      exp.region.id
+    end
 
-    'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, exp.region.id]
+    'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, flag]
   end
 
   def flow_product_price(product_or_variant)

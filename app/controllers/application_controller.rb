@@ -55,8 +55,10 @@ class ApplicationController < ActionController::Base
       redirect_to request.path
     end
 
-    # try to get experience
-    @flow_exp = @flow_session.local.experience
+    if @flow_session.use_flow?
+      # try to get experience
+      @flow_exp = @flow_session.local.experience
+    end
 
     # save flow session ID for client side usage
     cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
