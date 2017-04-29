@@ -18,9 +18,9 @@ Product | Price | Quantity |Total
 Total
 ---
 <% @prices.each do |price| %>
-<%= price.name.ljust(10) %>: <%= price.label %>
+<%= price.name.ljust(15) %>: <%= price.label %>
 <% end %>
 
-<%= Spree.t(:total).ljust(10) %>: <%= @total_price[1] %>
+<%= Spree.t(:total).ljust(15) %>: <%= @total_price[1] %>
 
 <%= Spree.t('order_mailer.confirm_email.thanks') %>

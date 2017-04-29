@@ -18,6 +18,14 @@ module FlowHelper
     end
   end
 
+  def flow_show_product_price
+    if @flow_session.use_flow?
+      @variants.each.inject({}) { |h, v| h[v.id] = product_price_long(v); h }.to_json.html_safe
+    else
+      { @variants.first.id=>display_price(@product) }.to_json.html_safe
+    end
+  end
+
   # Renders tree on the left
   def flow_taxons_tree(root_taxon, current_taxon)
     return '' if root_taxon.children.empty?
@@ -141,9 +149,14 @@ module FlowHelper
 
   # used in checkout and mailer to show complete price breakdown
   def total_cart_breakdown
+    cart_data = @order.flow_cart_breakdown
+
+    last = cart_data[cart_data.length - 1]
+    last[1] = '<b>%s</b>' % last[1]
+
     out =  ['<table style="float: right;">']
 
-    @order.flow_cart_breakdown.each do |price|
+    cart_data.each do |price|
       out.push '<tr><td>%s</td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
     end
 

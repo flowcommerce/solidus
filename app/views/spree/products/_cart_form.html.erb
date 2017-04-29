@@ -71,6 +71,7 @@
     $('span.price.selling').html(value);
   }
 
-  window._spree_variants = <%= @variants.each.inject({}) { |h, v| h[v.id] = product_price_long(v); h }.to_json.html_safe %>;
+  window._spree_variants = <%= flow_show_product_price %>;
   show_localized_price($('#variant_select').val());
 </script>
+

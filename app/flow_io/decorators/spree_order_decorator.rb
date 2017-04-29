@@ -13,14 +13,15 @@ Spree::Order.class_eval do
   end
 
   def flow_order
+    return nil unless flow_cache['order']
     @_flow_hashie ||= Hashie::Mash.new(flow_cache['order'])
   end
 
   # accepts line item, usually called from views
   def flow_line_item_price line_item, total=false
-    id = line_item.variant.id.to_s
+    return Flow.format_default_price(line_item.amount * (total ? line_item.quantity : 1)) unless flow_order
 
-    return 'Not synced with flow!' unless flow_cache['order']
+    id = line_item.variant.id.to_s
 
     lines = flow_order.lines || []
     item  = lines.select{ |el| el['item_number'] == id }.first
@@ -36,9 +37,16 @@ Spree::Order.class_eval do
 
     price_model = Struct.new(:name, :label)
 
-    # duty, vat, ...
-    flow_order.prices.each do |price|
-      prices.push price_model.new(price['key'].to_s.capitalize , price['label'])
+    if flow_order
+      # duty, vat, ...
+      flow_order.prices.each do |price|
+        prices.push price_model.new(price['key'].to_s.capitalize , price['label'])
+      end
+    else
+      price_elements = [:item_total, :adjustment_total, :included_tax_total, :additional_tax_total, :tax_total, :shipment_total, :promo_total]
+      price_elements.each do |el|
+        prices.push price_model.new(el.to_s.humanize.capitalize, send(el)) if send(el) > 0
+      end
     end
 
     # total
@@ -49,13 +57,9 @@ Spree::Order.class_eval do
 
   # shows localized total, if possible. if not, fall back to Solidus default
   def flow_total
-    if flow_order.total?
-      flow_order.total.label
-    elsif flow_cache['total']
-      flow_cache['total']['current']['label'] if flow_cache['total']['current']
-    else
-      '%s %s' % [self.total, currency]
-    end
+    flow_order ?
+      flow_order['total']['label']
+      : Flow.format_default_price(item_total)
   end
 
   def flow_cc_token

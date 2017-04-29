@@ -51,4 +51,8 @@ module Flow
     'n/a'
   end
 
+  def format_default_price amount
+    '$%.2f' % amount
+  end
+
 end

@@ -36,27 +36,28 @@
           </table>
 
           <h5 class="stock-shipping-method-title" style="text-align: left;"><%= Spree.t(:shipping_method) %></h5>
-          <!--
-          <ul class="field radios shipping-methods">
-            <% ship_form.object.shipping_rates.each do |rate| %>
-              <li class="shipping-method">
+          <% if @flow_session.use_flow? %>
+            <input type="hidden" name="flow_order_id" value="<%= EasyCrypt.encrypt(@order.id) %>" />
+            <input type="hidden" name="flow_selection[]" value="placeholder" />
+            <% @flow_order.deliveries.each do |delivery| %>
+              <p style="margin-top: 0;">
                 <label>
-                  <%= ship_form.radio_button :selected_shipping_rate_id, rate.id %>
-                  <span class="rate-name"><%= rate.name %></span>
-                  <span class="rate-cost"><%= rate.display_cost %></span>
+                  <input type="radio" name="flow_selection[]" value="<%= delivery[:id] %>" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
                 </label>
-              </li>
+              </p>
             <% end %>
-          </ul>
-          -->
-          <input type="hidden" name="flow_order_id" value="<%= EasyCrypt.encrypt(@order.id) %>" />
-          <input type="hidden" name="flow_selection[]" value="placeholder" />
-          <% @flow_order.deliveries.each do |delivery| %>
-            <p style="margin-top: 0;">
-              <label>
-                <input type="radio" name="flow_selection[]" value="<%= delivery[:id] %>" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
-              </label>
-            </p>
+          <% else %>
+            <ul class="field radios shipping-methods">
+              <% ship_form.object.shipping_rates.each do |rate| %>
+                <li class="shipping-method">
+                  <label>
+                    <%= ship_form.radio_button :selected_shipping_rate_id, rate.id %>
+                    <span class="rate-name"><%= rate.name %></span>
+                    <span class="rate-cost"><%= rate.display_cost %></span>
+                  </label>
+                </li>
+              <% end %>
+            </ul>
           <% end %>
         </div>
 

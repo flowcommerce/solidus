@@ -33,11 +33,6 @@ class ApplicationController < ActionController::Base
   def flow_filter_products
     return unless @products
 
-    experience = Flow::Experience.get @flow_exp.key
-    restricted = FlowOption.where(experience_region_id: experience.region.id).first
-    restricted = restricted ? restricted.restricted_ids : []
-    return if restricted.length == 0
-
     # filter out excluded product for particular experience
     @products = @products.where("coalesce(spree_products.flow_cache->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
   end
@@ -88,15 +83,24 @@ class ApplicationController < ActionController::Base
   # flow total price
   def flow_sync_order
     return unless @order && @order.id
-    return if @order.line_items.length == 0
 
     # tmp solution for demo (really)
     @order.clear_zero_amount_payments!
 
     return if request.path.include?('/admin/')
 
-    @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
-    @flow_order.synchronize!
+    if @flow_session.use_flow?
+      @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
+      @flow_order.synchronize!
+    else
+      if @order.flow_cache['order']
+        @order.flow_cache.delete('order')
+        @order.update_column :flow_cache, @order.flow_cache.dup
+      end
+      return
+    end
+
+    return if @order.line_items.length == 0
 
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')

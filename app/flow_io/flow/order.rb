@@ -11,7 +11,6 @@
 #    customer: Spree::User.last
 #  fo.build_flow_request           # builds json body to be posted to flow api
 #  fo.synchronize!                 # sends order to flow
-#  fo.order.flow_cache['total']    # inspects flow_cache['total']
 
 class Flow::Order
   FLOW_CENTER = 'default' unless defined?(::Flow::Order::FLOW_CENTER)
@@ -23,17 +22,13 @@ class Flow::Order
   attr_reader     :customer
 
   def initialize order:, experience: nil, customer: nil
-    if experience
-      # update order experience unless defined
-      # we need this for orders, to make accurate order in defined experience
-      if order.flow_cache['experience_key'] != experience.key
-        order.update_column :flow_cache, order.flow_cache.merge(experience_key: experience.key)
-      end
-    else
-      experience = order.flow_cache['experience_key']
-      experience = Flow::Experience.get(experience)
 
-      raise(ArgumentError, 'Experience not defined and not found in flow cache.') unless experience
+    unless experience
+      if order.flow_order
+        experience = Flow::Experience.get(order.flow_order['experience']['key'])
+      else
+        raise(ArgumentError, 'Experience not defined and not found in flow data')
+      end
     end
 
     @experience = experience
@@ -62,7 +57,7 @@ class Flow::Order
 
   # delivery methods are defined in flow console
   def deliveries
-    delivery_list = @response['deliveries'][0]['options']
+    delivery_list = @order.flow_order['deliveries'][0]['options']
 
     @order.flow_cache ||= {}
     @order.flow_cache['selection'] ||= []
@@ -87,7 +82,7 @@ class Flow::Order
   end
 
   def total_price
-    @response['total']['label'] rescue Flow.price_not_found
+    @order.flow_total
   end
 
   private
@@ -204,18 +199,7 @@ class Flow::Order
   # set cache for total order ammount
   # written in flow_cache field inside spree_orders table
   def write_response_in_cache
-    total = @response['total'] || return
-    check = @order.flow_cache.to_json
-    @order.flow_cache['total'] ||= {}
-    @order.flow_cache['total']['current']       = total.slice('currency','amount', 'label')
-    @order.flow_cache['total'][@experience.key] = total['label']
-
-      # we need to cache this so we can show total price breakdown it in order mailer
     @order.flow_cache['order'] = @response.to_hash
-
-    unless check == @order.flow_cache.to_json
-      @order.update_column :flow_cache, @order.flow_cache
-    end
   end
 
 end
