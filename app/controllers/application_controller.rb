@@ -61,10 +61,7 @@ class ApplicationController < ActionController::Base
     end
 
     # try to get experience
-    @flow_exp = @flow_session.local.try(:experience)
-
-    # construct dummy objecy unless exp found, to make code work
-    @flow_exp ||= Struct.new(:id, :key, :country).new('world', 'world', 'World')
+    @flow_exp = @flow_session.local.experience
 
     # save flow session ID for client side usage
     cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id

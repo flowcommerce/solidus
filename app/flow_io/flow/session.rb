@@ -47,5 +47,9 @@ class Flow::Session
     @session.local
   end
 
+  def use_flow?
+    # use flow if we are not in default country
+    local.country.iso_3166_3 != ENV.fetch('FLOW_BASE_COUNTRY')
+  end
 end
 

@@ -10,6 +10,14 @@ module FlowHelper
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, exp.region.id]
   end
 
+  def flow_product_price(product_or_variant)
+    if @flow_session.use_flow?
+      product_or_variant.flow_local_price(@flow_exp)
+    else
+      product_or_variant.price_for(current_pricing_options).to_html
+    end
+  end
+
   # Renders tree on the left
   def flow_taxons_tree(root_taxon, current_taxon)
     return '' if root_taxon.children.empty?
