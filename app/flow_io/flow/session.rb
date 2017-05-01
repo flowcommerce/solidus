@@ -4,6 +4,7 @@
 
 class Flow::Session
   attr_accessor :session
+  attr_accessor :use_flow
 
   def get(opts)
     session_model = ::Io::Flow::V0::Models::SessionForm.new(opts)
@@ -50,6 +51,7 @@ class Flow::Session
   def use_flow?
     # use flow if we are not in default country
     return false unless local
+    return false if @use_flow.class == FalseClass
     local.country.iso_3166_3 != ENV.fetch('FLOW_BASE_COUNTRY')
   end
 end
