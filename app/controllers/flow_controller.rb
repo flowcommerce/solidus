@@ -1,24 +1,22 @@
 # flow specific controller
 
 class FlowController < ApplicationController
-
   layout 'flow'
+  skip_before_filter :verify_authenticity_token, only: :handle_flow_web_hook_event
 
-  # when products are updated in Flow catalog, event is trigered
-  # this hook can capture all events and update products in catalog
+  # forward all incoming requests to Flow Webhook service object
+  # /flow/event-target
   def handle_flow_web_hook_event
-    render text: 'ok'
-  end
-
-  def order_update
-    render text: 'ok'
+    data     = JSON.parse request.body.read
+    response = Flow::Webhook.process data
+    render text: response
+  rescue ArgumentError => e
+    render text: e.message, status: 400
   end
 
   def index
+    # solidus method
     return unless user_is_admin
-
-    # hard fix, bad
-    Spree::Payment.where(amount:0, state: 'invalid').map(&:destroy)
 
     if action = params[:flow]
       order = Spree::Order.find(params[:o_id])
@@ -59,12 +57,6 @@ class FlowController < ApplicationController
 
   def restrictions
     @list = {}
-    # FlowOption.all.each do |flow_option|
-    #   @list[flow_option.experience_region_id] = {
-    #     products: Spree::Product.where('id in (select product_id from spree_variants where id in (?))', flow_option.restricted_ids),
-    #     keys: flow_option.restricted_ids
-    #   }
-    # end
   end
 
   private

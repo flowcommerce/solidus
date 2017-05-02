@@ -10,8 +10,7 @@ Rails.application.routes.draw do
 
   namespace :flow do
     post '/event-target', to: '/flow#handle_flow_web_hook_event'
-    post '/order_update', to: '/flow#order_update'
-    get  '/order_update', to: '/flow#order_update'
+    # get  '/event-target', to: '/flow#handle_flow_web_hook_event'
   end
 
   get '/about', to: 'flow#about'
