@@ -120,7 +120,11 @@ class ApplicationController < ActionController::Base
   end
 
   def flow_filter_spree_products_show
-    @flow_render = { json: JSON.pretty_generate(@flow_exp.get_item(@product).to_hash) } if params[:debug] == 'flow'
+    # r @product.variants.first.id.to_s
+    if params[:debug] == 'flow' && @flow_exp
+      flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
+      @flow_render = { json: JSON.pretty_generate(flow_item) }
+    end
   end
 
   def flow_filter_spree_checkout_edit

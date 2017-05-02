@@ -138,15 +138,10 @@ module FlowHelper
         when 'localized_item_duty'
           'duty: %s' % label
         else
-          case price['includes']
-            when 'vat'
-              '%s incl VAT' % label
-            when 'duty'
-              '%s incl VAT' % label
-            when 'vat_and_duty'
-              '%s incl VAT and Duty' % label
-            else
-              label
+          if price['includes']
+            '%s (%s)' % [label, price['includes']['label']]
+          else
+            label
           end
       end
     end.join(", ")

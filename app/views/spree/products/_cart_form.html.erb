@@ -68,6 +68,9 @@
       value = parts.shift() + '<br /><small style="margin-top: 5px; display: block; font-weight: normal;">'+parts.join(', ')+'</small>'
     }
 
+    value = value.replace(/\(/g,'<small style="font-weight: normal;">(')
+    value = value.replace(/\)/g,')</small>')
+
     $('span.price.selling').html(value);
   }
 
