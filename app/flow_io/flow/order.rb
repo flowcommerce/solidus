@@ -45,7 +45,7 @@ class Flow::Order
   end
 
   def error?
-    @response['code'] == 'generic_error'
+    @response['code'] && @response['messages']
   end
 
   def error

@@ -111,7 +111,7 @@ class ApplicationController < ActionController::Base
       else
         # @flow_session.use_flow = false
         # @flow_render =  { text: 'Flow error: %s' % @flow_order.error }
-        flash.now[:error] = 'Flow error: %s' % @flow_order.error
+        flash.now[:error] = 'Flow error (%s): %s' % [@flow_order.response['code'], @flow_order.error]
         @order.flow_cache = {}
       end
     elsif params[:debug] == 'flow'
