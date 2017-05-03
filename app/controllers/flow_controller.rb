@@ -7,6 +7,8 @@ class FlowController < ApplicationController
   # forward all incoming requests to Flow Webhook service object
   # /flow/event-target
   def handle_flow_web_hook_event
+    # return render text: 'Source is not allowed to make requests', status: 403 unless requests.ip == '52.86.80.125'
+
     data     = JSON.parse request.body.read
     response = Flow::Webhook.process data
     render text: response
