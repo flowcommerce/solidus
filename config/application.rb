@@ -35,6 +35,7 @@ module DemoShop
 
     config.after_initialize do |app|
       app.config.spree.payment_methods << Spree::Gateway::Flow
+      # app.config.spree.payment_methods << Spree::Gateway::StripeGateway
 
       Flow.organization = ENV.fetch('FLOW_ORGANIZATION')
       Flow.base_country = ENV.fetch('FLOW_BASE_COUNTRY')

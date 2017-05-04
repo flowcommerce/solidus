@@ -22,6 +22,10 @@ module Spree
       false
     end
 
+    def method_type
+      'gateway'
+    end
+
     def preferences
       {}
     end

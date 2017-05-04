@@ -15,7 +15,7 @@
 class Flow::Order
   FLOW_CENTER = 'default' unless defined?(::Flow::Order::FLOW_CENTER)
 
-  class_attribute :clear_zero_amount_payments
+  cattr_accessor :clear_zero_amount_payments
 
   attr_reader     :response
   attr_reader     :order
@@ -201,6 +201,7 @@ class Flow::Order
   # written in flow_cache field inside spree_orders table
   def write_response_in_cache
     @order.flow_cache['order'] = @response.to_hash
+    @order.save
   end
 
 end

@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     if value = session[FLOW_SESSION_KEY]
       begin
         @flow_session = Flow::Session.new(hash: JSON.load(value))
-      rescue JSON::ParserError
+      rescue
         session.delete(FLOW_SESSION_KEY)
       end
     end
