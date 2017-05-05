@@ -7,8 +7,8 @@ class AddFlowFields < ActiveRecord::Migration[5.0]
 
   def up
     add_field_unless_exists :spree_orders, :flow_number, :string
-    add_field_unless_exists :spree_variants, :flow_cache, :jsonb, default: {}
-    add_field_unless_exists :spree_orders, :flow_cache, :jsonb, default: {}
-    add_field_unless_exists :spree_credit_cards, :flow_cache, :jsonb, default: {}
+    add_field_unless_exists :spree_variants, :flow_data, :jsonb, default: {}
+    add_field_unless_exists :spree_orders, :flow_data, :jsonb, default: {}
+    add_field_unless_exists :spree_credit_cards, :flow_data, :jsonb, default: {}
   end
 end

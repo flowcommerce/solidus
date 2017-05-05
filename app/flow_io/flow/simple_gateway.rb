@@ -9,9 +9,9 @@ class Flow::SimpleGateway
   end
 
   def cc_get_token
-    cards = @order.credit_cards.select{ |cc| cc[:flow_cache]['cc_token'] }
+    cards = @order.credit_cards.select{ |cc| cc[:flow_data]['cc_token'] }
     return unless cards.first
-    cards.first.flow_cache['cc_token']
+    cards.first.flow_data['cc_token']
   end
 
   # authorises credit card and prepares for capture
@@ -45,7 +45,7 @@ class Flow::SimpleGateway
       authorization_id: response.id
     }
 
-    @order.update_column :flow_cache, @order.flow_cache.merge('authorization': store)
+    @order.update_column :flow_data, @order.flow_data.merge('authorization': store)
 
     ActiveMerchant::Billing::Response.new(status, status_message, { response: response }, { authorization: store })
   rescue Io::Flow::V0::HttpClient::ServerError => exception
@@ -54,7 +54,7 @@ class Flow::SimpleGateway
 
   # capture authorised funds
   def cc_capture
-    data = @order.flow_cache['authorization']
+    data = @order.flow_data['authorization']
 
     raise ArgumentError, 'No Authorization data, please authorize first' unless data
 
@@ -62,7 +62,7 @@ class Flow::SimpleGateway
     response     = FlowCommerce.instance.captures.post(Flow.organization, capture_form)
 
     if response.id
-      @order.update_column :flow_cache, @order.flow_cache.merge('capture': response.to_hash)
+      @order.update_column :flow_data, @order.flow_data.merge('capture': response.to_hash)
       @order.finalize!
 
       # @order.update_column :payment_state, 'completed'
@@ -76,15 +76,15 @@ class Flow::SimpleGateway
   end
 
   def cc_refund
-    raise ArgumentError, 'capture info is not available' unless @order.flow_cache['capture']
+    raise ArgumentError, 'capture info is not available' unless @order.flow_data['capture']
 
     # we allways have capture ID, so we use it
-    refund_data = { capture_id: @order.flow_cache['capture']['id'] }
+    refund_data = { capture_id: @order.flow_data['capture']['id'] }
     refund_form = ::Io::Flow::V0::Models::RefundForm.new(refund_data)
     response    = FlowCommerce.instance.refunds.post(Flow.organization, refund_form)
 
     if response.id
-      @order.update_column :flow_cache, @order.flow_cache.merge('refund': response.to_hash)
+      @order.update_column :flow_data, @order.flow_data.merge('refund': response.to_hash)
       ActiveMerchant::Billing::Response.new true, 'success', { response: response }
     else
       ActiveMerchant::Billing::Response.new false, 'error', { response: response }

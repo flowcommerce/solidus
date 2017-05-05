@@ -13,8 +13,8 @@ Spree::Order.class_eval do
   end
 
   def flow_order
-    return nil unless flow_cache['order']
-    @_flow_hashie ||= Hashie::Mash.new(flow_cache['order'])
+    return nil unless flow_data['order']
+    @_flow_hashie ||= Hashie::Mash.new(flow_data['order'])
   end
 
   # accepts line item, usually called from views

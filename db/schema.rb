@@ -154,7 +154,7 @@ ActiveRecord::Schema.define(version: 20170302153604) do
     t.integer  "payment_method_id"
     t.boolean  "default",                     default: false, null: false
     t.integer  "address_id"
-    t.jsonb    "flow_cache",                  default: {}
+    t.jsonb    "flow_data",                  default: {}
     t.index ["payment_method_id"], name: "index_spree_credit_cards_on_payment_method_id", using: :btree
     t.index ["user_id"], name: "index_spree_credit_cards_on_user_id", using: :btree
   end
@@ -307,9 +307,9 @@ ActiveRecord::Schema.define(version: 20170302153604) do
     t.string   "approver_name"
     t.boolean  "frontend_viewable",                                          default: true,    null: false
     t.string   "flow_number"
-    t.jsonb    "flow_cache",                                                 default: {}
-    t.jsonb    "flow_cache_2",                                               default: {}
-    t.jsonb    "flow_cache_3",                                               default: {}
+    t.jsonb    "flow_data",                                                 default: {}
+    t.jsonb    "flow_data_2",                                               default: {}
+    t.jsonb    "flow_data_3",                                               default: {}
     t.index ["approver_id"], name: "index_spree_orders_on_approver_id", using: :btree
     t.index ["bill_address_id"], name: "index_spree_orders_on_bill_address_id", using: :btree
     t.index ["completed_at"], name: "index_spree_orders_on_completed_at", using: :btree
@@ -1135,8 +1135,8 @@ ActiveRecord::Schema.define(version: 20170302153604) do
     t.integer  "tax_category_id"
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.jsonb    "flow_cache",                               default: {}
-    t.jsonb    "flow_cache_14",                            default: {}
+    t.jsonb    "flow_data",                               default: {}
+    t.jsonb    "flow_data_14",                            default: {}
     t.index ["position"], name: "index_spree_variants_on_position", using: :btree
     t.index ["product_id"], name: "index_spree_variants_on_product_id", using: :btree
     t.index ["sku"], name: "index_spree_variants_on_sku", using: :btree

@@ -36,11 +36,11 @@ class FlowController < ApplicationController
           flow_response = Flow::SimpleGateway.new(order).cc_capture
           response      = flow_response.success? ? flow_response.params['response'].to_hash : flow_response.message
         when 'refund'
-          response = order.flow_cache['refund']
+          response = order.flow_data['refund']
 
           unless response
             flow_response = Flow::SimpleGateway.new(order).cc_refund
-            response = flow_response.success? ? order.flow_cache['refund'] : flow_response.message
+            response = flow_response.success? ? order.flow_data['refund'] : flow_response.message
           end
         else
           return render text: 'Ation %s not supported' % action
