@@ -1,6 +1,6 @@
 # added flow specific methods to Spree::Variant
 # solidus / spree save all the prices inside Variant object
-# we choose to have cache jsonb field named flow_cache that will hold all important
+# we choose to have cache jsonb field named flow_data that will hold all important
 # flow sync data for specific
 
 Spree::Variant.class_eval do
@@ -12,7 +12,7 @@ Spree::Variant.class_eval do
   # clears flow cache from all records
   def self.flow_truncate
     all_records = all
-    all_records.each { |o| o.update_column :flow_cache, {} }
+    all_records.each { |o| o.update_column :flow_data, {} }
     puts 'Truncated %d records' % all_records.length
   end
 
@@ -26,12 +26,12 @@ Spree::Variant.class_eval do
     flow_item_sh1 = Digest::SHA1.hexdigest flow_api_item.to_json
 
     # skip if sync not needed
-    return nil if flow_cache['last_sync_sh1'] == flow_item_sh1
+    return nil if flow_data['last_sync_sh1'] == flow_item_sh1
 
     response = FlowCommerce.instance.items.put_by_number(Flow.organization, id.to_s, flow_item)
 
     # after successful put, write cache
-    update_column :flow_cache, flow_cache.merge('last_sync_sh1'=>flow_item_sh1)
+    update_column :flow_data, flow_data.merge('last_sync_sh1'=>flow_item_sh1)
 
     response
   end
@@ -43,7 +43,7 @@ Spree::Variant.class_eval do
   end
 
   def flow_prices(flow_exp)
-    if cache = flow_cache['exp']
+    if cache = flow_data['exp']
       if data = cache[flow_exp.key]
         return data['prices'] || []
       end
@@ -109,16 +109,16 @@ Spree::Variant.class_eval do
   # called from flow:sync_localized_items rake task
   def flow_import_item(item)
     experience_key = item.local.experience.key
-    flow_cache['exp'] ||= {}
-    flow_cache['exp'][experience_key] = {}
-    flow_cache['exp'][experience_key]['status'] = item.local.status.value
-    flow_cache['exp'][experience_key]['prices'] = item.local.prices.map do |price|
+    flow_data['exp'] ||= {}
+    flow_data['exp'][experience_key] = {}
+    flow_data['exp'][experience_key]['status'] = item.local.status.value
+    flow_data['exp'][experience_key]['prices'] = item.local.prices.map do |price|
       price = price.to_hash
       [:includes, :adjustment].each { |el| price.delete(el) unless price[el] }
       price
     end
 
-    update_column :flow_cache, flow_cache.dup
+    update_column :flow_data, flow_data.dup
   end
 
 end

@@ -6,8 +6,8 @@ RSpec.describe Flow do
   end
 
   it 'ensures that spree has all needed cache fields' do
-    expect(Spree::Order.columns_hash['flow_cache'].sql_type).to eq('jsonb')
-    expect(Spree::Variant.columns_hash['flow_cache'].sql_type).to eq('jsonb')
+    expect(Spree::Order.columns_hash['flow_data'].sql_type).to eq('jsonb')
+    expect(Spree::Variant.columns_hash['flow_data'].sql_type).to eq('jsonb')
   end
 
 end

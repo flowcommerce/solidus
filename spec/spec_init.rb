@@ -1,4 +1,5 @@
 # prepare test env
+# RAILS_ENV=test rake db:schema:load
 ENV['RACK_ENV'] = ENV['RAILS_ENV'] = 'test'
 ENV['DB_URL']   = ENV['DB_TEST_URL'] || 'postgres://localhost/flow_solidus_demo_test'
 

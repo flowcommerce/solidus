@@ -148,8 +148,8 @@ namespace :flow do
           unless item.local.status.value == 'included'
             print '[%s]:' % item.local.status.value.red
             product = variant.product
-            product.flow_cache['%s.excluded' % experience.key] = 1
-            product.update_column :flow_cache, product.flow_cache.dup
+            product.flow_data['%s.excluded' % experience.key] = 1
+            product.update_column :flow_data, product.flow_data.dup
           end
 
           variant.flow_import_item item
@@ -240,10 +240,10 @@ namespace :flow do
 
     migrate = []
     migrate.push [:spree_orders, :flow_number, :string]
-    migrate.push [:spree_credit_cards, :flow_cache, :jsonb, default: {}]
-    migrate.push [:spree_products,     :flow_cache, :jsonb, default: {}]
-    migrate.push [:spree_variants,     :flow_cache, :jsonb, default: {}]
-    migrate.push [:spree_orders,       :flow_cache, :jsonb, default: {}]
+    migrate.push [:spree_credit_cards, :flow_data, :jsonb, default: {}]
+    migrate.push [:spree_products,     :flow_data, :jsonb, default: {}]
+    migrate.push [:spree_variants,     :flow_data, :jsonb, default: {}]
+    migrate.push [:spree_orders,       :flow_data, :jsonb, default: {}]
 
     migrate.each do |table, field, type, opts={}|
       klass = table.to_s.sub('spree_','spree/').classify.constantize
@@ -257,7 +257,7 @@ namespace :flow do
     end
 
     # I needed this for excluded products
-    # now it is solved by flow_cache field in spree_products
+    # now it is solved by flow_data field in spree_products
     # if FlowOption.table_exists?
     #   puts 'Table flow_options exists'.green
     # else

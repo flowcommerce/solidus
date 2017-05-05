@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
     return unless @products
 
     # filter out excluded product for particular experience
-    @products = @products.where("coalesce(spree_products.flow_cache->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
+    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
   end
 
   # checks current experience (defined by parameter) and sets default one unless one preset
@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     if value = session[FLOW_SESSION_KEY]
       begin
         @flow_session = Flow::Session.new(hash: JSON.load(value))
-      rescue JSON::ParserError
+      rescue
         session.delete(FLOW_SESSION_KEY)
       end
     end
@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
 
       order_id = EasyCrypt.decrypt(params[:flow_order_id])
       order = Spree::Order.find(order_id)
-      order.update_column :flow_cache, order.flow_cache.merge('selection'=>params[:flow_selection])
+      order.update_column :flow_data, order.flow_data.merge('selection'=>params[:flow_selection])
     end
   end
 
@@ -95,9 +95,9 @@ class ApplicationController < ActionController::Base
       @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
       @flow_order.synchronize!
     else
-      if @order.flow_cache['order']
-        @order.flow_cache.delete('order')
-        @order.update_column :flow_cache, @order.flow_cache.dup
+      if @order.flow_data['order']
+        @order.flow_data.delete('order')
+        @order.update_column :flow_data, @order.flow_data.dup
       end
       return
     end
@@ -112,7 +112,7 @@ class ApplicationController < ActionController::Base
         # @flow_session.use_flow = false
         # @flow_render =  { text: 'Flow error: %s' % @flow_order.error }
         flash.now[:error] = 'Flow error (%s): %s' % [@flow_order.response['code'], @flow_order.error]
-        @order.flow_cache = {}
+        @order.flow_data = {}
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }

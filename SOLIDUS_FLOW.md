@@ -14,8 +14,8 @@
 
   * or manually run migrations
     - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170302153604_add_flow_number_to_spree_order.rb
-    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170303102052_add_flow_cache_to_spree_variants.rb
-    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170306223619_add_flow_cache_to_spree_order.rb
+    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170303102052_add_flow_data_to_spree_variants.rb
+    - https://github.com/flowcommerce/solidus/blob/master/db/migrate/20170306223619_add_flow_data_to_spree_order.rb
 
 3. Setup environment variables for your flow organization_id and flow API key
 

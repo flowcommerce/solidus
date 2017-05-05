@@ -15,7 +15,7 @@
 class Flow::Order
   FLOW_CENTER = 'default' unless defined?(::Flow::Order::FLOW_CENTER)
 
-  class_attribute :clear_zero_amount_payments
+  cattr_accessor :clear_zero_amount_payments
 
   attr_reader     :response
   attr_reader     :order
@@ -60,8 +60,8 @@ class Flow::Order
   def deliveries
     delivery_list = @order.flow_order['deliveries'][0]['options']
 
-    @order.flow_cache ||= {}
-    @order.flow_cache['selection'] ||= []
+    @order.flow_data ||= {}
+    @order.flow_data['selection'] ||= []
 
     delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
@@ -71,7 +71,7 @@ class Flow::Order
       {
         id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: @order.flow_cache['selection'].include?(selection_id),
+        active: @order.flow_data['selection'].include?(selection_id),
         name: name
       }
     end.to_a
@@ -143,10 +143,10 @@ class Flow::Order
 
     add_customer body if @customer
 
-    # add selection (delivery options) from flow_cache
-    @order.flow_cache['selection'] ||= []
-    @order.flow_cache['selection'].delete('placeholder')
-    body[:selection] = @order.flow_cache['selection']
+    # add selection (delivery options) from flow_data
+    @order.flow_data['selection'] ||= []
+    @order.flow_data['selection'].delete('placeholder')
+    body[:selection] = @order.flow_data['selection']
 
     # calculate digest body and cache it
     digest = Digest::SHA1.hexdigest(opts.to_json + body.to_json)
@@ -157,14 +157,14 @@ class Flow::Order
   def sync_body!
     opts, @body, digest = build_flow_request
 
-    use_get = @order.state == 'complete' || @order.flow_cache['digest'] == digest
-    use_get = false unless @order.flow_cache['order']
+    use_get = @order.state == 'complete' || @order.flow_data['digest'] == digest
+    use_get = false unless @order.flow_data['order']
 
     if use_get
       # if digest @body matches, use get to build request
       @response = Flow.api(:get, '/:organization/orders/%s' % @body[:number])
     else
-      @order.flow_cache['digest'] = digest
+      @order.flow_data['digest'] = digest
 
       # replace when fixed integer error
       # @body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
@@ -181,7 +181,7 @@ class Flow::Order
   def add_item line_item
     variant   = line_item.variant
 
-    price_root = variant.flow_cache['exp'][@experience.key]['prices'][0] rescue {}
+    price_root = variant.flow_data['exp'][@experience.key]['prices'][0] rescue {}
 
     # create flow order line item
     item = {
@@ -198,9 +198,10 @@ class Flow::Order
   end
 
   # set cache for total order ammount
-  # written in flow_cache field inside spree_orders table
+  # written in flow_data field inside spree_orders table
   def write_response_in_cache
-    @order.flow_cache['order'] = @response.to_hash
+    @order.flow_data['order'] = @response.to_hash
+    @order.save
   end
 
 end

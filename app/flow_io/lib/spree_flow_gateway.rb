@@ -22,6 +22,10 @@ module Spree
       false
     end
 
+    def method_type
+      'gateway'
+    end
+
     def preferences
       {}
     end
@@ -42,31 +46,29 @@ module Spree
     end
 
     def authorize(amount, payment_method, options={})
-      order = get_spree_order options
-      order.clear_zero_amount_payments!
-      order.flow_cc_authorization
+      order = load_order options
+      order.cc_authorization
     end
 
     def capture(amount, payment_method, options={})
-      order = get_spree_order options
-      order.flow_cc_capture
+      order = load_order options
+      order.cc_capture
     end
 
     def purchase(amount, payment_method, options={})
-      order = get_spree_order options
-      flow_auth = order.flow_cc_authorization
+      order = load_order options
+      flow_auth = order.cc_authorization
 
       if flow_auth.success?
-        order.flow_cc_capture
+        order.cc_capture
       else
         flow_auth
       end
     end
 
     def refund(money, authorization_key, options={})
-      order = get_spree_order options
-      order.clear_zero_amount_payments!
-      order.flow_cc_refund
+      order = load_order options
+      order.cc_refund
     end
 
     def void(money, authorization_key, options={})
@@ -75,10 +77,10 @@ module Spree
 
     private
 
-    def get_spree_order(options)
+    def load_order(options)
       order_number = options[:order_id].split('-').first
-
-      Spree::Order.find_by(number: order_number)
+      spree_order  = Spree::Order.find_by number: order_number
+      ::Flow::SimpleGateway.new spree_order
     end
   end
 end

@@ -76,7 +76,7 @@ From product list to purchase, complete chain v1
 
 1. customer has to prepare data, migrate db and connect to Flow. In general
   * create experiences in Flow console, add tiers, shipping methods, etc.
-  * add flow_cache (jsonb) fields to this models
+  * add flow_data (jsonb) fields to this models
     * Spree::Variant - we cache localized product prices
     * Spree::Order   - we cache flow order state details, shipping method
   * create and sync product catalog via rake tasks

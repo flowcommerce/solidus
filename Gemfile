@@ -16,6 +16,7 @@ gem 'flowcommerce'
 # gem 'activemerchant_flow'
 gem 'pry-rails'                # better console
 gem 'awesome_print'
+gem 'flowcommerce-activemerchant'
 
 # solidus fw
 gem 'solidus', '2.1.0',    require: false
