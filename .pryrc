@@ -3,7 +3,13 @@ require 'clipboard'
 
 # nice object dump in console
 Pry.print = proc { |output, data|
-  output.puts data.is_a?(Hash) ? JSON.pretty_generate(data) : data.ai
+  out = if data.is_a?(Hash)
+    JSON.pretty_generate(data).gsub(/"(\w+)":/) { '"%s":' % $1.yellow }
+  else
+    data.ai
+  end
+
+  output.puts out
 }
 
 class Object
