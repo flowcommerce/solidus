@@ -30,7 +30,7 @@
       <%= link_to 'JSON', '?flow=order&o_id=%s' % order.id, target: :_raw %>
     </td>
     <td>
-      <% if order.flow_cc_token %>
+      <% if order.flow_cache %>
         <button class="btn btn-<%= order.flow_cache['authorization'] ? 'success' : 'secondary' %> btn-sm" onclick="window.open('?flow=auth&o_id=<%= order.id %>')">Auth</button>
         &bull;
         <% if order.flow_cache['capture'] %>
