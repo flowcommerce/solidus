@@ -33,17 +33,22 @@ class Flow::Webhook
     raise ArgumentError, 'number not found' unless @data['number']
     raise ArgumentError, 'local not found' unless @data['local']
 
-    variant = Spree::Variant.find @data['number']
-    product = variant.product
-    key     = '%s.excluded' % @data['local']['experience']['key']
+    number  = @data['number']
+    exp_key = @data['local']['experience']['key']
 
-    # if item is included, set key, otherwise delete it
-    if @data['local']['status'] == 'included'
-      product.flow_data[key] = 1
-    else
-      product.flow_data.delete(key)
-    end
+    variant     = Spree::Variant.find number
+    product     = variant.product
+    is_included = @data['local']['status'] == 'included'
 
+    product.flow_data['%s.excluded' % exp_key] = is_included ? 0 : 1
     product.save!
+
+    message = is_included ? 'included in' : 'excluded from'
+    'Product id:%s - "%s" (from variant %s) %s experience "%s"' % [product.id, product.name, variant.id, message, exp_key]
+  end
+
+  # we should consume only localized_item_upserted
+  def hook_subcatalog_item_upserted
+    'not used'
   end
 end
