@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
     # call all this methods
     flow_sync_order
     flow_filter_products
+    flow_restrict_product
 
     # return our data or call super render
     if @flow_render
@@ -116,6 +117,15 @@ class ApplicationController < ActionController::Base
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
+    end
+  end
+
+  def flow_restrict_product
+    return unless @product
+
+    unless @product.flow_included?(@flow_exp)
+      flash[:error] = 'Product "%s" is not included in "%s" catalog' % [@product.name, @flow_exp.key]
+      @flow_render  = { redirect_to: '/' }
     end
   end
 

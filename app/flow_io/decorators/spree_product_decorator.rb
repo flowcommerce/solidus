@@ -7,5 +7,9 @@ Spree::Product.class_eval do
     variants.first.flow_local_price(flow_exp)
   end
 
+  def flow_included?(flow_exp)
+    flow_data['%s.excluded' % flow_exp.key].to_i == 1 ? false : true
+  end
+
 end
 
