@@ -8,38 +8,15 @@ class Flow::SimpleGateway
     @order = order
   end
 
-  def cc_get_token
-    cards = @order.credit_cards.select{ |cc| cc[:flow_data]['cc_token'] }
-    return unless cards.first
-    cards.first.flow_data['cc_token']
-  end
-
   # authorises credit card and prepares for capture
   def cc_authorization
-    cc_token = cc_get_token
-    raise StandarError, 'Flow credit card token not found' unless cc_token
-
-    flow_currency = @order.flow_order.total.currency
-    flow_amount   = @order.flow_order.total.amount
-
-    raise StandarError, 'Currency not found in flow cache' unless flow_currency
-    raise StandarError, 'Amount not found in flow cache' unless flow_amount
-
-    data = {
-      'order_number':  @order.flow_number,
-      'currency':      flow_currency,
-      'amount':        flow_amount,
-      'token':         cc_token,
-    }
-
-    # we allways have order id so we allways use MerchantOfRecordAuthorizationForm
-    auth_form      = ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new(data)
+    auth_form      = get_authorization_form
     response       = FlowCommerce.instance.authorizations.post(Flow.organization, auth_form)
     status_message = response.result.status.value
     status         = status_message == ::Io::Flow::V0::Models::AuthorizationStatus.authorized.value
 
     store = {
-                  key: response.key,
+                   key: response.key,
                 amount: response.amount,
               currency: response.currency,
       authorization_id: response.id
@@ -54,6 +31,7 @@ class Flow::SimpleGateway
 
   # capture authorised funds
   def cc_capture
+    # GET /:organization/authorizations, order_number: abc
     data = @order.flow_data['authorization']
 
     raise ArgumentError, 'No Authorization data, please authorize first' unless data
@@ -94,6 +72,38 @@ class Flow::SimpleGateway
   end
 
   private
+
+  # if order is not in flow, we use local solidus settings
+  def in_flow?
+    @order.flow_order ? true : false
+  end
+
+  def get_authorization_form
+    if in_flow?
+      # we have order id so we allways use MerchantOfRecordAuthorizationForm
+      ::Io::Flow::V0::Models::MerchantOfRecordAuthorizationForm.new({
+        'order_number':  @order.flow_number,
+        'currency':      @order.flow_order.total.currency,
+        'amount':        @order.flow_order.total.amount,
+        'token':         cc_get_token,
+      })
+    else
+      # when not using flow, we fall back to solidus default
+      ::Io::Flow::V0::Models::DirectAuthorizationForm.new({
+        'currency':      @order.currency,
+        'amount':        @order.total,
+        'token':         cc_get_token,
+      })
+    end
+  end
+
+  # gets credit card token
+  def cc_get_token
+    cards = @order.credit_cards.select{ |cc| cc[:flow_data]['cc_token'] }
+    raise StandarError.new('Credit card not found') unless cards.first
+
+    cards.first.flow_data['cc_token'] || raise(StandardError.new 'Flow credit card token not found')
+  end
 
   # we want to return errors in standardized format
   def error_response(exception_object, message=nil)

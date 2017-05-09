@@ -8,6 +8,7 @@ Spree::Product.class_eval do
   end
 
   def flow_included?(flow_exp)
+    return true unless flow_exp
     flow_data['%s.excluded' % flow_exp.key].to_i == 1 ? false : true
   end
 
