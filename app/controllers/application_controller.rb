@@ -87,9 +87,6 @@ class ApplicationController < ActionController::Base
   def flow_sync_order
     return unless @order && @order.id
 
-    # tmp solution for demo (really)
-    @order.clear_zero_amount_payments!
-
     return if request.path.include?('/admin/')
 
     if @flow_session.use_flow?
