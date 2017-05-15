@@ -87,9 +87,6 @@ class ApplicationController < ActionController::Base
   def flow_sync_order
     return unless @order && @order.id
 
-    # tmp solution for demo (really)
-    @order.clear_zero_amount_payments!
-
     return if request.path.include?('/admin/')
 
     if @flow_session.use_flow?
@@ -135,10 +132,6 @@ class ApplicationController < ActionController::Base
       flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
       @flow_render = { json: JSON.pretty_generate(flow_item) }
     end
-  end
-
-  def flow_filter_spree_checkout_edit
-
   end
 
 end

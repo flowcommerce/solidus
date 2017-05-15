@@ -68,6 +68,17 @@ Spree::Order.class_eval do
       : Flow.format_default_price(total)
   end
 
+  # returns localized price part if in flow, or solidus one if not
+  def flow_total_part
+    model = Struct.new(:amount, :currency)
+
+    if flow_order
+      model.new(flow_order.total.amount, flow_order.total.currency)
+    else
+      model.new(total, currency)
+    end
+  end
+
   def flow_experience
     return Struct.new(:key).new('USA') unless flow_order
     Struct.new(:key).new(flow_order['experience']['key'])
@@ -79,6 +90,10 @@ Spree::Order.class_eval do
     return unless Flow::Order.clear_zero_amount_payments
 
     payments.where(amount:0, state: ['invalid', 'processing', 'pending']).map(&:destroy)
+  end
+
+  def flow_order_authorized?
+    flow_data && flow_data['authorization'] ? true : false
   end
 
 end

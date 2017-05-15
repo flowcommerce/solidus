@@ -41,6 +41,7 @@ class Flow::Order
   # helper method to send complete order from spreee to flow
   def synchronize!
     sync_body!
+    check_state!
     @response
   end
 
@@ -176,6 +177,10 @@ class Flow::Order
 
       write_response_in_cache
     end
+  end
+
+  def check_state!
+    @order.finalize! if @order.flow_order_authorized? && @order.state != 'complete'
   end
 
   def add_item line_item
