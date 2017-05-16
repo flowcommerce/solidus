@@ -37,7 +37,7 @@
 
           <h5 class="stock-shipping-method-title" style="text-align: left;"><%= Spree.t(:shipping_method) %></h5>
           <% if @flow_session.use_flow? %>
-            <input type="hidden" name="flow_order_id" value="<%= EasyCrypt.encrypt(@order.id) %>" />
+            <input type="hidden" name="flow_order_id" value="<%= Flow::SimpleCrypt.encrypt(@order.id) %>" />
             <input type="hidden" name="flow_selection[]" value="placeholder" />
             <% @flow_order.deliveries.each do |delivery| %>
               <p style="margin-top: 0;">

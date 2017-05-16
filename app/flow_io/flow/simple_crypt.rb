@@ -2,15 +2,15 @@
 # Module uses rails engine for encrypt and decrypt
 
 # example
-# enc1 = EasyCrypt.encrypt('foo')
-# EasyCrypt.encrypt(enc1)
+# enc1 = Flow::SimpleCrypt.encrypt('foo')
+# Flow::SimpleCrypt.encrypt(enc1)
 #
 # example with salt
-# enc2 = EasyCrypt.encrypt('bar', '127.0.0.1')
-# EasyCrypt.encrypt(enc2)              # raises error: ActiveSupport::MessageVerifier::InvalidSignature
-# EasyCrypt.encrypt(enc2, '127.0.0.1') # ok
+# enc2 = Flow::SimpleCrypt.encrypt('bar', '127.0.0.1')
+# Flow::SimpleCrypt.encrypt(enc2)              # raises error: ActiveSupport::MessageVerifier::InvalidSignature
+# Flow::SimpleCrypt.encrypt(enc2, '127.0.0.1') # ok
 
-module EasyCrypt
+module SimpleCrypt
   extend self
 
   def encrypt_base(salt)

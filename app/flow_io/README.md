@@ -69,7 +69,7 @@ All methods are prefixed with ```flow_```.
 
 ## Helper lib
 
-### EasyCrypt
+### SimpleCrypt
 
 Uses ```ActiveSupport::MessageEncryptor``` to provide easy access to encryption with salt.
 
