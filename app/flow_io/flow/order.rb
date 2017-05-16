@@ -15,8 +15,6 @@
 class Flow::Order
   FLOW_CENTER = 'default' unless defined?(::Flow::Order::FLOW_CENTER)
 
-  cattr_accessor :clear_zero_amount_payments
-
   attr_reader     :response
   attr_reader     :order
   attr_reader     :customer

@@ -3,6 +3,7 @@
 # to basic shop frontend and backend needs
 
 class Flow::SimpleGateway
+  cattr_accessor :clear_zero_amount_payments
 
   def initialize(order)
     @order = order
@@ -23,6 +24,10 @@ class Flow::SimpleGateway
     }
 
     @order.update_column :flow_data, @order.flow_data.merge('authorization': store)
+
+    if self.class.clear_zero_amount_payments
+      @order.payments.where(amount:0, state: ['invalid', 'processing', 'pending']).map(&:destroy)
+    end
 
     ActiveMerchant::Billing::Response.new(status, status_message, { response: response }, { authorization: store })
   rescue Io::Flow::V0::HttpClient::ServerError => exception
