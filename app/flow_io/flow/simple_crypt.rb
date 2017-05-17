@@ -10,7 +10,7 @@
 # Flow::SimpleCrypt.encrypt(enc2)              # raises error: ActiveSupport::MessageVerifier::InvalidSignature
 # Flow::SimpleCrypt.encrypt(enc2, '127.0.0.1') # ok
 
-module SimpleCrypt
+module Flow::SimpleCrypt
   extend self
 
   def encrypt_base(salt)
