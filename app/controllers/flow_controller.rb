@@ -17,7 +17,7 @@ class FlowController < ApplicationController
   end
 
   def paypal_get_id
-    order_id = EasyCrypt.decrypt params[:order]
+    order_id = Flow::SimpleCrypt.decrypt params[:order]
     order    = Spree::Order.find_by(number:order_id)
 
     opts = {
@@ -34,15 +34,14 @@ class FlowController < ApplicationController
   end
 
   def paypal_finish
-    order_id = EasyCrypt.decrypt params[:order]
-    order    = Spree::Order.find_by(number:order_id)
+    order_id = Flow::SimpleCrypt.decrypt params[:order]
+    order    = Spree::Order.find_by number:order_id
 
     gateway_order = Flow::SimpleGateway.new order
     response      = gateway_order.cc_authorization
 
     opts = if response.success?
-      order.finalize!
-      order.update_column :state, 'complete'
+      order.flow_finalize!
       flash[:success] = 'PayPal order is placed successufuly.'
 
       { order_number:  order.number }

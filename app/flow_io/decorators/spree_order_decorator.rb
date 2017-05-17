@@ -96,5 +96,13 @@ Spree::Order.class_eval do
     flow_data && flow_data['authorization'] ? true : false
   end
 
+  # completes order and sets all states to finalized and complete
+  # used when we have confirmed capture from Flow API or PayPal
+  def flow_finalize!
+    finalize! unless state == 'complete'
+    update_column :payment_state, 'paid' if payment_state != 'paid'
+    update_column :state, 'complete'     if state != 'complete'
+  end
+
 end
 

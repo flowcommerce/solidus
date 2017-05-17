@@ -46,9 +46,7 @@ class Flow::SimpleGateway
 
     if response.id
       @order.update_column :flow_data, @order.flow_data.merge('capture': response.to_hash)
-      @order.finalize!
-
-      # @order.update_column :payment_state, 'completed'
+      @order.flow_finalize!
 
       ActiveMerchant::Billing::Response.new true, 'success', { response: response }
     else

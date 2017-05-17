@@ -178,7 +178,7 @@ class Flow::Order
   end
 
   def check_state!
-    @order.finalize! if @order.flow_order_authorized? && @order.state != 'complete'
+    @order.flow_finalize! if @order.flow_order_authorized? && @order.state != 'complete'
   end
 
   def add_item line_item
