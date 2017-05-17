@@ -6,11 +6,11 @@ Rails.application.routes.draw do
   #
   # We ask that you don't use the :as option here, as Spree relies on it being the default of "spree"
   mount Spree::Core::Engine, :at => '/'
-          # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :flow do
-    post '/event-target', to: '/flow#handle_flow_web_hook_event'
-    # get  '/event-target', to: '/flow#handle_flow_web_hook_event'
+    post '/event-target',  to: '/flow#handle_flow_web_hook_event'
+    post '/paypal_id',     to: '/flow#paypal_get_id'
+    post '/paypal_finish', to: '/flow#paypal_finish'
   end
 
   get '/about', to: 'flow#about'

@@ -16,6 +16,43 @@ class FlowController < ApplicationController
     render text: e.message, status: 400
   end
 
+  def paypal_get_id
+    order_id = EasyCrypt.decrypt params[:order]
+    order    = Spree::Order.find_by(number:order_id)
+
+    opts = {
+      discriminator: 'merchant_of_record_payment_form',
+      method:        'paypal',
+      order_number:  order.number,
+      amount:        order.flow_order.total.amount,
+      currency:      order.flow_order.total.currency
+    }
+
+    response = Flow.api :post, '/:organization/payments', {}, opts
+
+    render json: response
+  end
+
+  def paypal_finish
+    order_id = EasyCrypt.decrypt params[:order]
+    order    = Spree::Order.find_by(number:order_id)
+
+    gateway_order = Flow::SimpleGateway.new order
+    response      = gateway_order.cc_authorization
+
+    opts = if response.success?
+      order.finalize!
+      order.update_column :state, 'complete'
+      flash[:success] = 'PayPal order is placed successufuly.'
+
+      { order_number:  order.number }
+    else
+      { error: response.message }
+    end
+
+    render json: opts
+  end
+
   def index
     # solidus method
     return unless user_is_admin
