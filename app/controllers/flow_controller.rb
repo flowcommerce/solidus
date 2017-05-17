@@ -11,32 +11,21 @@ class FlowController < ApplicationController
 
     data     = JSON.parse request.body.read
     response = Flow::Webhook.process data
+
     render text: response
   rescue ArgumentError => e
     render text: e.message, status: 400
   end
 
   def paypal_get_id
-    order_id = Flow::SimpleCrypt.decrypt params[:order]
-    order    = Spree::Order.find_by(number:order_id)
+    order     = paypal_get_order_from_param
+    response  = Flow::PayPal.get_id order
 
-    opts = {
-      discriminator: 'merchant_of_record_payment_form',
-      method:        'paypal',
-      order_number:  order.number,
-      amount:        order.flow_order.total.amount,
-      currency:      order.flow_order.total.currency
-    }
-
-    response = Flow.api :post, '/:organization/payments', {}, opts
-
-    render json: response
+    render json: response.to_hash
   end
 
   def paypal_finish
-    order_id = Flow::SimpleCrypt.decrypt params[:order]
-    order    = Spree::Order.find_by number:order_id
-
+    order         = paypal_get_order_from_param
     gateway_order = Flow::SimpleGateway.new order
     response      = gateway_order.cc_authorization
 
@@ -98,6 +87,11 @@ class FlowController < ApplicationController
   end
 
   private
+
+  def paypal_get_order_from_param
+    order_id = Flow::SimpleCrypt.decrypt params[:order]
+    Spree::Order.find_by(number:order_id)
+  end
 
   def user_is_admin
     return true if spree_current_user && spree_current_user.admin?
