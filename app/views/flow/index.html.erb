@@ -13,7 +13,7 @@
 <% @orders.each do |order| %>
   <tr>
     <td>
-      <%= order.id %> <small>- <%= order.state %></small>
+      <%= order.id %> <small>- <%= order.user.try(:email).to_s[0,20] %></small>
       <br />
       <small><%= order.created_at.to_s.reverse.split(':',2).last.reverse %></small>
     </td>
@@ -22,7 +22,7 @@
       &bull;
       <%= link_to 'raw', '?flow=raw&o_id=%d' % order.id, target: :_new %>
       <br />
-      <small><%= order.user.try(:email) %></small>
+      <small><%= order.state %> - <%= order.payment_state %></small>
     </td>
     <td>
       <%= link_to 'Flow', 'https://console.flow.io/%s/orders/%s' % [Flow.organization, order.flow_number], target: :_new %>
