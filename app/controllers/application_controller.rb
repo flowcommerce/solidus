@@ -4,6 +4,18 @@ class ApplicationController < ActionController::Base
   protect_from_forgery    with: :exception
   before_action           :flow_set_experience, :flow_update_selection
 
+  # we will rescue and log all erorrs
+  # idea is to not have any errors in the future, but
+  # if they happen we will show hopefully meaning full info
+  rescue_from StandardError do |exception|
+    # hard log error
+    Flow::Error.log exception, request
+
+    # render small error template with basic info for the user
+    info_hash = { message: exception.message, klass: exception.class }
+    render text: Rails.root.join('app/views/flow/_error.html').read % info_hash
+  end
+
   # before render trigger
   # rails does not have before_render filter so we create it like this
   # to make things simple
