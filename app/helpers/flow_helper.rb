@@ -161,10 +161,13 @@ module FlowHelper
     out.join('').html_safe
   end
 
-  def show_error
-    return $!.message if Rails.env.developmemnt? || params[:debug]
+  def show_error(message=nil)
+    Flow::Error.log $!, request
 
-    'error'
+    message ||= 'error'
+    message = '%s (%s)' % [$!.message, $!.class] if Rails.env.development? || params[:debug]
+
+    '<div class="flash error">%s</div>'.html_safe % message
   end
 
 end

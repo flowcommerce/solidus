@@ -19,9 +19,9 @@ class Flow::Error < StandardError
     folder += "/#{exception.class.to_s.tableize.gsub('/','-')}"
     Dir.mkdir(folder) unless Dir.exists?(folder)
 
-    exp_path = "#{folder}/#{key}.txt"
-    File.write(exp_path, data)
-    exp_path
+    "#{folder}/#{key}.txt".tap do |path|
+      File.write(path, data)
+    end
   end
 
 end

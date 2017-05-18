@@ -11,9 +11,15 @@ class ApplicationController < ActionController::Base
     # hard log error
     Flow::Error.log exception, request
 
-    # render small error template with basic info for the user
-    info_hash = { message: exception.message, klass: exception.class }
-    render text: Rails.root.join('app/views/flow/_error.html').read % info_hash
+    if Rails.env.production?
+      # render small error template with basic info for the user
+      info_hash = { message: exception.message, klass: exception.class }
+
+      # show customized error only in production
+      render text: Rails.root.join('app/views/flow/_error.html').read % info_hash
+    else
+      raise exception
+    end
   end
 
   # before render trigger

@@ -41,6 +41,8 @@ Spree::Order.class_eval do
 
     if flow_order
       # duty, vat, ...
+      raise Flow::Error.new('Order not properly localized (sync issue)') unless flow_order.prices
+
       flow_order.prices.each do |price|
         prices.push price_model.new(price['key'].to_s.capitalize , price['label'])
       end
