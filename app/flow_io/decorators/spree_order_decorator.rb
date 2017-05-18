@@ -81,8 +81,10 @@ Spree::Order.class_eval do
   end
 
   def flow_experience
-    return Struct.new(:key).new('USA') unless flow_order
-    Struct.new(:key).new(flow_order['experience']['key'])
+    model = Struct.new(:key)
+    model.new flow_order.experience.key
+  rescue
+    model.new ENV.fetch('FLOW_BASE_COUNTRY')
   end
 
   # clear invalid zero amount payments. Solidsus bug?
