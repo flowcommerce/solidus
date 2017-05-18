@@ -4,6 +4,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery    with: :exception
   before_action           :flow_set_experience, :flow_update_selection
 
+  # capture root exception and allways show error
+  rescue_from Exception do
+    render text: "Root exception (critical: #{$!.class})\n\n%s" % $!.message, content_type: 'text/plain'
+  end
+
   # before render trigger
   # rails does not have before_render filter so we create it like this
   # to make things simple
