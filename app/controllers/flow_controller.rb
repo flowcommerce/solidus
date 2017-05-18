@@ -89,8 +89,8 @@ class FlowController < ApplicationController
   private
 
   def paypal_get_order_from_param
-    order_id = Flow::SimpleCrypt.decrypt params[:order]
-    Spree::Order.find_by(number:order_id)
+    order_number = params[:order]              || raise('Order parameter not defined')
+    Spree::Order.find_by(number: order_number) || raise('Order not found')
   end
 
   def user_is_admin
