@@ -41,6 +41,8 @@ Spree::Order.class_eval do
 
     if flow_order
       # duty, vat, ...
+      raise Flow::Error.new('Order not properly localized (sync issue)') unless flow_order.prices
+
       flow_order.prices.each do |price|
         prices.push price_model.new(price['key'].to_s.capitalize , price['label'])
       end
@@ -63,9 +65,8 @@ Spree::Order.class_eval do
 
   # shows localized total, if possible. if not, fall back to Solidus default
   def flow_total
-    flow_order ?
-      flow_order['total']['label']
-      : Flow.format_default_price(total)
+    price = flow_order.total.label if flow_order && flow_order.total
+    price || Flow.format_default_price(total)
   end
 
   # returns localized price part if in flow, or solidus one if not
