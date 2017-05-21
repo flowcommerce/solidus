@@ -69,10 +69,6 @@ All methods are prefixed with ```flow_```.
 
 ## Helper lib
 
-### SimpleCrypt
-
-Uses ```ActiveSupport::MessageEncryptor``` to provide easy access to encryption with salt.
-
 ### Spree::Flow::Gateway
 
 Adapter for Solidus/Spree, that allows using [Flow.io](https://www.flow.io) as payment gateway. Flow is PCI compliant payment processor.
