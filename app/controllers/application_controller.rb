@@ -142,8 +142,4 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def flow_filter_spree_checkout_edit
-
-  end
-
 end
