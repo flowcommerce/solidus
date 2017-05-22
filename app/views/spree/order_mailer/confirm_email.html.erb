@@ -1,4 +1,7 @@
 <%
+  # render text email in console. parts[1] for html body
+  # puts Spree::OrderMailer.confirm_email(Spree::Order.last).body.parts[0].body
+
   @prices      = @order.flow_cart_breakdown
   @total_price = @prices.pop
 %>
@@ -45,8 +48,38 @@
     <td><%= Spree.t(:total) %></td>
     <td align="right"><b><%= @total_price.label %></b></td>
   </tr>
+  <tr>
+    <td>Payment method</td>
+    <td align="right"><%= @order.flow_paymeny_method == 'paypal' ? 'PayPal' : 'Credit Card' %></td>
+  </tr>
 </table>
 
 <br>
+
+<% ['ship', 'bill'].each do |name|
+  address = @order.send('%s_address' % name)
+%>
+<p><b><%= name.capitalize %>ing address</b></p>
+
+<table class="order">
+  <tr>
+    <td>Full name</td>
+    <td><%= address.firstname %> <%= address.lastname %></td>
+  </tr>
+  <tr>
+    <td>Address</td>
+    <td><%= address.address1 %></td>
+  </tr>
+  <tr>
+    <td>City</td>
+    <td><%= address.city %></td>
+  </tr>
+  <tr>
+    <td>Country</td>
+    <td><%= address.country.name rescue '-' %>, <%= address.state.name rescue '-' %></td>
+  </tr>
+</table>
+<br />
+<% end %>
 
 <p><%= Spree.t('order_mailer.confirm_email.thanks') %></p>
