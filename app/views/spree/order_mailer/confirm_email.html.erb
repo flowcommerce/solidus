@@ -10,7 +10,7 @@
   table.order td { padding: 4px; border-top: 1px solid #bbb; }
 </style>
 
-<h4><%= Spree.t('order_mailer.confirm_email.dear_customer') %></h4>
+<h4>Dear <%= @order.bill_address.firstname %></h4>
 
 <br>
 
