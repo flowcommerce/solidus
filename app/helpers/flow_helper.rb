@@ -159,6 +159,10 @@ module FlowHelper
 
     out.push '</table>'
     out.join('').html_safe
+  rescue
+    @has_order_error = true
+
+    show_error('cart error')
   end
 
   def show_error(message=nil)

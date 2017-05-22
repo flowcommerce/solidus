@@ -27,13 +27,15 @@ tr.line-item { font-size: 15px;  }
             <%= render :partial => 'form', :locals => { :order_form => order_form } %>
           </div>
 
-          <%= total_cart_breakdown rescue show_error('cart error') %>
+          <%= total_cart_breakdown %>
 
           <div class="links columns sixteen alpha omega" data-hook="cart_buttons">
             <button name="button" type="submit" class="button checkout primary" id="update-button">Update</button>
-            or
-            <%= button_tag :class => 'button checkout primary large', :id => 'checkout-link', :name => 'checkout' do %>
-              <%= Spree.t(:checkout) %>
+            <% unless @has_order_error %>
+              or
+              <%= button_tag :class => 'button checkout primary large', :id => 'checkout-link', :name => 'checkout' do %>
+                <%= Spree.t(:checkout) %>
+              <% end %>
             <% end %>
           </div>
 
