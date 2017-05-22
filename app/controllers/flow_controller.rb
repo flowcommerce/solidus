@@ -30,7 +30,9 @@ class FlowController < ApplicationController
     response      = gateway_order.cc_authorization
 
     opts = if response.success?
+      order.update_column :flow_data, order.flow_data.merge({ payment_type: 'paypal' })
       order.flow_finalize!
+
       flash[:success] = 'PayPal order is placed successufuly.'
 
       { order_number:  order.number }

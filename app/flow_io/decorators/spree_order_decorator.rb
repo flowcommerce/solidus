@@ -118,5 +118,16 @@ Spree::Order.class_eval do
     update_column :state, 'complete'     if state != 'complete'
   end
 
+  def flow_paymeny_method
+    if !flow_data['capture']
+      # no payment if no capture information
+      nil
+    elsif flow_data['payment_type'] == 'paypal'
+      'paypal'
+    else
+      'cc' # creait card is default
+    end
+  end
+
 end
 

@@ -39,7 +39,14 @@
     <div class="columns omega four">
       <h6><%= Spree.t(:payment_information) %> <%= link_to "(#{Spree.t('actions.edit')})", checkout_state_path(:payment) unless order.completed? %></h6>
       <div class="payment-info">
-        <%= render order.payments.first %><br/>
+        <% if order.flow_paymeny_method == 'paypal' %>
+          <span>
+            <img src="http://i.imgur.com/pM4AOA6.png" style="width: 32px; height: 32px; vertical-align: middle;" />
+            Paid with PayPal &copy;
+          </span>
+        <% else%>
+          <%= render order.payments.first %><br/>
+        <% end %>
       </div>
     </div>
   <% end %>

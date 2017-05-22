@@ -3,7 +3,7 @@
   @total_price = @prices.pop
 %>
 
-<%= Spree.t('order_mailer.confirm_email.dear_customer') %>
+Dear <%= @order.bill_address.firstname %>
 ---
 
 <%= Spree.t('order_mailer.confirm_email.instructions') %>
@@ -22,5 +22,20 @@ Total
 <% end %>
 
 <%= Spree.t(:total).ljust(15) %>: <%= @total_price[1] %>
+Payment method : <%= @order.flow_paymeny_method == 'paypal' ? 'PayPal' : 'Credit Card' %>
+
+<% ['ship', 'bill'].each do |name|
+  address = @order.send('%s_address' % name)
+%>
+<%= name.capitalize %>ing address
+---
+Full name : <%= address.firstname %> <%= address.lastname %>
+Address   : <%= address.address1 %>
+City      : <%= address.city %>
+Country   : <%= address.country.name rescue '-' %>, <%= address.state.name rescue '-' %>
+
+
+<% end %>
 
 <%= Spree.t('order_mailer.confirm_email.thanks') %>
+
