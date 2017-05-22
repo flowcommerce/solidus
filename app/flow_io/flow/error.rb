@@ -24,4 +24,20 @@ class Flow::Error < StandardError
     end
   end
 
+  def self.format_message order
+    message = if order['messages']
+      msg = order['messages'].join(', ')
+
+      if order['numbers']
+        msg += ' (%s)' % Spree::Variant.where(id: order['numbers']).map(&:name).join(', ')
+      end
+
+      msg
+    else
+      'Order not properly localized (sync issue)'
+    end
+
+    '%s (Flow.io)' % message
+  end
+
 end
