@@ -170,4 +170,17 @@ module FlowHelper
     '<div class="flash error">%s</div>'.html_safe % message
   end
 
+  def flow_top_nav_data
+    data = ['using flow (%s)' % @flow_exp.key]
+
+    if @variants && @current_spree_user && @current_spree_user.admin?
+      admin_link  = '/admin/products/%s/variants' % @product.slug
+      variant_ids = @variants.map(&:id).join(', ')
+
+      data.push 'Variant IDs (%s) <a href="%s">admin</a>' % [variant_ids, admin_link]
+    end
+
+    data.reverse.join(' | ').html_safe
+  end
+
 end
