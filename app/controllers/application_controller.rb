@@ -124,9 +124,7 @@ class ApplicationController < ActionController::Base
         @order.finalize!
         @flow_render = { redirect_to: '/'}
       else
-        # @flow_session.use_flow = false
-        # @flow_render =  { text: 'Flow error: %s' % @flow_order.error }
-        flash.now[:error] = 'Flow error (%s): %s' % [@flow_order.response['code'], @flow_order.error]
+        flash.now[:error] = Flow::Error.format_message @flow_order.response
         @order.flow_data = {}
       end
     elsif params[:debug] == 'flow'

@@ -99,7 +99,7 @@ module FlowHelper
       text = '%s: (%s)' % [text, Spree.t(:empty)]
       css_class = :empty
     else
-      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, simple_current_order.flow_total]
+      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, simple_current_order.flow_total(@flow_exp.key)]
       css_class = :full
     end
 
@@ -159,15 +159,16 @@ module FlowHelper
 
     out.push '</table>'
     out.join('').html_safe
+  rescue
+    @has_order_error = true
+
+    show_error('cart error')
   end
 
   def show_error(message=nil)
     Flow::Error.log $!, request
 
-    message ||= 'error'
-    message = '%s (%s)' % [$!.message, $!.class] if Rails.env.development? || params[:debug]
-
-    '<div class="flash error">%s</div>'.html_safe % message
+    '<div class="flash error">%s</div>'.html_safe % $!.message
   end
 
   def flow_top_nav_data
