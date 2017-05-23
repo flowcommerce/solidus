@@ -44,7 +44,7 @@ class Flow::Order
   end
 
   def error?
-    @response['code'] && @response['messages']
+    @response && @response['code'] && @response['messages']
   end
 
   def error
@@ -57,6 +57,9 @@ class Flow::Order
 
   # delivery methods are defined in flow console
   def deliveries
+    # if we have erorr with an order, but still using this method
+    return [] unless @order.flow_order
+
     delivery_list = @order.flow_order['deliveries'][0]['options']
 
     @order.flow_data ||= {}

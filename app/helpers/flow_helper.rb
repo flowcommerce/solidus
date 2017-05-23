@@ -99,7 +99,7 @@ module FlowHelper
       text = '%s: (%s)' % [text, Spree.t(:empty)]
       css_class = :empty
     else
-      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, simple_current_order.flow_total(@flow_exp.key)]
+      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, simple_current_order.flow_total(@flow_exp.try(:key))]
       css_class = :full
     end
 
