@@ -53,7 +53,7 @@ class FlowController < ApplicationController
       case action
         when 'order'
           # response = FlowCommerce.instance.orders.get_by_number(Flow.organization, order.flow_number)
-          response = Flow.api(:get, '/:organization/orders/%s' % order.flow_number)
+          response = Flow.api :get, '/:organization/orders/%s' % order.flow_number, expand: 'experience'
         when 'raw'
           response = order.attributes
         when 'auth'

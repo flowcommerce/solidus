@@ -135,6 +135,7 @@ class Flow::Order
     opts = {}
     opts[:organization] = Flow.organization
     opts[:experience]   = @experience.key
+    opts[:expand]       = 'experience'
 
     body = {}
     body = {
@@ -163,7 +164,7 @@ class Flow::Order
 
     if use_get
       # if digest @body matches, use get to build request
-      @response = Flow.api(:get, '/:organization/orders/%s' % @body[:number])
+      @response = Flow.api :get, '/:organization/orders/%s' % @body[:number], expand: 'experience'
     else
       @order.flow_data['digest'] = digest
 
