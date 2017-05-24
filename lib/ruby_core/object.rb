@@ -1,7 +1,7 @@
 class Object
 
   # fast error raise
-  def r(data=nil)
+  def r data
     data = data.to_a if data.is_a?(Enumerator)
     #raise data.class.to_s
     if data.is_a?(Hash) || data.is_a?(Array)
@@ -11,6 +11,10 @@ class Object
     else
       raise "#{data.class} -> #{data.ai(plain:true)}".gsub('<', '&lt;')
     end
+  end
+
+  def rr data
+    ap ['--- START', data, '--- END']
   end
 
 end

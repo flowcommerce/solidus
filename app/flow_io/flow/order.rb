@@ -21,7 +21,6 @@ class Flow::Order
   attr_reader     :body
 
   def initialize order:, experience: nil, customer: nil
-
     unless experience
       if order.flow_order
         experience = Flow::Experience.get(order.flow_order['experience']['key'])
@@ -174,7 +173,7 @@ class Flow::Order
       # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(@body)
       # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
 
-      @response = Flow.api(:put, '/:organization/orders/%s' % @body[:number], opts, @body)
+      @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
 
       write_response_in_cache
     end

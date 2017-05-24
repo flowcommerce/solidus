@@ -2,7 +2,7 @@
 
 module FlowHelper
 
-  def flow_flag(exp, size=32)
+  def flow_flag exp, size=32
     return 'http://i.imgur.com/GwFYycA.png' if exp && exp.key == 'world'
 
     flag = unless exp
@@ -15,9 +15,9 @@ module FlowHelper
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, flag]
   end
 
-  def flow_product_price(product_or_variant)
+  def flow_product_price product_or_variant
     if @flow_session.use_flow?
-      product_or_variant.flow_local_price(@flow_exp)
+      product_or_variant.flow_local_price @flow_exp
     else
       product_or_variant.price_for(current_pricing_options).to_html
     end
@@ -32,7 +32,7 @@ module FlowHelper
   end
 
   # Renders tree on the left
-  def flow_taxons_tree(root_taxon, current_taxon)
+  def flow_taxons_tree root_taxon, current_taxon
     return '' if root_taxon.children.empty?
 
     max_level = 2
@@ -54,7 +54,7 @@ module FlowHelper
   #
   # @param product [Spree::Product] the product whose description you want to filter
   # @return [String] the generated HTML
-  def flow_product_description(product)
+  def flow_product_description product
     return raw(product.description) if Spree::Config[:show_raw_product_description]
 
     data = product.description
@@ -81,7 +81,7 @@ module FlowHelper
   #
   # @param taxon [Spree::Taxon] - spree category
   # @return [String] - url if the custom image
-  def flow_category_icon(taxon)
+  def flow_category_icon taxon
     icon = taxon.icon_file_name
 
     while icon.blank? && (taxon = taxon.parent)
@@ -92,7 +92,7 @@ module FlowHelper
   end
 
   # this renders link to cart with total cart price
-  def flow_link_to_cart(text=nil)
+  def flow_link_to_cart text=nil
     text ||= Spree.t(:cart)
 
     if simple_current_order.nil? || simple_current_order.item_count.zero?
@@ -106,7 +106,7 @@ module FlowHelper
     link_to text.html_safe, spree.cart_path, class: 'cart-info %s' % css_class
   end
 
-  def flow_normalize_categories(taxonomy_string)
+  def flow_normalize_categories taxonomy_string
     taxonomy_string.sub('<li itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"><a itemprop="item" href="/products"><span itemprop="name">Products</span><meta itemprop="position" content="2" /></a>&nbsp;&raquo;&nbsp;</li>','').html_safe
   end
 
@@ -122,8 +122,8 @@ module FlowHelper
   end
 
   # used in single product page to show complete price of a product
-  def product_price_long(variant)
-    prices      = variant.flow_prices(@flow_exp)
+  def product_price_long variant
+    prices = variant.flow_prices @flow_exp
     return variant.flow_spree_price unless prices.try(:first).present?
 
     prices.map do |price|
@@ -141,7 +141,7 @@ module FlowHelper
             label
           end
       end
-    end.join(", ")
+    end.join(', ')
   end
 
   # used in checkout and mailer to show complete price breakdown
@@ -162,10 +162,10 @@ module FlowHelper
   rescue
     @has_order_error = true
 
-    show_error('cart error')
+    show_error 'cart error'
   end
 
-  def show_error(message=nil)
+  def show_error message=nil
     Flow::Error.log $!, request
 
     '<div class="flash error">%s</div>'.html_safe % $!.message

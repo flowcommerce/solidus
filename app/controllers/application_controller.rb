@@ -102,30 +102,34 @@ class ApplicationController < ActionController::Base
   # we need to prepare @order and sync to flow.io before render because we need
   # flow total price
   def flow_sync_order
-    return unless @order && @order.id
+    order = @order if @order.try :id
+    order ||= simple_current_order if respond_to?(:simple_current_order) && simple_current_order.try(:id)
+
+    return unless order
 
     return if request.path.include?('/admin/')
 
     if @flow_session.use_flow?
-      @flow_order = Flow::Order.new(experience: @flow_exp, order: @order, customer: @current_spree_user)
+      @flow_order = Flow::Order.new(experience: @flow_exp, order: order, customer: @current_spree_user)
       @flow_order.synchronize!
     else
-      if @order.flow_data['order']
-        @order.flow_data.delete('order')
-        @order.update_column :flow_data, @order.flow_data.dup
+      if order.flow_data['order']
+        order.flow_data.delete('order')
+        order.update_column :flow_data, order.flow_data.dup
       end
+
       return
     end
 
-    return if @order.line_items.length == 0
+    return if order.line_items.length == 0
 
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')
-        @order.finalize!
+        order.finalize!
         @flow_render = { redirect_to: '/'}
       else
         flash.now[:error] = Flow::Error.format_message @flow_order.response
-        @order.flow_data = {}
+        order.flow_data = {}
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
