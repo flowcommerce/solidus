@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'colorize'
+
+show = ARGV[0] ? ARGV[0].to_i : nil
+error_folders = Dir['./log/exceptions/*'].sort_by { |x| File.mtime(x) }
+
+cnt = 0
+
+puts 'Add error number as last argument to show full erros'.blue
+
+error_folders.each do |error_folder|
+  cnt += 1
+  next if show && show != cnt
+
+  print '%s. %s - ' % [cnt.to_s.rjust(2), error_folder.split('/').last.yellow]
+  file = Dir['%s/*.txt' % error_folder].sort_by{ |f| File.mtime(f) }.first
+  next unless file
+
+  last_update = (Time.now - File.mtime(file)).to_i
+  # last_update = Time.humanize_seconds(last_update)
+  if last_update < 60
+    print '%s sec ago - ' % last_update.to_s.blue
+  elsif last_update < 3600
+    print '%s mins ago - ' % (last_update/60).to_i.to_s.blue
+  else
+    print '%s hours ago - ' % (last_update/3600).to_i.to_s.blue
+  end
+
+  puts file.split('/').last
+
+  if show
+    puts "\n" + File.read(file)
+    exit
+  end
+
+  first_line = File.read(file).split("\n").first
+  puts '    %s' % first_line
+end
