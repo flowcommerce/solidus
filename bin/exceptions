@@ -18,7 +18,7 @@ error_folders.each do |error_folder|
   next unless file
 
   last_update = (Time.now - File.mtime(file)).to_i
-  # last_update = Time.humanize_seconds(last_update)
+
   if last_update < 60
     print '%s sec ago - ' % last_update.to_s.blue
   elsif last_update < 3600
