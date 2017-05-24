@@ -95,11 +95,13 @@ module FlowHelper
   def flow_link_to_cart text=nil
     text ||= Spree.t(:cart)
 
-    if simple_current_order.nil? || simple_current_order.item_count.zero?
+    order = @order || simple_current_order
+
+    if order.nil? || order.item_count.zero?
       text = '%s: (%s)' % [text, Spree.t(:empty)]
       css_class = :empty
     else
-      text = '%s: (%s) <span class="amount">%s</span>' % [text, simple_current_order.item_count, simple_current_order.flow_total(@flow_exp.try(:key))]
+      text = '%s: (%s) <span class="amount">%s</span>' % [text, order.item_count, order.flow_total]
       css_class = :full
     end
 
@@ -173,6 +175,8 @@ module FlowHelper
 
   def flow_top_nav_data
     data = ['using flow (%s)' % @flow_exp.key]
+
+    data.push 'Order (%s)' % simple_current_order.number if respond_to?(:simple_current_order) && simple_current_order.number
 
     if @variants && @current_spree_user && @current_spree_user.admin?
       admin_link  = '/admin/products/%s/variants' % @product.slug

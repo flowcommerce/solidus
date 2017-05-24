@@ -14,7 +14,7 @@ Spree::Order.class_eval do
 
   def flow_order
     return nil unless flow_data['order']
-    @_flow_hashie ||= Hashie::Mash.new(flow_data['order'])
+    Hashie::Mash.new flow_data['order']
   end
 
   # accepts line item, usually called from views
@@ -67,16 +67,9 @@ Spree::Order.class_eval do
   end
 
   # shows localized total, if possible. if not, fall back to Solidus default
-  def flow_total flow_experience_key=nil
-    # r
-    if flow_order && flow_order.total
-      if flow_experience_key && flow_order.experience[:key] != flow_experience_key
-        # response = Flow::Order.new(order: self).synchronize!
-        # r response
-      end
-
-      price = flow_order.total.label
-    end
+  def flow_total
+    # r flow_order.total.label
+    price = flow_order.total.label if flow_order && flow_order.total
     price || Flow.format_default_price(total)
   end
 

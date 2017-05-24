@@ -174,9 +174,13 @@ class Flow::Order
       # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
 
       @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
-
-      write_response_in_cache
     end
+
+    do_write   = false
+    do_write   = true unless @order.flow_data['order']
+    do_write ||= true if @response['total']['label'] != @order.flow_data['order']['total']['label']
+
+    write_response_in_cache if do_write
   end
 
   def check_state!
