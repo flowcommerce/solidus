@@ -114,7 +114,7 @@ class Flow::Order
         city:     address.city,
         province: address.state_name,
         postal:   address.zipcode,
-        country: (address.country.name rescue ''),
+        country: (address.country.iso3 rescue 'USA'),
         contact: opts[:customer]
       }
 

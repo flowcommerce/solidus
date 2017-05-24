@@ -36,7 +36,7 @@ module Flow
     dir = Rails.root.join('log/api')
     Dir.mkdir(dir) unless Dir.exist?(dir)
     debug_file = '%s/%s.bash' % [dir, debug_path.gsub(/[^\w]+/, '_')]
-    File.write debug_file, command
+    File.write debug_file, command + "\n"
 
     data = JSON.load `#{command}`
 
