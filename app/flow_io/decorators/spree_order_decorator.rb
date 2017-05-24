@@ -112,10 +112,7 @@ Spree::Order.class_eval do
   end
 
   def flow_paymeny_method
-    if !flow_data['capture']
-      # no payment if no capture information
-      nil
-    elsif flow_data['payment_type'] == 'paypal'
+    if flow_data['payment_type'] == 'paypal'
       'paypal'
     else
       'cc' # creait card is default
