@@ -177,11 +177,7 @@ class Flow::Order
       @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
     end
 
-    do_write   = false
-    do_write   = true unless @order.flow_data['order']
-    do_write ||= true if @response['total']['label'] != @order.flow_data['order']['total']['label']
-
-    write_response_in_cache if do_write
+    write_response_in_cache
   end
 
   def check_state!
@@ -210,8 +206,10 @@ class Flow::Order
   # set cache for total order ammount
   # written in flow_data field inside spree_orders table
   def write_response_in_cache
-    @order.flow_data['order'] = @response.to_hash
-    @order.save
+    if @response && ((@response['total']['label'] != @order.flow_data['order']['total']['label']) rescue true)
+      @order.flow_data['order'] = @response.to_hash
+      @order.save
+    end
   end
 
 end

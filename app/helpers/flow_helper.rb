@@ -58,15 +58,15 @@ module FlowHelper
     return raw(product.description) if Spree::Config[:show_raw_product_description]
 
     data = product.description
-    data.gsub!(/^[\s\*]+/, '* ')
-    data.gsub!(/\n\s*\*\s+/, "\n\n* ")
+    data.gsub! /^[\s\*]+/, '* '
+    data.gsub! /\n\s*\*\s+/, "\n\n* "
 
     # abandonded, do not use.
     # red_carpet = Redcarpet::Render::HTML.new(no_style: true)
     # markdown   = Redcarpet::Markdown.new(red_carpet, {})
     # return markdown.render(data).html_safe
 
-    data = ' '+raw(product.description.gsub(/(.*?)\r?\n\r?\n/m, '<p>\1</p>'))
+    data = ' ' + raw(product.description.gsub(/(.*?)\r?\n\r?\n/m, '<p>\1</p>'))
     data.gsub!(' *', '<li>')
 
     parts = data.split('<li>', 2)
@@ -176,9 +176,19 @@ module FlowHelper
   def flow_top_nav_data
     data = ['using flow (%s)' % @flow_exp.key]
 
-    data.push 'Order (%s)' % simple_current_order.number if respond_to?(:simple_current_order) && simple_current_order.number
+    if respond_to?(:simple_current_order) && simple_current_order.number
+      text = simple_current_order.number
 
-    if @variants && @current_spree_user && @current_spree_user.admin?
+      if @current_spree_user.try(:admin?)
+        text  = link_to text, '/admin/orders/%s/edit' % text
+        text += ', <a href="https://console.flow.io/%s/orders/%s" target="_console">console</a>'.html_safe % [Flow.organization, simple_current_order.number]
+        text += ', <a href="/admin/flow?flow=order&o_id=%s" target="_api">api</a>'.html_safe % [simple_current_order.id]
+      end
+
+      data.push 'Order (%s)' % text
+    end
+
+    if @variants && @current_spree_user.try(:admin?)
       admin_link  = '/admin/products/%s/variants' % @product.slug
       variant_ids = @variants.map(&:id).join(', ')
 

@@ -15,7 +15,7 @@ module Flow
     body ||= params.delete(:BODY)
 
     remote_params = URI.encode_www_form params
-    remote_path   = path.sub('%o', Flow.organization).sub(':organization', Flow.organization)
+    remote_path   = debug_path = path.sub('%o', Flow.organization).sub(':organization', Flow.organization)
     remote_path  += '?%s' % remote_params unless remote_params.blank?
 
     curl = ['curl -s']
@@ -32,6 +32,11 @@ module Flow
     command = curl.join(' ')
 
     puts command if defined?(Rails::Console)
+
+    dir = Rails.root.join('log/api')
+    Dir.mkdir(dir) unless Dir.exist?(dir)
+    debug_file = '%s/%s.bash' % [dir, debug_path.gsub(/[^\w]+/, '_')]
+    File.write debug_file, command
 
     data = JSON.load `#{command}`
 
