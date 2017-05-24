@@ -61,6 +61,8 @@
           <% end %>
         </div>
 
+        <%= render '/spree/shared/ddu_ddp' if @flow_exp.try(:key) == 'canada' %>
+
       <% end %>
 
       <% if @differentiator.try(:missing?) %>

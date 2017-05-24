@@ -1,4 +1,6 @@
-<p>Edit duties and tax preferences</p>
+<br />
+
+<h5 class="stock-shipping-method-title" style="text-align: left;">Edit duties and tax preferences</h5>
 
 <div id="popup-bg"></div>
 <div id="popup">
@@ -6,13 +8,13 @@
 
   <p>Please choose whether you would like to include the duties & taxes in the order payment.</p>
 
-  <label class="checkbox-block">
-    <input type="radio" name="choice" />
+  <label class="checkbox-block" onclick="Popup.select('paid');">
+    <input type="radio" name="choice" checked="true" />
     <p class="title">Paid</p>
     <p>You will pay duties & taxes with your order.</p>
   </label>
 
-  <label class="checkbox-block">
+  <label class="checkbox-block" onclick="Popup.select('unpaid');">
     <input type="radio" name="choice" />
     <p class="title">Unpaid</p>
     <p>
@@ -23,9 +25,13 @@
 
   <hr />
 
-  <button class="btn btn-default" onclick="$('#popup-bg, #popup').hide();">Cancel</button>
-  <button class="btn btn-primary">Save</button>
+  <button class="btn btn-default" onclick="Popup.close(); return false;">Cancel</button>
 </div>
+
+<p id="select-paid" onclick="Popup.select('paid')"><b>Duties & Taxes Paid:</b> You will pay duties & taxes with your order, if applicable.</p>
+<p id="select-unpaid" onclick="Popup.select('unpaid')" style="display: none;"><b>Duties & Taxes Unpaid:</b> You will not pay duties & taxes with your order. Your items might be subject to duties and/or taxes by your local customs authority.</p>
+
+<button class="button primary" onclick="Popup.open(); return false;">Edit Duties & Taxes Preference</button>
 
 <style>
 #popup-bg {
@@ -37,7 +43,19 @@
   position: fixed; background-color: #fff; width: 600px; top: 50px; left: 50%; margin-left: -300px;
   padding: 20px;
 }
+#popup label:hover { background-color: #eee; }
 #popup label.checkbox-block { display: block; padding: 10px 10px 0 60px; border: 1px solid #ccc; position: relative; cursor: pointer; }
 #popup label.checkbox-block input { position: absolute; margin-left: -20px; margin-top: 10px; zoom: 2; }
 #popup p.title { font-weight: bold; }
 </style>
+
+<script>
+  Popup = {}
+  Popup.open   = function() { $('#popup, #popup-bg').show(); }
+  Popup.close  = function() { $('#popup, #popup-bg').hide(); }
+  Popup.select = function(value) {
+    Popup.close();
+    $('#select-paid, #select-unpaid').hide();
+    $('#select-' + value).show();
+   }
+</script>
