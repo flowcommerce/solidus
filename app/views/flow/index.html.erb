@@ -47,7 +47,7 @@
     <td style="text-align: right;">
       <%= '%s - <b>%s</b>'.html_safe % [pluralize(order.line_items.sum(:quantity), 'item'), order.flow_total] %>
       <br/>
-      <small><%= order.flow_experience.key %></small>
+      <small><%= order.flow_order ? order.flow_order.dig(:experience, :country) : Flow.base_country %></small>
     </td>
   </tr>
 <% end %>

@@ -37,12 +37,10 @@
 
           <h5 class="stock-shipping-method-title" style="text-align: left;"><%= Spree.t(:shipping_method) %></h5>
           <% if @flow_session.use_flow? %>
-            <input type="hidden" name="flow_order_id" value="<%= @order.id %>" />
-            <input type="hidden" name="flow_selection[]" value="placeholder" />
             <% @flow_order.deliveries.each do |delivery| %>
               <p style="margin-top: 0;">
                 <label>
-                  <input type="radio" name="flow_selection[]" value="<%= delivery[:id] %>" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
+                  <input type="radio" name="flow_selection" value="<%= delivery[:id] %>" <%= delivery[:active] ? 'checked="true"' : nil %>/> &nbsp; <%= delivery[:name] %>
                 </label>
               </p>
             <% end %>
@@ -61,7 +59,7 @@
           <% end %>
         </div>
 
-        <%= render '/spree/shared/ddu_ddp' if @flow_exp.try(:key) == 'canada' %>
+        <%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_exp) %>
 
       <% end %>
 
