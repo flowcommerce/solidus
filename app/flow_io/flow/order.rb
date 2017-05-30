@@ -39,6 +39,7 @@ class Flow::Order
   def synchronize!
     sync_body!
     check_state!
+    write_response_in_cache
     @response
   end
 
@@ -72,7 +73,7 @@ class Flow::Order
       {
         id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: @order.flow_data['selection'].include?(selection_id),
+        active: @order.flow_data['selection'] == selection_id,
         name: name
       }
     end.to_a
@@ -145,10 +146,9 @@ class Flow::Order
 
     add_customer body if @customer
 
-    # add selection (delivery options) from flow_data
-    @order.flow_data['selection'] ||= []
-    @order.flow_data['selection'].delete('placeholder')
-    body[:selection] = @order.flow_data['selection']
+    # if defined, add selection (delivery options) and delivered_duty from flow_data
+    body[:selection] = [@order.flow_data['selection']]         if @order.flow_data['selection']
+    body[:delivered_duty] = @order.flow_data['delivered_duty'] if @order.flow_data['delivered_duty']
 
     # calculate digest body and cache it
     digest = Digest::SHA1.hexdigest(opts.to_json + body.to_json)
@@ -176,8 +176,6 @@ class Flow::Order
 
       @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
     end
-
-    write_response_in_cache
   end
 
   def check_state!
@@ -206,7 +204,9 @@ class Flow::Order
   # set cache for total order ammount
   # written in flow_data field inside spree_orders table
   def write_response_in_cache
-    if @response && ((@response['total']['label'] != @order.flow_data['order']['total']['label']) rescue true)
+    response_total = @response.dig('total', 'label')
+
+    if @response && response_total && response_total != @order.flow_data.dig('order', 'total', 'label')
       @order.flow_data['order'] = @response.to_hash
       @order.save
     end

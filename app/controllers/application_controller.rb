@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
 
   protect_from_forgery    with: :exception
-  before_action           :flow_set_experience, :flow_update_selection
+  before_action           :flow_set_experience, :flow_update_order_attrbibutes
 
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but
@@ -89,13 +89,17 @@ class ApplicationController < ActionController::Base
   ###
 
   # update selection (delivery options) on /checkout/update/delivery
-  def flow_update_selection
-    if params[:flow_order_id] && params[:flow_selection]
-      # empty array is nil, so we allways send placeholder
-      params[:flow_selection].delete('placeholder')
+  def flow_update_order_attrbibutes
+    [:selection, :delivered_duty].each do |el|
+      value = params["flow_#{el}".to_sym]
+      if value.present?
+        simple_current_order.flow_data[el.to_s] = value
+        @order_update = true
+      end
+    end
 
-      order = Spree::Order.find params[:flow_order_id]
-      order.update_column :flow_data, order.flow_data.merge('selection'=>params[:flow_selection])
+    if @order_update
+      simple_current_order.update_column :flow_data, simple_current_order.flow_data
     end
   end
 
