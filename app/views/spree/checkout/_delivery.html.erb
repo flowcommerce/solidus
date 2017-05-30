@@ -59,7 +59,7 @@
           <% end %>
         </div>
 
-        <%= render '/spree/shared/ddu_ddp' if Flow::Experience.delivered_duty?(@flow_exp) %>
+        <%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_exp) %>
 
       <% end %>
 

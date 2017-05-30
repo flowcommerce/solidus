@@ -31,10 +31,10 @@ module Flow::Experience
     Hashie::Mash.new get(key).settings.delivered_duty.to_hash
   end
 
-  # if we have 2 choices, we show choice popup
-  def delivered_duty? experience
+  # if we have more than one choice, we show choice popup
+  def offers_delivered_duty_choice? experience
     return false unless experience
-    delivered_duty(experience).available.length == 2
+    delivered_duty(experience).available.length > 1
   end
 
   private

@@ -1,5 +1,6 @@
 <%
-  @delivered_duty = @order.flow_order ? @order.flow_order.delivered_duty : 'paid'
+  @delivered_duty = @order.flow_order.delivered_duty if @order.flow_order
+    @delivered_duty = ::Io::Flow::V0::Models::DeliveredDuty.paid.value if @delivered_duty.blank?
 %>
 
 <br />
@@ -54,7 +55,7 @@
 </style>
 
 <script>
-  Popup = {}
+  window.Popup = {}
   Popup.open   = function() { $('#popup, #popup-bg').show(); }
   Popup.close  = function() { $('#popup, #popup-bg').hide(); }
   Popup.select = function(value) {
