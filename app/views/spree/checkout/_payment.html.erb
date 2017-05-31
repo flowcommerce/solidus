@@ -1,20 +1,22 @@
-<h4 style="margin-bottom: 10px;">using PayPal</h4>
-<div id="paypal-button"></div>
+<% if @flow_session.use_flow? %>
+  <h4 style="margin-bottom: 10px;">using PayPal</h4>
+  <div id="paypal-button"></div>
 
-<script>
-  FlowPayPal.opts = {
-    environment: 'sandbox',
-    order: '<%= @order.number %>',
-    client: {
-      sandbox: '<%= ENV.fetch('PAYPAL_SANDBOX') %>'
-    }
-  };
+  <script>
+    FlowPayPal.opts = {
+      environment: 'sandbox',
+      order: '<%= @order.number %>',
+      client: {
+        sandbox: '<%= ENV.fetch('PAYPAL_SANDBOX') %>'
+      }
+    };
 
-  FlowPayPal.bind('#paypal-button');
-</script>
+    FlowPayPal.bind('#paypal-button');
+  </script>
 
-<br />
-<br />
+  <br />
+  <br />
+<% end %>
 
 <h4>using credit card</h4>
 

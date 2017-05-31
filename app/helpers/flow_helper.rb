@@ -96,8 +96,9 @@ module FlowHelper
     text ||= Spree.t(:cart)
 
     order = @order || simple_current_order
+    order = nil if order && (order.state == 'complete' || order.item_count.zero?)
 
-    if order.nil? || order.item_count.zero?
+    if order.nil?
       text = '%s: (%s)' % [text, Spree.t(:empty)]
       css_class = :empty
     else
