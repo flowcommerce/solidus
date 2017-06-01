@@ -150,6 +150,14 @@ class Flow::Order
     body[:selection] = [@order.flow_data['selection']]         if @order.flow_data['selection']
     body[:delivered_duty] = @order.flow_data['delivered_duty'] if @order.flow_data['delivered_duty']
 
+    # discount on full order is applied
+    if @order.adjustment_total != 0
+      body[:discount] = {
+        amount: @order.adjustment_total,
+        currency: @order.currency
+      }
+    end
+
     # calculate digest body and cache it
     digest = Digest::SHA1.hexdigest(opts.to_json + body.to_json)
 

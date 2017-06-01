@@ -58,6 +58,12 @@ Spree::Order.class_eval do
           prices.push price_model.new(el.to_s.humanize.capitalize, label)
         end
       end
+
+      # discount is applied and we allways show it in default currency
+      if adjustment_total != 0
+        formated_discounted_price = Flow.format_default_price adjustment_total
+        prices.push price_model.new('Discount', formated_discounted_price)
+      end
     end
 
     # total

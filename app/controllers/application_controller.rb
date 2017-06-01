@@ -111,6 +111,11 @@ class ApplicationController < ActionController::Base
 
     return unless order
 
+    # opts = {}
+    # for el in [:outstanding_balance, :item_total, :adjustment_total, :included_tax_total, :additional_tax_total, :tax_total, :shipment_total, :total, :order_total_after_store_credit, :total_available_store_credit]
+    #   opts[el] = order.send(el)
+    # end
+
     return if request.path.include?('/admin/')
 
     if @flow_session.use_flow?
