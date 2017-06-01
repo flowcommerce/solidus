@@ -19,7 +19,7 @@ Spree::Order.class_eval do
 
   # accepts line item, usually called from views
   def flow_line_item_price line_item, total=false
-    unless flow_order
+    result = unless flow_order
       Flow.format_default_price(line_item.price * (total ? line_item.quantity : 1))
     else
       id = line_item.variant.id.to_s
@@ -31,6 +31,12 @@ Spree::Order.class_eval do
 
       total ? item['total']['label'] : item['price']['label']
     end
+
+    # add line item promo
+    # promo_total, adjustment_total
+    result += ' (%s)' % Flow.format_default_price(line_item.promo_total) if line_item.promo_total > 0
+
+    result
   end
 
   # prepares array of prices that can be easily renderd in templates

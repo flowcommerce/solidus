@@ -1,0 +1,21 @@
+<% promotions = @product.possible_promotions %>
+<% if promotions.present? %>
+  <div id="promotions" style="margin-top: 100px;">
+    <h2><%= Spree.t(:promotions) %></h2>
+    <% promotions.each do |promotion| %>
+      <h4><%= promotion.name %></h4>
+
+      <% if promotion.description.present? %>
+        <p><%= promotion.description %></p>
+      <% end %>
+
+      <% if promotion.products.any? %>
+        <ul class="list">
+          <% promotion.products.each do |product| %>
+            <li><%= link_to product.name, product_path(product) %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
