@@ -22,6 +22,8 @@ class FlowController < ApplicationController
     response  = Flow::PayPal.get_id order
 
     render json: response.to_hash
+  rescue Io::Flow::V0::HttpClient::ServerError => e
+    render json: { code: e.code, message: e.message }, status: 500
   end
 
   def paypal_finish

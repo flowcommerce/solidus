@@ -11,9 +11,9 @@
     paypal.Button.render({
       env: FlowPayPal.opts.environment,
 
-      commit: true,
-
       client: FlowPayPal.opts.client,
+
+      commit: true,
 
       style: {
         label: 'checkout',
@@ -23,13 +23,19 @@
       },
 
       payment: function(resolve, reject) {
-        $.post('/flow/paypal_id?order=' + FlowPayPal.opts.order, function(response){
-          paypal_id = response.paypal.payment_id
-
-          if (paypal_id.indexOf('PAY-') > -1) {
-            resolve(paypal_id);
+        $.post('/flow/paypal_id?order=' + FlowPayPal.opts.order).always(function(response){
+          if (!response.paypal || response.state == 500) {
+            message = response.responseJSON.message || 'Server error';
+            alert(message);
+            reject(message);
           } else {
-            reject('Invalid PayPal ID')
+            paypal_id = response.paypal.payment_id
+
+            if (paypal_id.indexOf('PAY-') > -1) {
+              resolve(paypal_id);
+            } else {
+              reject('Invalid PayPal ID')
+            }
           }
         })
       },
@@ -57,7 +63,7 @@
         return undefined;
       },
 
-      onError: function(data) {
+      onError: function(data, msg) {
         console.log('PayPal: error', data);
         return undefined;
       }
