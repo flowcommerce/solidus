@@ -9,4 +9,10 @@ RSpec.describe Flow do
     expect(flow_session.session.local.country.name).to eq('Canada')
   end
 
+  it 'expects class variabes to be set' do
+    expect(Flow.organization.present?).to be_truthy
+    expect(Flow.base_country.present?).to be_truthy
+    expect(Flow.api_key.present?).to      be_truthy
+  end
+
 end
