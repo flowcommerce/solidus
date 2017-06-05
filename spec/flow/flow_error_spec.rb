@@ -36,7 +36,11 @@ RSpec.describe Flow::Error do
     end
 
     error_files = Dir['./log/exceptions/test_errors/*']
+
+    # there should be only one error file
     expect(error_files.length).to eq(1)
+
+    # and should include error message
     expect(File.read(error_files.first).include?(message)).to be_truthy
   end
 end

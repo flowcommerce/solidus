@@ -6,8 +6,8 @@ ENV['DB_URL']   = ENV['DB_TEST_URL'] || 'postgres://localhost/flow_solidus_demo_
 # load rails, models, rspec
 require './config/environment'
 
-# load config
-require 'spec_config'
+# load config unless testing specific tests
+require 'spec_config' unless ARGV[0]
 
 # show db url
 puts 'db url: %s' % ENV['DB_URL']
