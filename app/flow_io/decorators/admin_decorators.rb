@@ -15,9 +15,8 @@ end
 ###
 
 Spree::Order.class_eval do
-  alias :old_display_total :display_total
   def display_total
-    price = old_display_total.to_s
+    price = Flow.format_default_price total
     price += ' (%s)' % flow_total if flow_order
     price.html_safe
   end

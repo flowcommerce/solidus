@@ -44,7 +44,7 @@ window.promotion_set_option = function(key_name, value) {
     value: value ? 1 : 0
   };
 
-  $.get('/flow/promotion_set_option', opts, function(r) { console.log(r); });
+  $.post('/flow/promotion_set_option', opts, function(r) { console.log(r); });
 }
 </script>
 
