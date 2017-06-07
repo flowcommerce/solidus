@@ -244,6 +244,7 @@ namespace :flow do
     migrate.push [:spree_products,     :flow_data, :jsonb, default: {}]
     migrate.push [:spree_variants,     :flow_data, :jsonb, default: {}]
     migrate.push [:spree_orders,       :flow_data, :jsonb, default: {}]
+    migrate.push [:spree_promotions,   :flow_data, :jsonb, default: {}]
 
     migrate.each do |table, field, type, opts={}|
       klass = table.to_s.sub('spree_','spree/').classify.constantize
