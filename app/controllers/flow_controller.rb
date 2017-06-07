@@ -83,7 +83,37 @@ class FlowController < ApplicationController
     render text: '%s: %s' % [$!.class.to_s, $!.message]
   end
 
+  def promotion_set_option
+    param_type  = params[:type]  || raise(ArgumentError.new('Parameter "type" not defined'))
+    param_name  = params[:name]  || raise(ArgumentError.new('Parameter "name" not defined'))
+    param_value = params[:value] || raise(ArgumentError.new('Value not defined'))
+
+    unless ['experience'].include?(param_type)
+      raise(ArgumentError.new('Parameter name not alowed'))
+    end
+
+    # prepare array
+    promotion = Spree::Promotion.find params[:id]
+    promotion.flow_data['filter'] ||= {}
+    promotion.flow_data['filter'][param_type] ||= []
+
+    # set or remove value
+    if param_value == '0'
+      promotion.flow_data['filter'][param_type] -= [param_name]
+    elsif !promotion.flow_data['filter'][param_type].include? param_name
+      promotion.flow_data['filter'][param_type].push param_name
+    end
+
+    # remove array if empty
+    promotion.flow_data['filter'].delete(param_type) if promotion.flow_data['filter'][param_type].length == 0
+
+    promotion.save!
+
+    render json: promotion.flow_data
+  end
+
   def about
+
   end
 
   def restrictions

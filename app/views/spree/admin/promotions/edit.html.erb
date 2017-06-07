@@ -29,12 +29,31 @@
   </div>
 </div>
 
+<!-- Flow filters experience -->
+
+<%
+  @promotion_keys = @promotion.flow_data.dig('filter', 'experience') || []
+%>
+
+<script>
+window.promotion_set_option = function(key_name, value) {
+  var opts = {
+    id: <%= @promotion.id %>,
+    type: 'experience',
+    name: key_name,
+    value: value ? 1 : 0
+  };
+
+  $.get('/flow/promotion_set_option', opts, function(r) { console.log(r); });
+}
+</script>
+
 <fieldset>
   <legend align="center">Enable for Flow experiences</legend>
 
   <p>If you do not select single experience, promotion will be enabled for all experiences.</p>
 
   <% for experience in Flow::Experience.all %>
-    <p><label><input type="checkbox" <%= [].include?(experience.key) ? 'checked="1"' : '' %> /> <%= experience.key %></label></p>
+    <p><label><input type="checkbox" onclick="promotion_set_option('<%= experience.key %>', this.checked);" <%= @promotion_keys.include?(experience.key) ? 'checked="1"' : '' %> /> <%= experience.key %></label></p>
   <% end %>
 </fieldset>
