@@ -2,22 +2,25 @@
 # communicates with flow api, responds to webhook events
 
 class Flow::Webhook
+  attr_accessor :product
+  attr_accessor :variant
+
   class << self
-    def process data
-      web_hook = new data
+    def process data, opts={}
+      web_hook = new data, opts
       web_hook.process
     end
   end
 
   ###
 
-  def initialize(data)
+  def initialize(data, opts={})
     @data = data
+    @opts = opts
   end
 
   def process
     @discriminator = @data['discriminator']
-    ap @data['discriminator']
 
     m = 'hook_%s' % @discriminator
 
@@ -36,15 +39,20 @@ class Flow::Webhook
     number  = @data['number']
     exp_key = @data['local']['experience']['key']
 
-    variant     = Spree::Variant.find number
-    product     = variant.product
-    is_included = @data['local']['status'] == 'included'
+    # for testing we need ability to inject dependency for variant class
+    variant_class = @opts[:variant_class] || Spree::Variant
 
-    product.flow_data['%s.excluded' % exp_key] = is_included ? 0 : 1
-    product.save!
+    @variant      = variant_class.find number
+    @product      = @variant.product
+    is_included   = @data['local']['status'] == 'included'
+
+    @product.flow_data['%s.excluded' % exp_key] = is_included ? 0 : 1
+
+    @product.save!
 
     message = is_included ? 'included in' : 'excluded from'
-    'Product id:%s - "%s" (from variant %s) %s experience "%s"' % [product.id, product.name, variant.id, message, exp_key]
+
+    'Product id:%s - "%s" (from variant %s) %s experience "%s"' % [@product.id, @product.name, @variant.id, message, exp_key]
   end
 
   # we should consume only localized_item_upserted

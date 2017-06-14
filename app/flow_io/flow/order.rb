@@ -60,11 +60,9 @@ class Flow::Order
     # if we have erorr with an order, but still using this method
     return [] unless @order.flow_order
 
-    delivery_list = @order.flow_order['deliveries'][0]['options']
-
     @order.flow_data ||= {}
-    @order.flow_data['selection'] ||= []
 
+    delivery_list = @order.flow_order['deliveries'][0]['options']
     delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
       name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
@@ -73,7 +71,7 @@ class Flow::Order
       {
         id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: @order.flow_data['selection'] == selection_id,
+        active: @order.flow_order['selections'].include?(selection_id),
         name: name
       }
     end.to_a
