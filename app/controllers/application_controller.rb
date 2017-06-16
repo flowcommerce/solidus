@@ -60,7 +60,6 @@ class ApplicationController < ActionController::Base
   def flow_set_experience
     if value = session[FLOW_SESSION_KEY]
       begin
-        puts value
         @flow_session = Flow::Session.new(hash: JSON.load(value))
       rescue
         session.delete(FLOW_SESSION_KEY)

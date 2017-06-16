@@ -1,0 +1,51 @@
+<%
+  begin
+    @flow_refunds = FlowCommerce.instance.refunds.get_summary_by_order_number Flow.organization, @order.number
+  rescue Io::Flow::V0::HttpClient::ServerError
+    # order not found, not synced with flow
+    return ''
+  end
+%>
+
+<fieldset class="no-border-bottom">
+  <legend align="center">Flow refund order summary</legend>
+
+</fieldset>
+
+<table class="index">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Captured: </td>
+      <td><%= @flow_refunds.captured %> <%= @flow_refunds.currency %></td>
+    </tr>
+    <tr>
+      <td>Refunded: </td>
+      <td><b><%= @flow_refunds.refunded %> <%= @flow_refunds.currency %></b></td>
+    </tr>
+    <tr>
+      <td>Amounts: </td>
+      <td>
+        <table>
+          <tr>
+            <td>Balance</td>
+            <td><%= @flow_refunds.amounts.balance %></td>
+          </tr>
+          <tr>
+            <td>Balance excluding shipping</td>
+            <td><%= @flow_refunds.amounts.balance_excluding_shipping %></td>
+          </tr>
+          <tr>
+            <td>Shipping</td>
+            <td><%= @flow_refunds.amounts.shipping %></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

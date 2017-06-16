@@ -145,7 +145,7 @@ class Flow::Order
     add_customer body if @customer
 
     # if defined, add selection (delivery options) and delivered_duty from flow_data
-    body[:selection] = [@order.flow_data['selection']]         if @order.flow_data['selection']
+    body[:selections]     = [@order.flow_data['selection']]    if @order.flow_data['selection']
     body[:delivered_duty] = @order.flow_data['delivered_duty'] if @order.flow_data['delivered_duty']
 
     # discount on full order is applied

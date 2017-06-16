@@ -73,4 +73,8 @@ RSpec.describe Flow::Order do
     expect(delivery[:id]).to eq 'opt-df5144291ce04a38a30c898187cb8392'
   end
 
+  it 'ads customer' do
+
+  end
+
 end
