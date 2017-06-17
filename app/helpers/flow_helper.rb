@@ -191,7 +191,7 @@ module FlowHelper
 
     if @variants && @current_spree_user.try(:admin?)
       admin_link  = '/admin/products/%s/variants' % @product.slug
-      variant_ids = @variants.map(&:id).join(', ')
+      variant_ids = @variants.map { |o| link_to(o.id, 'https://console.flow.io/solidus-staging/catalog/items/%d' % o.id, target: '_new_%d' % o.id) }.join(', ')
 
       data.push 'Variant IDs (%s) <a href="%s">admin</a>' % [variant_ids, admin_link]
     end
