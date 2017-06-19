@@ -23,9 +23,7 @@
           <input id="variant_select" type="hidden" value="<%= @variants.first.id %>" name="variant_id" />
           &mdash;
         <% end %>
-
       </div>
-
 
     <% else %>
       <%= hidden_field_tag "variant_id", @product.master.id %>
