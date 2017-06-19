@@ -33,7 +33,7 @@
       <% if order.flow_data %>
         <button class="btn btn-<%= order.flow_order_authorized? ? 'success' : 'secondary' %> btn-sm" onclick="window.open('?flow=auth&o_id=<%= order.id %>')">Auth</button>
         &bull;
-        <% if order.flow_data['capture'] %>
+        <% if order.flow_order_captured? %>
           <button class="btn btn-success btn-sm" onclick="window.open('?flow=capture&o_id=<%= order.id %>')">Capture</button>
           &bull;
           <button class="btn btn-<%= order.flow_data['refund'] ? 'success' : 'secondary' %> btn-sm" onclick="window.open('?flow=refund&o_id=<%= order.id %>')">Refund</button>

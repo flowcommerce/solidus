@@ -190,6 +190,15 @@ class Flow::Order
   end
 
   def check_state!
+    # authorize if not authorized
+    # if !@order.flow_order_authorized?
+
+    # authorize payment on complete, unless authorized
+    if @order.state == 'complete' && !@order.flow_order_authorized?
+      simple_gateway = Flow::SimpleGateway.new(@order)
+      simple_gateway.cc_authorization
+    end
+
     @order.flow_finalize! if @order.flow_order_authorized? && @order.state != 'complete'
   end
 
