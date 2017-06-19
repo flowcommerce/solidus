@@ -7,16 +7,22 @@
       <div id="product-variants" class="columns five alpha">
         <h6 class="product-section-title"><%= Spree.t(:variants) %></h6>
 
-        <select id="variant_select" style="min-width: 150px; height: 30px;" name="variant_id" onchange="show_localized_price(this.value);">
-        <% @variants.each_with_index do |variant, index| %>
-          $('.price.selling')).text(variantPrice)
-          <option value="<%= variant.id %>">
-            <%= variant_options variant %>
-            <% if variant_price variant %> - <%= variant_price variant %><% end %>
-            <% unless variant.can_supply? %> - <%= Spree.t(:out_of_stock) %><% end %>
-          </option>
+        <% if @variants.length > 1 %>
+          <!-- loop trough variants and show option -->
+          <select id="variant_select" style="min-width: 150px; height: 30px;" name="variant_id" onchange="show_localized_price(this.value);">
+          <% @variants.each_with_index do |variant, index| %>
+            <option value="<%= variant.id %>">
+              <%= variant_options variant %>
+              <% if variant_price variant %> - <%= variant_price variant %><% end %>
+              <% unless variant.can_supply? %> - <%= Spree.t(:out_of_stock) %><% end %>
+            </option>
+          <% end %>
+          </select>
+        <% else %>
+          <!-- hide variants if we have only one variant -->
+          <input id="variant_select" type="hidden" value="<%= @variants.first.id %>" name="variant_id" />
+          &mdash;
         <% end %>
-        </select>
 
       </div>
 
