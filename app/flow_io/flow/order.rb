@@ -75,7 +75,7 @@ class Flow::Order
       {
         id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: @order.flow_data['selection'] == selection_id,
+        active: @order.flow_order['selections'].include?(selection_id),
         name: name
       }
     end.to_a
