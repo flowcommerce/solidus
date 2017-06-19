@@ -62,6 +62,10 @@ class Flow::Order
 
     @order.flow_data ||= {}
 
+    # r @order.flow_order['selections'] == @order.flow_data['selection']
+    # r @order.flow_order['selections']
+    # r @order.flow_data['selection']
+
     delivery_list = @order.flow_order['deliveries'][0]['options']
     delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
@@ -71,7 +75,7 @@ class Flow::Order
       {
         id:    selection_id,
         price: { label: opts['price']['label'] },
-        active: @order.flow_order['selections'].include?(selection_id),
+        active: @order.flow_data['selection'] == selection_id,
         name: name
       }
     end.to_a
@@ -165,10 +169,10 @@ class Flow::Order
   def sync_body!
     opts, @body, digest = build_flow_request
 
-    use_get = @order.state == 'complete' || @order.flow_data['digest'] == digest
-    use_get = false unless @order.flow_data['order']
+    @use_get = @order.state == 'complete' || @order.flow_data['digest'] == digest
+    @use_get = false unless @order.flow_data['order']
 
-    if use_get
+    if @use_get
       # if digest @body matches, use get to build request
       @response = Flow.api :get, '/:organization/orders/%s' % @body[:number], expand: 'experience'
     else
@@ -181,6 +185,7 @@ class Flow::Order
       # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
 
       @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
+      # r({ selections: @order.flow_order['selections'], selection: @order.flow_data['selection'], reponse: @response['selections'] })
     end
   end
 
@@ -210,9 +215,15 @@ class Flow::Order
   # set cache for total order ammount
   # written in flow_data field inside spree_orders table
   def write_response_in_cache
+    return unless @response
+
     response_total = @response.dig('total', 'label')
 
-    if @response && response_total && response_total != @order.flow_data.dig('order', 'total', 'label')
+    write_cache   = false
+    write_cache   = true unless @use_get
+    write_cache ||= true if @response && response_total && response_total != @order.flow_data.dig('order', 'total', 'label')
+
+    if write_cache
       @order.flow_data['order'] = @response.to_hash
       @order.save
     end
