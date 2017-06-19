@@ -115,6 +115,10 @@ Spree::Order.class_eval do
     flow_data && flow_data['authorization'] ? true : false
   end
 
+  def flow_order_captured?
+    flow_data['capture'] ? true : false
+  end
+
   # completes order and sets all states to finalized and complete
   # used when we have confirmed capture from Flow API or PayPal
   def flow_finalize!
