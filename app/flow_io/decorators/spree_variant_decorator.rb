@@ -20,7 +20,7 @@ Spree::Variant.class_eval do
 
   # syncs product variant with flow
   def flow_sync_product
-    # flow_client.items.put_by_number flow_org, sku, flow_item
+    return unless product.images.first
 
     flow_item     = flow_api_item
     flow_item_sh1 = Digest::SHA1.hexdigest flow_api_item.to_json

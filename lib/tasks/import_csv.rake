@@ -24,20 +24,23 @@ namespace :import do
       puts 'CSV file not found'.red unless File.exist?(csv_source)
 
       # init db
-      %w[S M L XL XXL XXXL].each { |size| Import::SolidusDb::create_size_variant(size) }
+      # %w[S M L XL XXL XXXL].each { |size|  Import::SolidusDb.create_variant('size', size) }
+      # %w[Black Brown Green].each { |color| Import::SolidusDb.create_variant('color', color) }
 
-      csv = Import::CustomProducts.new(csv_source)
+      csv = Import::CustomProducts.new csv_source
       puts "Total of #{csv.count} rows present for import"
-
-      # we want only uniqe errors
-      import_errors = {}
 
       cnt = 0
       while row = csv.get_row
+        next unless row
+
         cnt += 1
         # every product is a dot in a console
 
-        puts "%s (%s)" % [row[:name], row[:size]]
+        ap row
+
+        puts "%{name} (size: %{size}, color: %{color})" % row
+
         Import::SolidusDb.call row
 
         # exit if ++cnt > 10

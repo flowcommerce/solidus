@@ -17,7 +17,9 @@ module Import
     def initialize(csv_source)
       source   = uri?(csv_source) ? download_file(csv_source) : csv_source
       csv_data = File.read(source).encode('UTF-8', :invalid => :replace)
-      @rows    = CSV.parse(csv_data)
+
+      @rows      = CSV.parse(csv_data)
+      @prefix    = source.split('/').last.split('.').first
       @row_names = {}
     end
 
@@ -26,31 +28,32 @@ module Import
     end
 
     def get_row
-      row = @rows.shift
+      row = @rows.shift || return
+      row.map!{ |el| el == ' ' ? nil : el }
 
       return nil unless row
 
-      name = row[3].split(':', 2)
-
-      product_name = trim(name.first.split('*').first)
-
-      # if we dont have a neme, fetch next
-      return get_row if product_name.blank?
+      name = row[2].split(' - ').first
 
       {
-        name:         product_name,
-        description:  trim(name[1]),
-        id:           row[0],
+        name:         name,
+        description:  row[3],
+        id:           '%s-%s' % [@prefix, row[0]],
         group_id:     row[1],
-        category:     row[4],
+        category:     row[4].to_s.split(' > '),
         old_price:    row[6],
         price:        row[7],
         live_url:     row[10].split('?').first,
         image:        row[11],
         vendor:       row[17],
         size:         row[27],
+        color:        row[24],
         sex:          row[28],
       }
+    end
+
+    def method_name
+
     end
 
     # avoid products with the same name
