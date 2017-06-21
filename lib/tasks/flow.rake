@@ -140,16 +140,17 @@ namespace :flow do
         items.each do |item|
           total += 1
           sku        = item.number.downcase
-          variant    = Spree::Variant.find sku.split('-').last.to_i
+          variant    = Spree::Variant.find_by id: sku.split('-').last.to_i
           next unless variant
 
           # if item is not included, mark it in product as excluded
           # regardles if excluded or restricted
           unless item.local.status.value == 'included'
             print '[%s]:' % item.local.status.value.red
-            product = variant.product
-            product.flow_data['%s.excluded' % experience.key] = 1
-            product.update_column :flow_data, product.flow_data.dup
+            if product = variant.product
+              product.flow_data['%s.excluded' % experience.key] = 1
+              product.update_column :flow_data, product.flow_data.dup
+            end
           end
 
           variant.flow_import_item item
