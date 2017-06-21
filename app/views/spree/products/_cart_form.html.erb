@@ -5,7 +5,7 @@
       <% @variants = @product.variants_and_option_values_for(current_pricing_options) %>
 
       <div id="product-variants" class="columns five alpha">
-        <h6 class="product-section-title"><%= Spree.t(:variants) %></h6>
+        <h6 class="product-section-title" style="margin-bottom:5px;"><%= Spree.t(:variants) %></h6>
 
         <% if @variants.length > 1 %>
           <!-- loop trough variants and show option -->
@@ -13,7 +13,7 @@
           <% @variants.each_with_index do |variant, index| %>
             <option value="<%= variant.id %>">
               <%= variant_options variant %>
-              <% if variant_price variant %> - <%= variant_price variant %><% end %>
+              <!-- <% if variant_price variant %> - <%= variant_price variant %><% end %> -->
               <% unless variant.can_supply? %> - <%= Spree.t(:out_of_stock) %><% end %>
             </option>
           <% end %>
@@ -21,7 +21,7 @@
         <% else %>
           <!-- hide variants if we have only one variant -->
           <input id="variant_select" type="hidden" value="<%= @variants.first.id %>" name="variant_id" />
-          &mdash;
+          <%= variant_options @variants.first %>
         <% end %>
       </div>
 

@@ -1,6 +1,11 @@
-<header id="header" class="row" data-hook>
-  <img id="nav-toggle" src="/images/nav-toggle.png" onclick="$('#sidebar').toggle();" />
-  <a id="header-logo" href="/"><img src="/images/logo.svg" /></a>
-  <%= render :partial => 'spree/shared/nav_bar' %>
-  <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %>
+<header id="header" class="row" data-hook style="border-bottom: 1px solid #ddd;">
+  <div class="container" style="padding: 0;">
+    <img id="nav-toggle" src="/images/nav-toggle.png" onclick="$('#sidebar').toggle();" />
+    <a id="header-logo" href="/"><img src="/images/logo.svg" style="position: relative; top: -2px;" /></a>
+    <%= render :partial => 'spree/shared/nav_bar' %>
+  </div>
 </header>
+
+<div class="container">
+  <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %>
+</div>
