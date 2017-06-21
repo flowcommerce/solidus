@@ -20,8 +20,6 @@ Spree::Variant.class_eval do
 
   # syncs product variant with flow
   def flow_sync_product
-    return unless product.images.first
-
     flow_item     = flow_api_item
     flow_item_sh1 = Digest::SHA1.hexdigest flow_api_item.to_json
 
@@ -74,6 +72,11 @@ Spree::Variant.class_eval do
       taxon = taxon.parent
     end
 
+    images = product.images.first ? [
+      { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
+      { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
+    ] : []
+
     Io::Flow::V0::Models::ItemForm.new(
       number:      id.to_s,
       locale:      'en_US',
@@ -82,10 +85,7 @@ Spree::Variant.class_eval do
       description: product.description,
       currency:    cost_currency,
       price:       price.to_f,
-      images: [
-        { url: image_base + product.display_image.attachment(:large), tags: ['main'] },
-        { url: image_base + product.images.first.attachment.url(:product), tags: ['thumbnail'] }
-      ],
+      images:      images,
       categories: categories,
       attributes: {
         weight: weight.to_s,

@@ -29,7 +29,7 @@ module Import
 
     def get_row
       row = @rows.shift || return
-      row.map!{ |el| el == ' ' ? nil : el }
+      row.map!{ |el| el.blank? ? nil : el }
 
       return nil unless row
 
