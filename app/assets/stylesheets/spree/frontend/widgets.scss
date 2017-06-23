@@ -1,0 +1,32 @@
+.w.experience_picker {
+  width: 32px;
+  float: right;
+  margin-top: -6px;
+  margin-left: 10px;
+
+  img.picker { width:32px; height: 32px; cursor: pointer; }
+
+  #choose_experience {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    margin: -2px 0 0 -221px;
+    width: 250px;
+    border: 1px solid #ddd;
+    background-color:#f7f7f7;
+    text-align: left;
+
+    a.country  {
+      display: block;
+
+      img {
+        width: 32px;
+        height: 32px;
+        padding: 3px;
+        vertical-align: middle;
+      }
+
+      &:hover { background-color: #ddd; }
+    }
+  }
+}
