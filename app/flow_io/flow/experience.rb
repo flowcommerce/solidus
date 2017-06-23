@@ -37,6 +37,10 @@ module Flow::Experience
     delivered_duty(experience).available.length > 1
   end
 
+  def compact
+    all.map { |exp| [exp.country, exp.key, exp.name] }
+  end
+
   private
 
   def get_from_flow
