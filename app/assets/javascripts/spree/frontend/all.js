@@ -9,3 +9,11 @@
 //= require spree/frontend
 //= require_tree .
 
+window.toggleSidebar = function() {
+  // if ($('#sidebar-pannel:visible')[0]) {
+  $('#sidebar-pannel, #sidebar-button').toggle();
+}
+
+$(function(){
+  $('#sidebar-pannel, #sidebar-button').click(function(){ toggleSidebar(); });
+});

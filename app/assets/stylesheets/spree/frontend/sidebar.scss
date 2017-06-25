@@ -1,0 +1,48 @@
+// nav mobile toggle top left
+#sidebar-button { display: none; }
+
+#sidebar-pannel {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(100, 100, 100, 0.5);
+
+  .menu {
+    width: 300px;
+    height: 100%;
+    background-color: #fff;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+
+    h6 { font-size: 12pt; }
+    ul { margin-top: 5px; }
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  #sidebar { display: none !important; }
+}
+
+@media only screen and (max-width: 767px) {
+  #sidebar-button {
+    display: inline-block;
+    z-index: 1;
+    width: 48px;
+    height: 48px;
+    margin-right: -20px;
+    cursor: pointer;
+    position: relative;
+    top: 8px; left: 0;
+    float: left;
+    margin-bottom: -100px;
+  }
+
+  #header-logo { left: 60px; }
+
+  #sidebar {
+    position: absolute;
+    top: 0;
+    width: 400px;
+    height: 100%;
+  }
+}

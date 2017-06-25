@@ -63,31 +63,7 @@
 
     </div>
 
-    <script>
-      // toggle navbar
-      $(document).on('click', '#sidebar', function(){
-        if ($('#nav-toggle:visible')[0]) {
-          $('#sidebar').hide();
-        }
-      })
-
-      // remove not main product lists
-      var removed = false;
-      $('ul').each(function(){
-        var el = $(this);
-
-        if (el.attr('id') == 'products') {
-          console.log(1);
-          if (removed) {
-            el.remove();
-          } else {
-            removed = true;
-          }
-        }
-      });
-    </script>
-
-    <div id="nav-sidebar">
+    <div id="sidebar-pannel">
       <div class="menu">
         <% @taxonomies.each do |taxonomy| %>
           <h6><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h6>
