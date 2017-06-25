@@ -1,13 +1,3 @@
-<% content_for :sidebar_base do %>
-  <div id="sidebar">
-    <%=
-      @taxonomies = Spree::Taxonomy.includes(root: :children)
-      render :partial => 'spree/shared/taxonomies'
-    %>
-  </div>
-  <style>#sidebar { display: none; }</style>
-<% end %>
-
 <div data-hook="product_show" itemscope itemtype="http://schema.org/Product">
   <% @body_id = 'product-details' %>
 

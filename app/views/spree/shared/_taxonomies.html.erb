@@ -4,7 +4,7 @@
 </style>
 
 <nav id="taxonomies" class="sidebar-item" data-hook>
-  <% @taxonomies.each do |taxonomy| %>
+ <% @taxonomies.each do |taxonomy| %>
     <% cache [I18n.locale, taxonomy.id, @taxon.try(:id)] do %>
       <h6 class='taxonomy-root'><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h6>
       <%= flow_taxons_tree(taxonomy.root, @taxon) %>

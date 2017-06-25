@@ -17,11 +17,11 @@
   a.info { border: none !important; }
 }
 
-#header-logo { position: relative; top: 25px; left: 10px; }
+#header-logo { display: inline-block; position: relative; top: 25px; }
 
 #top-nav-bar { margin-top: 0 !important; }
 
-#nav-toggle, #search-bar { display: none; }
+#search-bar { display: none; }
 
 // badly defined price ranges https://i.imgur.com/QCfkFWz.png
 #sidebar_products_search { display: none; }
@@ -32,23 +32,10 @@
 
   #taxon, #search-bar, #breadcrumbs { display: none; }
 
-  #nav-toggle {
-    display: inline-block;
-    width: 48px;
-    height: 48px;
-    cursor: pointer;
-    position: relative;
-    top: 8px; left: 0;
-    float: left;
-    margin-bottom: -100px;
-  }
-
   #nav-bar {
     text-align: right !important;
     margin-top: 10px;
   }
-
-  #header-logo { left: 110px; }
 
   #sidebar {
     display: none;

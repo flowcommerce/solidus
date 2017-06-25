@@ -87,5 +87,13 @@
       });
     </script>
 
+    <div id="nav-sidebar">
+      <div class="menu">
+        <% @taxonomies.each do |taxonomy| %>
+          <h6><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h6>
+          <%= flow_taxons_tree(taxonomy.root, @taxon) %>
+        <% end %>
+      </div>
+    </div>
   </body>
 </html>
