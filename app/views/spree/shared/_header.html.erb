@@ -7,9 +7,13 @@
       <a href="/"><img src="/images/logo.svg" /></a>
     </div>
     <div class="menu">
-      <%= flow_build_main_menu @taxonomies %>
+      <%= flow_build_main_menu %>
     </div>
     <div class="options">
+      <img src="/images/nav-search.svg" />
+      <img src="/images/nav-user.svg" />
+      <%= svg_ico '/images/nav-bag.svg', count: 3 %>
+
       <div class="w experience_picker" data-experiences="<%= Flow::Experience.compact.to_json %>">
         <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
       </div>

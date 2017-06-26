@@ -213,17 +213,17 @@ module FlowHelper
     data.reverse.join(' | ').html_safe
   end
 
-  def flow_build_main_menu taxonomies
+  def flow_build_main_menu
     flow_tag(:ul) do
       # 1.st lvl menu
-      taxonomies.collect do |taxonomy|
+      Spree::Taxonomy.all.collect do |taxonomy|
         flow_tag :li do
           # link_to(taxonomy.name, '/t/%s' % taxonomy.taxons.first.permalink) +
           link_to(taxonomy.name) +
 
           # 2.nd lvl menu
           flow_tag(:ul) do
-            Spree::Taxon.where(parent_id: taxonomy.id).collect do |taxon|
+            Spree::Taxon.where(taxonomy_id: taxonomy.id, depth: 1).collect do |taxon|
               flow_tag :li do
                 link_to taxon.name, '/t/%s' % taxon.permalink
               end
@@ -232,6 +232,12 @@ module FlowHelper
         end
       end
     end.html_safe
+  end
+
+  def svg_ico path, opts={}
+    ico = Rails.root.join('./public%s' % path).read
+    ico.sub!(/#\{(\w+)\}/) { opts[$1.to_sym] }
+    ico.html_safe
   end
 
 end

@@ -1,0 +1,14 @@
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g id="Demo-Site-Comps" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <g id="cdp/desktop/scrolled" transform="translate(-932.000000, -30.000000)" stroke="#000000">
+      <g id="header">
+        <g id="icon/account" transform="translate(932.000000, 30.000000)">
+          <g id="user" transform="translate(1.500000, 1.000000)">
+            <path d="M17.0526316,18 L17.0526316,17.0526316 C17.0526316,14.4378947 13.2631579,12.3157895 8.52631579,12.3157895 C3.78947368,12.3157895 0,14.4378947 0,17.0526316 L0,18" id="Shape" stroke-width="2"></path>
+            <path d="M12.3157895,4.14 C12.5555897,5.75713098 11.7312876,7.34574744 10.2710146,8.08074364 C8.81074157,8.81573984 7.04373022,8.53140378 5.88774217,7.37541573 C4.73175412,6.21942767 4.44741805,4.45241633 5.18241425,2.99214329 C5.91741045,1.53187025 7.50602691,0.707568217 9.12315789,0.947368421 C10.774399,1.19222673 12.0709312,2.48875885 12.3157895,4.14 Z" id="Shape" stroke-width="2"></path>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
