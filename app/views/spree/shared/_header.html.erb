@@ -1,3 +1,23 @@
+<div id="top-nav">
+  <div class="container">
+    <div class="button">
+      <img src="/images/nav-toggle.png" />
+    </div>
+    <div class="logo">
+      <a href="/"><img src="/images/logo.svg" /></a>
+    </div>
+    <div class="menu">
+      <%= flow_build_main_menu @taxonomies %>
+    </div>
+    <div class="options">
+      <div class="w experience_picker" data-experiences="<%= Flow::Experience.compact.to_json %>">
+        <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <header id="header" class="row" data-hook style="border-bottom: 1px solid #ddd;">
   <div class="container" style="padding: 0;">
     <img id="sidebar-button" src="/images/nav-toggle.png" />

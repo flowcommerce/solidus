@@ -4,13 +4,38 @@
  - *= require spree/frontend/screen
 */
 
-.product-image {
-  border: none !important;
+body { font-size: 100%; }
+
+#taxon { font-size: 14px; height: 29px; }
+#main-image { border: none !important; }
+#logo { margin-top: 20px; }
+
+#search-bar {
+  margin-top: 10px;
+
+  input { font-size: 14px; height: 30px; }
+  input[type=submit], button.button.primary { background-color: #0092A6; }
 }
 
-#main-image {
-  border: none !important;
+#flow-bar {
+  background-color: #004; font-size: 11px; color: #fff;
+  div { text-align: right; padding-right: 30px; }
+  a { color: #fff !important; text-decoration: underline; }
 }
+
+a { color:#0092A6 !important; }
+a.info { font-size: 14px !important; font-weight: normal; }
+
+.price { color: #333 !important; }
+.product-image { border: none !important; }
+
+.pagination {
+  span a, .current { display: inline-block; padding: 5px 10px; border: 1px solid #fff; }
+  .current, span:hover a { border-color: #ddd; }
+}
+
+ul.taxons-list a { font-size: 14px !important; line-height: 22px !important; margin-left: -10px; }
+ul.filter_choices li { line-height: 30px; list-style-type: none; }
 
 #products li {
   padding-bottom: 40px;
@@ -67,12 +92,6 @@
     margin: 0;
     padding: 0 0 15px 0;
   }
-
-  // li:before {
-  //   content: '\2022';
-  //   position: absolute;
-  //   margin-left: -20px;
-  // }
 }
 
 #product-description {

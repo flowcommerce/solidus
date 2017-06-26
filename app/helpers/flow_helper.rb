@@ -15,6 +15,20 @@ module FlowHelper
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, flag]
   end
 
+  def flow_tag name, opts={}
+    data = if [:input, :img, :hr, :br].include?(name)
+      nil
+    else
+      block_given? ? yield : ''
+    end
+
+    data = data.join('') if data.is_a?(Array)
+
+    node = "<#{name}#{tag_options(opts)}"
+    node += data ? ">#{data}</#{name}>" : ' />'
+    node.html_safe
+  end
+
   def flow_product_price product_or_variant
     if @flow_session.use_flow?
       product_or_variant.flow_local_price @flow_exp
@@ -197,6 +211,27 @@ module FlowHelper
     end
 
     data.reverse.join(' | ').html_safe
+  end
+
+  def flow_build_main_menu taxonomies
+    flow_tag(:ul) do
+      # 1.st lvl menu
+      taxonomies.collect do |taxonomy|
+        flow_tag :li do
+          # link_to(taxonomy.name, '/t/%s' % taxonomy.taxons.first.permalink) +
+          link_to(taxonomy.name) +
+
+          # 2.nd lvl menu
+          flow_tag(:ul) do
+            Spree::Taxon.where(parent_id: taxonomy.id).collect do |taxon|
+              flow_tag :li do
+                link_to taxon.name, '/t/%s' % taxon.permalink
+              end
+            end
+          end
+        end
+      end
+    end.html_safe
   end
 
 end

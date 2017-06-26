@@ -1,0 +1,62 @@
+#top-nav {
+  border: 1px solid red;
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    height: 50px;
+
+    > div { flex: 1; }
+
+    .button  {
+      max-width: 48px;
+
+      img {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    .logo {
+      img { margin-top: 18px; }
+    }
+
+    .menu {
+      text-align: center;
+
+      ul ul { display: none; } // hide second lvl nav
+
+      // 1st lvl nav
+      > ul {
+        margin-top: 15px;
+        li {
+          display: inline-block;
+          margin-right: 20px;
+
+          a { color: #000 !important; }
+
+          // 2nd lvl nav
+          &:hover ul {
+            display: block;
+            position: absolute;
+            margin-top: -1px;
+            padding-top: 10px;
+            background-color: #fff;
+            z-index: 2;
+
+            li {
+              display: block;
+              text-align: left;
+              padding-bottom: 5px;
+              a { color: #777 !important; }
+            }
+          }
+        }
+      }
+    }
+
+    .options {
+      text-align: right;
+    }
+  }
+}
