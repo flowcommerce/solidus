@@ -219,16 +219,20 @@ module FlowHelper
       Spree::Taxonomy.all.collect do |taxonomy|
         flow_tag :li do
           # link_to(taxonomy.name, '/t/%s' % taxonomy.taxons.first.permalink) +
-          link_to(taxonomy.name) +
+          main_link = nil
 
           # 2.nd lvl menu
-          flow_tag(:ul) do
+          sub_data = flow_tag(:ul) do
             Spree::Taxon.where(taxonomy_id: taxonomy.id, depth: 1).collect do |taxon|
+              main_link ||= '/t/%s' % taxon.permalink.split('/').first
+
               flow_tag :li do
                 link_to taxon.name, '/t/%s' % taxon.permalink
               end
             end
           end
+
+          link_to(taxonomy.name, main_link) + sub_data
         end
       end
     end.html_safe

@@ -1,0 +1,17 @@
+// desktop
+@media only screen and (min-width: 1201px) {
+  .hide-in-desktop   { display: none; }
+  .center-in-desktop { text-align: center; }
+}
+
+// tablet
+@media only screen and (max-width: 1200px) {
+  .hide-in-tablet { display: none; }
+  .center-in-tablet { text-align: center; }
+}
+
+// mobile
+@media only screen and (max-width: 767px) {
+  .hide-in-mobile, .hide-in-tablet { display: none; }
+  .center-in-mobile { text-align: center; }
+}

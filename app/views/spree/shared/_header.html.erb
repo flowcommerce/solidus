@@ -1,35 +1,40 @@
 <div id="top-nav">
   <div class="container">
-    <div class="button">
-      <img src="/images/nav-toggle.png" />
-    </div>
-    <div class="logo">
-      <a href="/"><img src="/images/logo.svg" /></a>
-    </div>
-    <div class="menu">
-      <%= flow_build_main_menu %>
-    </div>
-    <div class="options">
-      <img src="/images/nav-search.svg" />
-      <img src="/images/nav-user.svg" />
-      <%= svg_ico '/images/nav-bag.svg', count: 3 %>
-
-      <div class="w experience_picker" data-experiences="<%= Flow::Experience.compact.to_json %>">
-        <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
+    <div class="flex">
+      <div class="button hide-in-desktop">
+        <img id="sidebar-button" src="/images/nav-toggle.png" />
+      </div>
+      <div class="logo center-in-tablet">
+        <a href="/"><img src="/images/logo.svg" /></a>
+      </div>
+      <div class="menu hide-in-tablet">
+        <%= flow_build_main_menu %>
+      </div>
+      <div class="options">
+        <img class="hide-in-tablet" src="/images/nav-search.svg" />
+        <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
+        <a href="/cart"><%= svg_ico '/images/nav-bag.svg', count: 3 %></a>
+        <div class="w experience_picker hide-in-tablet" data-experiences="<%= Flow::Experience.compact.to_json %>">
+          <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<%
+  # this is old header
+  if false
+%>
+  <header id="header" class="row" data-hook style="border-bottom: 1px solid #ddd;">
+    <div class="container" style="padding: 0;">
+      <img id="sidebar-button" src="/images/nav-toggle.png" />
+      <a id="header-logo" href="/"><img src="/images/logo.svg" /></a>
+      <%= render :partial => 'spree/shared/nav_bar' %>
+    </div>
+  </header>
 
-<header id="header" class="row" data-hook style="border-bottom: 1px solid #ddd;">
-  <div class="container" style="padding: 0;">
-    <img id="sidebar-button" src="/images/nav-toggle.png" />
-    <a id="header-logo" href="/"><img src="/images/logo.svg" /></a>
-    <%= render :partial => 'spree/shared/nav_bar' %>
+  <div class="container">
+    <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %>
   </div>
-</header>
-
-<div class="container">
-  <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %>
-</div>
+<% end %>
