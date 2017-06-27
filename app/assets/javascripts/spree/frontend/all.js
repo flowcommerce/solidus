@@ -17,3 +17,4 @@ window.toggleSidebar = function() {
 $(function(){
   $('#sidebar-pannel, #sidebar-button').click(function(){ toggleSidebar(); });
 });
+

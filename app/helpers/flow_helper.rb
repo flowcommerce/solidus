@@ -19,7 +19,7 @@ module FlowHelper
     data = if [:input, :img, :hr, :br].include?(name)
       nil
     else
-      block_given? ? yield : ''
+      block_given? ? yield(opts) : ''
     end
 
     data = data.join('') if data.is_a?(Array)
@@ -123,6 +123,17 @@ module FlowHelper
     link_to text.html_safe, spree.cart_path, class: 'cart-info %s' % css_class
   end
 
+  def flow_cart_ico
+    order = @order || simple_current_order
+    order = nil if order && (order.state == 'complete' || order.item_count.zero?)
+
+    count = order.nil? ? '-' : order.item_count
+    color = order.nil? ? '#000000' : '#880000'
+
+    svg_ico '/images/nav-bag.svg', count: count, color: color
+  end
+
+
   def flow_normalize_categories taxonomy_string
     taxonomy_string.sub('<li itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"><a itemprop="item" href="/products"><span itemprop="name">Products</span><meta itemprop="position" content="2" /></a>&nbsp;&raquo;&nbsp;</li>','').html_safe
   end
@@ -217,14 +228,14 @@ module FlowHelper
     flow_tag(:ul) do
       # 1.st lvl menu
       Spree::Taxonomy.all.collect do |taxonomy|
-        flow_tag :li do
+        flow_tag :li do |opts|
           # link_to(taxonomy.name, '/t/%s' % taxonomy.taxons.first.permalink) +
           main_link = nil
 
           # 2.nd lvl menu
           sub_data = flow_tag(:ul) do
             Spree::Taxon.where(taxonomy_id: taxonomy.id, depth: 1).collect do |taxon|
-              main_link ||= '/t/%s' % taxon.permalink.split('/').first
+              main_link ||= taxon.permalink.split('/').first
 
               flow_tag :li do
                 link_to taxon.name, '/t/%s' % taxon.permalink
@@ -232,7 +243,9 @@ module FlowHelper
             end
           end
 
-          link_to(taxonomy.name, main_link) + sub_data
+          opts[:class] = 'active' if request.path.include?(main_link)
+
+          link_to(taxonomy.name, '/t/%s' % main_link) + sub_data
         end
       end
     end.html_safe
@@ -240,7 +253,7 @@ module FlowHelper
 
   def svg_ico path, opts={}
     ico = Rails.root.join('./public%s' % path).read
-    ico.sub!(/#\{(\w+)\}/) { opts[$1.to_sym] }
+    ico = ico.gsub(/#\{(\w+)\}/) { opts[$1.to_sym] }
     ico.html_safe
   end
 
