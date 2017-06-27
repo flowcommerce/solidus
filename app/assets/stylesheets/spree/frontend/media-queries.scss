@@ -2,16 +2,22 @@
 @media only screen and (min-width: 1201px) {
   .hide-in-desktop   { display: none; }
   .center-in-desktop { text-align: center; }
+
+  #products .columns.three { width: 210px !important; }
 }
 
 // tablet
 @media only screen and (max-width: 1200px) {
   .hide-in-tablet { display: none; }
   .center-in-tablet { text-align: center; }
+
+  #products .columns.three { width: 170px !important; }
 }
 
 // mobile
 @media only screen and (max-width: 767px) {
   .hide-in-mobile, .hide-in-tablet { display: none; }
   .center-in-mobile { text-align: center; }
+
+  #products .columns.three { width: 100% !important; }
 }
