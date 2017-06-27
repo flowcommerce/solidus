@@ -14,7 +14,24 @@ window.toggleSidebar = function() {
   $('#sidebar-pannel, #sidebar-button').toggle();
 }
 
+window.toggleSearch = function() {
+  var form = '#top-nav .options form';
+  $(form).toggleClass('hidden');
+
+  if ($(form + ':visible')[0]) {
+    var input = form + ' input[name=keywords]'
+    $(input).focus().val($(input).val());
+  }
+}
+
 $(function(){
-  $('#sidebar-pannel, #sidebar-button').click(function(){ toggleSidebar(); });
+  $('#sidebar-pannel, #sidebar-button').click(toggleSidebar);
+  $('#search-button').click(toggleSearch);
+  $('#top-nav input[name=keywords]').blur(toggleSearch);
+
+  if (/&keywords=\w/.test(location.href)) {
+    toggleSearch();
+  }
 });
+
 

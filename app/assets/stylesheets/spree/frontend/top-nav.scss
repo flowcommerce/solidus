@@ -85,7 +85,25 @@
       .options {
         text-align: right;
 
-        img, svg { margin: 0 2px; }
+        img, svg { margin: 0 2px; cursor: pointer; }
+
+        form {
+          width: 150px;
+          text-align: right;
+          position: absolute;
+          margin-left: 100px;
+          margin-top: -5px;
+
+          &.hidden { display: none; }
+
+          input {
+            transition: width 0.2s ease;
+            font-size: 12pt;
+            width: 50px;
+
+            &:focus { width: 150px; display: inline-block; }
+          }
+        }
       }
     }
   }

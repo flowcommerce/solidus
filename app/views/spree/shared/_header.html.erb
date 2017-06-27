@@ -1,4 +1,4 @@
-<div id="top-nav">
+  <div id="top-nav">
   <div class="container">
     <div class="flex">
       <div class="button hide-in-desktop">
@@ -11,7 +11,11 @@
         <%= flow_build_main_menu %>
       </div>
       <div class="options">
-        <img class="hide-in-tablet" src="/images/nav-search.svg" />
+        <form action="/products" class="hidden">
+          <input type="hidden" name="taxon" value="" />
+          <input type="text" name="keywords" value="<%= params[:keywords]%>" />
+        </form>
+        <img id="search-button" class="hide-in-tablet" src="/images/nav-search.svg" />
         <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
         <a href="/cart"><%= flow_cart_ico %></a>
         <div class="w experience_picker hide-in-tablet" data-experiences="<%= Flow::Experience.compact.to_json %>">
