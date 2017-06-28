@@ -1,0 +1,16 @@
+<div id="sidebar-pannel">
+  <div class="menu">
+    <span class="close">&times;</span>
+    <% Spree::Taxonomy.all.each do |taxonomy| %>
+      <h5><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h5>
+      <%= flow_taxons_tree(taxonomy.root, @taxon) %>
+    <% end %>
+
+    <div class="bottom-nav">
+      <%= render partial: 'spree/shared/search_form' %>
+      <img class="search-button" src="/images/nav-search.svg" />
+      <a href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
+      <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
+    </div>
+  </div>
+</div>

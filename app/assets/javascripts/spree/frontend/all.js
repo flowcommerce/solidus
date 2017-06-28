@@ -26,8 +26,20 @@ window.toggleSearch = function() {
 
 $(function(){
   $('#sidebar-pannel .close, #sidebar-button').click(toggleSidebar);
+
   $('#search-button').click(toggleSearch);
+
   $('#top-nav input[name=keywords]').blur(toggleSearch);
+
+  $('#sidebar-pannel .search-button').click(function(){
+    form = '#sidebar-pannel form';
+    $(form).toggle();
+
+    if ($(form+':visible')[0]) {
+      var input = form + ' input[name=keywords]'
+      $(input).focus().val($(input).val());
+    }
+  });
 
   if (/&keywords=\w/.test(location.href)) {
     toggleSearch();

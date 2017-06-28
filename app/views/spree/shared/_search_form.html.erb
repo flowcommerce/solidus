@@ -1,0 +1,6 @@
+<form action="/products" class="hidden">
+  <% if @taxon %>
+    <input type="hidden" name="taxon" value="<%= @taxon.id %>" />
+  <% end %>
+  <input type="text" name="keywords" value="<%= params[:keywords]%>" />
+</form>

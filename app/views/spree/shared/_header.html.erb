@@ -11,10 +11,7 @@
         <%= flow_build_main_menu %>
       </div>
       <div class="options">
-        <form action="/products" class="hidden">
-          <input type="hidden" name="taxon" value="" />
-          <input type="text" name="keywords" value="<%= params[:keywords]%>" />
-        </form>
+        <%= render partial: 'spree/shared/search_form' %>
         <img id="search-button" class="hide-in-tablet" src="/images/nav-search.svg" />
         <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
         <a href="/cart"><%= flow_cart_ico %></a>
@@ -32,7 +29,7 @@
 </div>
 
 <%
-  # this is old header
+  # this is an old header
   if false
 %>
   <header id="header" class="row" data-hook style="border-bottom: 1px solid #ddd;">
