@@ -2,17 +2,47 @@
   display: none;
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(100, 100, 100, 0.5);
+  background-color: rgba(100, 100, 100, 0.3);
 
   .menu {
-    width: 300px;
+    max-width: 250px;
     height: 100%;
     background-color: #fff;
     border-right: 1px solid #ccc;
     padding: 10px;
+    box-shadow: 4px 2px 20px 1px rgba(0,0,0,0.55);
 
-    h6 { font-size: 12pt; }
-    ul { margin-top: 5px; }
+    h5 {
+      font-size: 10pt;
+      font-size: 13pt;
+      font-weight: 400;
+    }
+
+    ul {
+      margin-top: 5px;
+      list-style-type: none;
+      li a {
+        display: block;
+        padding: 5px 5px 5px 15px;
+        color: #555 !important;
+
+        &:hover { color: #000 !important; }
+      }
+    }
+
+    span.close { display: block; font-size: 45px; margin-bottom: 30px; cursor: pointer; }
+
+    .bottom-nav {
+      position: absolute;
+      bottom: 5px;
+
+      img { margin: 5px; }
+
+      .picker {
+        position: relative;
+        top: 5px;
+      }
+    }
   }
 }
 

@@ -25,7 +25,7 @@ window.toggleSearch = function() {
 }
 
 $(function(){
-  $('#sidebar-pannel, #sidebar-button').click(toggleSidebar);
+  $('#sidebar-pannel .close, #sidebar-button').click(toggleSidebar);
   $('#search-button').click(toggleSearch);
   $('#top-nav input[name=keywords]').blur(toggleSearch);
 
