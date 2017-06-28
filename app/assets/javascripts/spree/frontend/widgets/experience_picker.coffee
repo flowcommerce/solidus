@@ -7,6 +7,9 @@ Widget.register 'experience_picker',
     # experiences are json encoded in data field
     @experiences = @root.data('experiences')
 
+    # default experience to expose
+    @default_country = @root.data('default')
+
     # on flag click, toggle country picker popup
     @root.find('img').first().attr('onclick', '$$.toggle();')
 
@@ -17,7 +20,8 @@ Widget.register 'experience_picker',
     $(@experience_popup_id).toggle(200)
 
   $render: ->
-    countries = []
+    first_item = null
+    countries  = []
 
     # deconstruct country experience from array and loop
     for [exp_country, exp_key, exp_name] in @experiences
@@ -25,14 +29,20 @@ Widget.register 'experience_picker',
         href:  "?flow_experience=#{exp_key}"
 
       # create link with image and exp name, and push to array
-      countries.push Widget.tag 'a.country', opts, =>
+      line_item = Widget.tag 'a.country', opts, =>
         image = Widget.tag 'img', src: @flag_src(exp_country)
 
         [image, exp_name].join(' ')
 
+      if exp_country == @default_country
+        first_item = line_item
+      else
+        countries.push line_item
+
+    title = '<h5>Select shipping country</h5>'
 
     # render popup data with countries
     @root.html() +
       Widget.tag @experience_popup_id,
        { onclick: '$$.toggle();' },
-       countries.join('')
+       title + first_item + '<hr />' + countries.join('')
