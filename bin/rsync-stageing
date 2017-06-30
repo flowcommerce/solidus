@@ -2,7 +2,17 @@
 
 source .env
 
-rsync -vrh --executability --delete --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' --exclude 'public/assets/*' . $REMOTE_SERVER:$REMOTE_PATH
+rsync \
+  -vrh \
+  --executability \
+  --delete \
+  --exclude 'log/*' \
+  --exclude '.env' \
+  --exclude 'tmp/*' \
+  --exclude '.git/*' \
+  --exclude 'public/spree/*' \
+  --exclude 'public/assets/*' \
+  . $REMOTE_SERVER:$REMOTE_PATH
 
 ssh -t $REMOTE_SERVER "
   echo '$REMOTE_PASS' | sudo -S echo '';
