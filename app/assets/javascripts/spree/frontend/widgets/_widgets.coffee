@@ -1,15 +1,11 @@
 'use strict'
 
 # public interface
-# $init()       - called on every wiget $init
-# $page_init()  - called once on every page
-# $render()     - renders renturned html data and inserts to dom node
+# $init()   - called on every wiget $init
+# $once()   - called once on every page
+# $parse()  - prepares html for insertation
+# $render() - renders renturned html data and inserts to dom node
 # $attr(name, val) - get or set node attribute value
-
-# pro tips
-# you will want to write render() functions which will return plain html with $$.func references
-# if you want to manualy render data, use render_data() to get html and some other function
-# instead of render to bind it to html
 
 @Widget =
   count: 0,
@@ -25,14 +21,14 @@
       node_id =  @node.getAttribute('id')
       data.replace(/\$\$\./g, "$w('##{node_id}').")
 
-    obj.render_data = obj.$render
-
     # default render, just gets view() html and binds to root
-    obj.$render = ->
-      return unless @render_data
-      data = @$parse()
-      # @node.innerHTML = data;
-      this.$html(data)
+    obj.$render = (data) ->
+      unless @render || data
+        alert "No render() function defined for Widget #{name}"
+
+      data = @$parse(data || @render())
+      @node.innerHTML = data
+      Widget.load_all @node
 
     # get or set object attributes
     obj.$attr = (name, data) ->
@@ -40,21 +36,7 @@
       @node.setAttribute(name, data)
       data
 
-    # destroy widget in memory and dom
-    obj.$destroy = (name, value) ->
-      delete Widget.widgets[@get('id')]
-      @node.parentNode.removeChild @node
-
-    # insert html and load widgets if data
-    obj.$html = (data) ->
-      if !data
-        return @node.innerHTML
-      @node.innerHTML = data
-      Widget.load_all @node
-
-    # Object.seal(obj)
-
-    obj.$page_init() if obj.$page_init && !@registered_widgets[name]
+    obj.$once() if obj.$once && !@registered_widgets[once]
 
     @registered_widgets[name] = obj
 
@@ -96,7 +78,6 @@
 
     # $init and render
     widget.$init(dom_node)
-    widget.$render()
 
     # store for easy access
     Widget.widgets[node_id] = widget
@@ -109,37 +90,11 @@
     else
       undefined
 
-  prop_index: -1
-  prop_data: []
-  prop: (kind, init_value) ->
-    prop_index = @prop_index += 1
-    prop_data  = @prop_data
-
-    if typeof kind == 'function'
-      return (input) ->
-        return prop_data[prop_index] unless input?
-        prop_data[prop_index] = kind(input)
-
-    func = (input) ->
-      return prop_data[prop_index] unless input?
-
-      prop_data[prop_index] = switch kind.charAt(0)
-        when 'i'
-          parseInt(input)
-        when 's'
-          String(input)
-        when 'f'
-          parseFloat(input)
-        when 'b'
-          if input then true else false
-        when 'd'
-          new Date(input)
-        else
-          alert "Unknown kind '#{kind}'. Supported i(nteger), f(float), s(string), b(oolean), d(ate) and (function)"
-
-    func(init_value) if init_value?
-
-    func
+  # destroy widget in memory and dom
+  destroy: (id) ->
+    node = document.getElementById(id)
+    delete Widget.widgets[id]
+    node.parentNode.removeChild node
 
   # Widget.tag 'button.btn.btn-xs', button_name, class: 'btn-primary'
   tag: (name, args...) ->
@@ -178,7 +133,8 @@
 window.$w = (node) ->
   # get pointer to widget definition
   # $w('tag')
-  return Widget.registered_widgets[node] if typeof node == 'string' and node[0] != '#'
+  if typeof node == 'string' and node[0] != '#'
+    return Widget.registered_widgets[node]
 
   # pointer to widget
   # $w('#tag-picker-1')

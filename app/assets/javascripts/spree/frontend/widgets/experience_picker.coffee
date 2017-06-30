@@ -5,7 +5,7 @@ Widget.register 'experience_picker',
     @root = $ @node
 
     # on flag click, toggle country picker popup
-    @root.find('img').first().attr('onclick', '$$.toggle();')
+    @root.find('img').first().attr('onclick', @$parse('$$.toggle();'))
 
     @flag = @root.html()
 
@@ -20,11 +20,18 @@ Widget.register 'experience_picker',
 
   toggle: ->
     popup = $(@experience_popup_id)
-    alert popup
+
     if popup[0]
+      $('#sidebar-data').show()
       popup.remove()
     else
-      popup.toggle(200)
+      @$render()
+
+      if @root.data('sidebar')
+        $('#sidebar-data-exp').html $(@experience_popup_id).show()
+        $('#sidebar-data').hide()
+      else
+        $(@experience_popup_id).toggle(200)
 
   render_popup: ->
     first_item = null
@@ -33,7 +40,7 @@ Widget.register 'experience_picker',
     # deconstruct country experience from array and loop
     for [exp_country, exp_key, exp_name] in @experiences
       opts =
-        href:  "?flow_experience=#{exp_key}"
+        href: "?flow_experience=#{exp_key}"
 
       # create link with image and exp name, and push to array
       line_item = Widget.tag 'a.country', opts, =>
@@ -48,14 +55,9 @@ Widget.register 'experience_picker',
 
     title = '<h5>Select shipping country</h5>'
 
-    $parse ->
-      title + first_item + '<hr />' + countries.join('')
-
-    @flag +
     Widget.tag @experience_popup_id,
      { onclick: '$$.toggle();' },
-     @render_popup()
+     title + first_item + '<hr />' + countries.join('')
 
-  $render: ->
-    # render popup data with countries
-
+  render: ->
+    @flag + @render_popup()

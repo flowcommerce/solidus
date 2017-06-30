@@ -8,39 +8,42 @@
   img.picker { width:32px; height: 32px; cursor: pointer; }
 
   #choose_experience {
-    display: none;
     position: absolute;
     z-index: 1;
     margin: -2px 0 0 -219px;
     width: 250px;
     border: 1px solid #ddd;
     background-color:#fff;
-    text-align: left;
 
-    h5 {
-      font-weight: 400;
-      font-size: 12pt;
-      padding: 10px;
-    }
-
-    a.country  {
-      display: block;
-      font-size: 12pt;
-      color: #777 !important;
-      padding: 3px 0;
-
-      img {
-        width: 32px;
-        height: 32px;
-        margin: 1px 10px;
-        vertical-align: middle;
-      }
-
-      &:hover {
-        background-color: #f2f2f2;
-        color: #000 !important;
-      }
-    }
+    h5 { padding: 10px; }
   }
 }
 
+#choose_experience {
+  display: none;
+  text-align: left;
+
+  h5 {
+    font-weight: 400;
+    font-size: 12pt;
+    padding-bottom: 10px;
+  }
+
+  a.country  {
+    display: block;
+    font-size: 12pt;
+    color: #777 !important;
+    padding: 3px 6px;
+
+    img {
+      width: 32px;
+      height: 32px;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      background-color: #f2f2f2;
+      color: #000 !important;
+    }
+  }
+}

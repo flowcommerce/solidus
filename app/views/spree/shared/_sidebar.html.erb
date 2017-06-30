@@ -1,16 +1,20 @@
 <div id="sidebar-pannel">
   <div class="menu">
     <span class="close">&times;</span>
-    <% Spree::Taxonomy.all.each do |taxonomy| %>
-      <h5><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h5>
-      <%= flow_taxons_tree(taxonomy.root, @taxon) %>
-    <% end %>
+    <div id="sidebar-data">
+      <% Spree::Taxonomy.all.each do |taxonomy| %>
+        <h5><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h5>
+        <%= flow_taxons_tree(taxonomy.root, @taxon) %>
+      <% end %>
+    </div>
+    <div id="sidebar-data-exp"></div>
 
     <div class="bottom-nav">
       <%= render partial: 'spree/shared/search_form' %>
+      <br/>
       <img class="search-button" src="/images/nav-search.svg" />
       <a href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
-      <span class="w experience_picker hide-in-tablet">
+      <span data-sidebar="true" class="w experience_picker">
         <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
       </span>
     </div>
