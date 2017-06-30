@@ -2,9 +2,16 @@
 
 source .env
 
-rsync -vrh --executability --delete --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' --exclude 'public/assets/*' . deployer@96.126.112.122:~/apps/flow-demo-shop
+rsync -vrh --executability --delete --exclude 'log/*' --exclude '.env' --exclude 'tmp/*' --exclude '.git/*' --exclude 'public/spree/*' --exclude 'public/assets/*' . $REMOTE_SERVER:$REMOTE_PATH
 
-ssh deployer@96.126.112.122 'cd ~/apps/flow-demo-shop; bundle; rake db:migrate; RAILS_ENV=development rake assets:precompile; sudo service nginx restart'
+ssh -t $REMOTE_SERVER "
+  echo '$REMOTE_PASS' | sudo -S echo '';
+  set -x;
+  cd $REMOTE_PATH
+  bundle;
+  rake db:migrate;
+  rake assets:precompile;
+  sudo service nginx restart;
+  bash"
 
-ssh -t deployer@96.126.112.122 "echo '$DEMO_SUDO' | sudo -S service nginx restart; cd /home/deployer/apps/flow-demo-shop; bash"
 
