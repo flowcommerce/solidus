@@ -24,6 +24,11 @@ window.toggleSearch = function() {
   }
 }
 
+window.Popup = {
+  open:  function() { $('#popup, #popup-bg').show(); },
+  close: function() { $('#popup, #popup-bg').hide(); }
+}
+
 $(function(){
   $('#sidebar-pannel .close, #sidebar-button').click(toggleSidebar);
 

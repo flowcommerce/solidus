@@ -45,5 +45,17 @@
     </div>
 
     <%= render :partial => 'spree/shared/sidebar' %>
+
+    <script>
+      window.app = {
+        state: {
+          exp: {
+            default: '<%= ENV.fetch('FLOW_BASE_COUNTRY') %>',
+            selected: '<%= @flow_exp.try(:country) %>',
+            experiences: <%= Flow::Experience.compact.to_json.html_safe %>
+          }
+        }
+      }
+    </script>
   </body>
 </html>

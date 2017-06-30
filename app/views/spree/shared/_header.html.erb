@@ -15,12 +15,7 @@
         <img id="search-button" class="hide-in-tablet" src="/images/nav-search.svg" />
         <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
         <a href="/cart"><%= flow_cart_ico %></a>
-        <div
-          class="w experience_picker hide-in-tablet"
-          data-default="<%= ENV.fetch('FLOW_BASE_COUNTRY') %>"
-          data-selected="<%= @flow_exp.try(:country) %>"
-          data-experiences="<%= Flow::Experience.compact.to_json %>"
-        >
+        <div class="w experience_picker hide-in-tablet">
           <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
         </div>
       </div>

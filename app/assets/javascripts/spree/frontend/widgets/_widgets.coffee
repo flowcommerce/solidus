@@ -3,8 +3,7 @@
 # public interface
 # $init()       - called on every wiget $init
 # $page_init()  - called once on every page
-# $render()        - renders renturned html data and inserts to dom node
-# $render_data()   - renders only html data, without binding to dom node
+# $render()     - renders renturned html data and inserts to dom node
 # $attr(name, val) - get or set node attribute value
 
 # pro tips
@@ -21,8 +20,7 @@
     obj.$init ||= -> true
 
     # method that gets view, are replaces $$ with widget reference
-    obj.$get_render_data = (data) ->
-      data ||= @render_data()
+    obj.$parse = (data) ->
       data    = if typeof data == 'object' then data.join('') else String(data)
       node_id =  @node.getAttribute('id')
       data.replace(/\$\$\./g, "$w('##{node_id}').")
@@ -32,7 +30,7 @@
     # default render, just gets view() html and binds to root
     obj.$render = ->
       return unless @render_data
-      data = @$get_render_data()
+      data = @$parse()
       # @node.innerHTML = data;
       this.$html(data)
 

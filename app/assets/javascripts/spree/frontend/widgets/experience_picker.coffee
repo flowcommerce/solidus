@@ -4,22 +4,29 @@ Widget.register 'experience_picker',
   $init: ->
     @root = $ @node
 
-    # experiences are json encoded in data field
-    @experiences = @root.data('experiences')
-
-    # default experience to expose
-    @default_country = @root.data('default')
-
     # on flag click, toggle country picker popup
     @root.find('img').first().attr('onclick', '$$.toggle();')
+
+    @flag = @root.html()
+
+    # experiences are json encoded in data field
+    @experiences = window.app.state.exp.experiences
+
+    # default experience to expose
+    @default_country = window.app.state.exp.default
 
   flag_src: (key) ->
     "https://flowcdn.io/util/icons/flags/32/#{key.toLowerCase()}.png"
 
   toggle: ->
-    $(@experience_popup_id).toggle(200)
+    popup = $(@experience_popup_id)
+    alert popup
+    if popup[0]
+      popup.remove()
+    else
+      popup.toggle(200)
 
-  $render: ->
+  render_popup: ->
     first_item = null
     countries  = []
 
@@ -41,8 +48,14 @@ Widget.register 'experience_picker',
 
     title = '<h5>Select shipping country</h5>'
 
+    $parse ->
+      title + first_item + '<hr />' + countries.join('')
+
+    @flag +
+    Widget.tag @experience_popup_id,
+     { onclick: '$$.toggle();' },
+     @render_popup()
+
+  $render: ->
     # render popup data with countries
-    @root.html() +
-      Widget.tag @experience_popup_id,
-       { onclick: '$$.toggle();' },
-       title + first_item + '<hr />' + countries.join('')
+
