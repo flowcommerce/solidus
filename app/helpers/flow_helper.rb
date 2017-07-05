@@ -3,7 +3,7 @@
 module FlowHelper
 
   def flow_flag exp, size=32
-    return 'http://i.imgur.com/GwFYycA.png' if exp && exp.key == 'world'
+    return '/images/world.png' if exp && exp.key == 'world'
 
     flag = unless exp
       'usa'
