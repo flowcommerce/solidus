@@ -101,6 +101,9 @@
     # evaluate function if data is function
     args = args.map (el) -> if typeof el == 'function' then el() else el
 
+    # fill second value
+    args[1] ||= if typeof args[0] == 'object' then '' else {}
+
     # swap args if first option is object
     [opts, data] = if typeof args[0] == 'object' then args else args.reverse()
     opts ||= {}
