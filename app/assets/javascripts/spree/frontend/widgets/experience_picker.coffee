@@ -1,8 +1,9 @@
 Widget.register 'experience_picker',
-  experience_popup_id: '#choose_experience'
-
   $init: ->
     @root = $ @node
+
+    @state =
+      open: false
 
     # on flag click, toggle country picker popup
     @root.find('img').first().attr('onclick', @$parse('$$.toggle();'))
@@ -15,23 +16,34 @@ Widget.register 'experience_picker',
     # default experience to expose
     @default_country = window.app.state.exp.default
 
+    @root.after @render_popup()
+
+  $render: ->
+    popup = $('#choose_experience')
+
+    if @state.open
+      # if desktop exp picker is visible
+      if $('#sidebar-pannel:visible')[0]
+        # render it in sidebar
+        $('#sidebar-data-exp').html popup.html()
+        $('#sidebar-data').hide()
+      else
+        popup.show(200)
+
+    else
+      popup.hide()
+      $('#sidebar-data-exp').html ''
+      $('#sidebar-data').show()
+
+    @flag
+
   flag_src: (key) ->
     "https://flowcdn.io/util/icons/flags/32/#{key.toLowerCase()}.png"
 
   toggle: ->
-    popup = $(@experience_popup_id)
+    @state.open = if @state.open then false else true
 
-    if popup[0]
-      $('#sidebar-data').show()
-      popup.remove()
-    else
-      @$render()
-
-      if @root.data('sidebar')
-        $('#sidebar-data-exp').html $(@experience_popup_id).show()
-        $('#sidebar-data').hide()
-      else
-        $(@experience_popup_id).toggle(200)
+    @$render()
 
   render_popup: ->
     first_item = null
@@ -43,8 +55,8 @@ Widget.register 'experience_picker',
         href: "?flow_experience=#{exp_key}"
 
       # create link with image and exp name, and push to array
-      line_item = Widget.tag 'a.country', opts, =>
-        image = Widget.tag 'img', src: @flag_src(exp_country)
+      line_item = $tag 'a.country', opts, =>
+        image = $tag 'img', src: @flag_src(exp_country)
 
         [image, exp_name].join(' ')
 
@@ -55,9 +67,6 @@ Widget.register 'experience_picker',
 
     title = '<h5>Select shipping country</h5>'
 
-    Widget.tag @experience_popup_id,
+    $tag '#choose_experience',
      { onclick: '$$.toggle();' },
      title + first_item + '<hr />' + countries.join('')
-
-  render: ->
-    @flag + @render_popup()
