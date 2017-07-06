@@ -6,9 +6,7 @@ Widget.register 'experience_picker',
       open: false
 
     # on flag click, toggle country picker popup
-    @root.find('img').first().attr('onclick', @$parse('$$.toggle();'))
-
-    @flag = @root.html()
+    @root.find('img').first().attr('onclick', '$w(this).toggle()')
 
     # experiences are json encoded in data field
     @experiences = window.app.state.exp.experiences
@@ -16,9 +14,9 @@ Widget.register 'experience_picker',
     # default experience to expose
     @default_country = window.app.state.exp.default
 
-    @root.after @render_popup()
+    @root.after @render_popup() unless $('#choose_experience')[0]
 
-  $render: ->
+  render: ->
     popup = $('#choose_experience')
 
     if @state.open
@@ -28,14 +26,12 @@ Widget.register 'experience_picker',
         $('#sidebar-data-exp').html popup.html()
         $('#sidebar-data').hide()
       else
-        popup.show(200)
+        popup.slideDown(200)
 
     else
       popup.hide()
       $('#sidebar-data-exp').html ''
       $('#sidebar-data').show()
-
-    @flag
 
   flag_src: (key) ->
     "https://flowcdn.io/util/icons/flags/32/#{key.toLowerCase()}.png"
@@ -43,7 +39,7 @@ Widget.register 'experience_picker',
   toggle: ->
     @state.open = if @state.open then false else true
 
-    @$render()
+    @render()
 
   render_popup: ->
     first_item = null

@@ -73,19 +73,6 @@
     # bind root to root
     widget.node = dom_node
 
-    # expose @w.func access to functions, beyond $$.func
-    widget.$ = {}
-    for key, val of widget_opts
-      if key.indexOf('$') == -1
-        # func = "$w(&quot;##{dom_node.getAttribute('id')}&quot;).#{key}"
-        func = "$w(this).#{key}"
-        widget.$[key] = ->
-          args = []
-          for el in arguments
-            args.push if typeof(el) == 'string' then "&quot;#{el}&quot;" else el
-          "#{func}(#{args.join(',')})"
-
-
     # $init and render
     widget.$init(dom_node) if widget.$init
     widget.$render() if widget.init_$render
@@ -169,8 +156,9 @@ window.$w = (node) ->
 
   # haml style id define
   name = name.replace /#([\w\-]+)/, ->
-    opts['id'] = RegExp.$1
+    opts['id'] = arguments[1]
     ''
+
   # haml style class add with a dot
   name_parts = name.split('.')
   name       = name_parts.shift() || 'div'
