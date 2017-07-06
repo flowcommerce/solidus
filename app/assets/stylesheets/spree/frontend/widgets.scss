@@ -27,6 +27,11 @@
     padding-bottom: 10px;
   }
 
+  .list {
+    overflow-y: scroll;
+    max-height: 360px;
+  }
+
   a.country  {
     display: block;
     font-size: 12pt;

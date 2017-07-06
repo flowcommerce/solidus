@@ -10,6 +10,7 @@ Widget.register 'experience_picker',
 
     # experiences are json encoded in data field
     @experiences = window.app.state.exp.experiences
+    @experiences.push exp for exp in @experiences
 
     # default experience to expose
     @default_country = window.app.state.exp.default
@@ -63,6 +64,9 @@ Widget.register 'experience_picker',
 
     title = '<h5>Select shipping country</h5>'
 
+    country_data = countries.join('')
+    country_data = $tag '.list', country_data if countries.length > 9
+
     $tag '#choose_experience',
      { onclick: '$$.toggle();' },
-     title + first_item + '<hr />' + countries.join('')
+     title + first_item + '<hr />' + country_data
