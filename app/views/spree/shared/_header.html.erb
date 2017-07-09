@@ -11,15 +11,9 @@
         <%= flow_build_main_menu %>
       </div>
       <div class="options">
-        <%=
-          # render partial: 'spree/shared/search_form'
-        %>
         <img class="w search hide-in-tablet" src="/images/nav-search.svg" data-keywords="<%= params[:keywords] %>" data-taxon="<%= @taxon.try(:id) %>" />
         <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
         <a href="/cart"><%= flow_cart_ico %></a>
-        <div class="w experience_picker hide-in-tablet">
-          <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
-        </div>
       </div>
     </div>
   </div>

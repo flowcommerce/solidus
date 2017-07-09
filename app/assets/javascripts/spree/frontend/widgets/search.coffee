@@ -6,10 +6,12 @@ Widget.register 'search',
 
     @state =
       taxon_id: @root.data('taxon')
-      keywords: @root.data('keywords')
+      keywords: @root.data('keywords') || ''
       open:     false
 
-    @render()
+    @state.open = true if @state.keywords
+
+    @render() if @state.open
 
   toggle: ->
     @state.open = if @state.open then false else true
@@ -36,6 +38,10 @@ Widget.register 'search',
       </form>"""
 
     @root.before(form)
-    $('#search-form input[name=keywords]').focus()
+
+    input = $('#search-form input[name=keywords]')
+    input.focus()
+    input.val input.val() if @state.keywords
+
 
 

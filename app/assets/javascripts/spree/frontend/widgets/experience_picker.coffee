@@ -6,11 +6,11 @@ Widget.register 'experience_picker',
       open: false
 
     # on flag click, toggle country picker popup
-    @root.find('img').first().attr('onclick', '$w(this).toggle()')
+    @root.attr('onclick', '$w(this).toggle()')
 
     # experiences are json encoded in data field
     @experiences = window.app.state.exp.experiences
-    @experiences.push exp for exp in @experiences
+    # @experiences.push exp for exp in @experiences
 
     # default experience to expose
     @default_country = window.app.state.exp.default

@@ -1,6 +1,7 @@
 <footer id="footer" class="sixteen columns" data-hook>
-  <div id="footer-left" class="columns alpha eight" data-hook>
-    <p><%= Spree.t :powered_by  %> <a href="https://www.flow.io" target="_new">Flow.io</a> &amp; <%= link_to 'Solidus', 'http://solidus.io/' %></p>
-  </div>
-  <div id="footer-right" class="columns omega eight" data-hook></div>
+
+  <p>
+    <img class="w experience_picker hide-in-tablet" src="<%= flow_flag(@flow_exp, 32) %>" />
+    <%= Spree.t :powered_by  %> <a href="https://www.flow.io" target="_new">Flow.io</a> &amp; <%= link_to 'Solidus', 'http://solidus.io/' %>
+  </p>
 </footer>
