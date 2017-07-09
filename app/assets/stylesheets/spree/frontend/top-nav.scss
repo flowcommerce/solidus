@@ -36,6 +36,8 @@
           margin-top: 14px;
 
           > li {
+            font-family: Oswald;
+            font-size: 14pt;
             display: inline-block;
             margin-right: 20px;
             border-bottom: 2px solid #fff;
@@ -68,6 +70,8 @@
                   display: block;
 
                   a {
+                    font-family: Roboto;
+                    font-size: 12pt;
                     display: block;
                     text-align: left;
                     padding-bottom: 10px;
@@ -85,14 +89,19 @@
       .options {
         text-align: right;
 
-        img, svg { margin: 0 2px; cursor: pointer; }
+        img, svg {
+          margin: 0 8px; cursor: pointer;
+          padding: 12px 0 7px 0;
+          border-bottom: 2px solid transparent;
+          &.active { border-bottom: 2px solid #555; }
+        }
 
         form {
           width: 150px;
           text-align: right;
           position: absolute;
-          margin-left: 100px;
-          margin-top: -5px;
+          margin-left: 98px;
+          margin-top: 41px;
 
           &.hidden { display: none; }
 
@@ -101,7 +110,7 @@
             font-size: 12pt;
             width: 50px;
 
-            &:focus { width: 150px; display: inline-block; }
+            &:focus { width: 150px; display: inline-block; border-color: #ccc; }
           }
         }
       }

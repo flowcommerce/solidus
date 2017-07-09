@@ -1,4 +1,4 @@
-  <div id="top-nav">
+<div id="top-nav">
   <div class="container">
     <div class="flex">
       <div class="button hide-in-desktop">
@@ -11,8 +11,10 @@
         <%= flow_build_main_menu %>
       </div>
       <div class="options">
-        <%= render partial: 'spree/shared/search_form' %>
-        <img id="search-button" class="hide-in-tablet" src="/images/nav-search.svg" />
+        <%=
+          # render partial: 'spree/shared/search_form'
+        %>
+        <img class="w search hide-in-tablet" src="/images/nav-search.svg" data-keywords="<%= params[:keywords] %>" data-taxon="<%= @taxon.try(:id) %>" />
         <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
         <a href="/cart"><%= flow_cart_ico %></a>
         <div class="w experience_picker hide-in-tablet">
@@ -22,20 +24,3 @@
     </div>
   </div>
 </div>
-
-<%
-  # this is an old header
-  if false
-%>
-  <header id="header" class="row" data-hook style="border-bottom: 1px solid #ddd;">
-    <div class="container" style="padding: 0;">
-      <img id="sidebar-button" src="/images/nav-toggle.png" />
-      <a id="header-logo" href="/"><img src="/images/logo.svg" /></a>
-      <%= render :partial => 'spree/shared/nav_bar' %>
-    </div>
-  </header>
-
-  <div class="container">
-    <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %>
-  </div>
-<% end %>

@@ -14,16 +14,6 @@ window.toggleSidebar = function() {
   $('#sidebar-pannel, #sidebar-button').toggle();
 }
 
-window.toggleSearch = function() {
-  var form = '#top-nav .options form';
-  $(form).toggleClass('hidden');
-
-  if ($(form + ':visible')[0]) {
-    var input = form + ' input[name=keywords]'
-    $(input).focus().val($(input).val());
-  }
-}
-
 window.Popup = {
   open:  function() { $('#popup, #popup-bg').show(); },
   close: function() { $('#popup, #popup-bg').hide(); }
@@ -31,24 +21,6 @@ window.Popup = {
 
 $(function(){
   $('#sidebar-pannel .close, #sidebar-button').click(toggleSidebar);
-
-  $('#search-button').click(toggleSearch);
-
-  $('#top-nav input[name=keywords]').blur(toggleSearch);
-
-  $('#sidebar-pannel .search-button').click(function(){
-    form = '#sidebar-pannel form';
-    $(form).toggle();
-
-    if ($(form+':visible')[0]) {
-      var input = form + ' input[name=keywords]'
-      $(input).focus().val($(input).val());
-    }
-  });
-
-  if (/&keywords=\w/.test(location.href)) {
-    toggleSearch();
-  }
 });
 
 
