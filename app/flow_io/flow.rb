@@ -48,6 +48,10 @@ module Flow
     end
   end
 
+  def log_api_error
+
+  end
+
   def logger
     @logger ||= Logger.new('./log/flow.log') # or nil for no logging
   end

@@ -36,7 +36,6 @@
           margin-top: 14px;
 
           > li {
-            font-family: Oswald;
             font-size: 14pt;
             display: inline-block;
             margin-right: 20px;
@@ -49,6 +48,8 @@
               padding: 12px 10px;
               color: #000 !important;
             }
+
+            > a { font-family: Oswald; }
 
             &.active { border-bottom: 2px solid #555; }
 
@@ -70,7 +71,6 @@
                   display: block;
 
                   a {
-                    font-family: Roboto;
                     font-size: 12pt;
                     display: block;
                     text-align: left;
@@ -100,7 +100,7 @@
           width: 150px;
           text-align: right;
           position: absolute;
-          margin-left: 98px;
+          margin-left: 140px;
           margin-top: 41px;
 
           &.hidden { display: none; }
