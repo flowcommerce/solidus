@@ -3,6 +3,14 @@ default: &default
   encoding: unicode
   timeout: 5000
   pool: 5
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: postgres
+  username: postgres
+  password:
+  pool: 5
+
 
 # DB connection is provided by URL from ENV
 # and this settings allows us to test prod env localy
