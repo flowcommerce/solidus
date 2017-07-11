@@ -1,6 +1,7 @@
 # general flow helper
 
 module FlowHelper
+  extend self
 
   def flow_flag exp, size=32
     return '/images/world.png' if exp && exp.key == 'world'
