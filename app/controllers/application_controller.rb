@@ -137,8 +137,11 @@ class ApplicationController < ActionController::Base
         order.finalize!
         @flow_render = { redirect_to: '/'}
       else
+        @has_order_error  = true
         flash.now[:error] = Flow::Error.format_message @flow_order.response
-        order.flow_data = {}
+        order.flow_data   = {}
+
+        @flow_render = { redirect_to: '/cart'} if request.path.start_with?('/checkout')
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }

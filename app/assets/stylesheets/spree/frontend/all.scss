@@ -21,14 +21,17 @@ h1 { margin: 10px 0 40px 0; }
 }
 
 .button {
+  border: 1px solid #ccc;
   font-family: Oswald;
   padding: 6px 30px;
-  font-size: 12pt !important;
+  font-size: 15px !important;
+  letter-spacing: 1px !important;
   background-color: #fff;
   color: #272727;
   font-weight: 300;
 
   &.primary {
+    border: none;
     color: #fff;
     background-color: #FE4101 !important;
   }

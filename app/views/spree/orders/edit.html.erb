@@ -23,16 +23,16 @@
             <%= render :partial => 'form', :locals => { :order_form => order_form } %>
           </div>
 
+          <br />
+
           <%= total_cart_breakdown %>
 
           <div class="links columns sixteen alpha omega middle" data-hook="cart_buttons">
-            <button name="button" type="submit" class="button checkout" id="update-button">Update</button>
+            <button name="button" type="submit" class="button checkout" id="update-button">UPDATE</button>
 
             <% unless @has_order_error %>
               <span>or</span>
-              <%= button_tag :class => 'button checkout primary large', :id => 'checkout-link', :name => 'checkout' do %>
-                <%= Spree.t(:checkout) %>
-              <% end %>
+              <button id="checkout-link" class="button checkout primary large" name="checkout">CHECKOUT</button>
             <% end %>
           </div>
 
