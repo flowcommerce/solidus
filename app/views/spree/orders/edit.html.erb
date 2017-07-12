@@ -1,22 +1,18 @@
 <style>
-td.cart-item-price, td.cart-item-total { color: #444 !important; font-size: 17px !important; font-weight: normal !important; }
-td.cart-item-quantity input { font-size: 18px; }
-tr.cart-total { background-color: #0092A6; }
-tr.line-item { font-size: 15px;  }
-.cart-subtotal { display: none; }
+
+
 </style>
 
 <% @body_id = 'cart' %>
+
 <div data-hook="cart_container">
   <h1><%= Spree.t(:shopping_cart) %></h1>
 
   <% if @order.line_items.empty? %>
-
     <div data-hook="empty_cart">
       <p><%= Spree.t(:your_cart_is_empty) %></p>
       <p><%= link_to Spree.t(:continue_shopping), products_path, :class => 'button continue' %></p>
     </div>
-
   <% else %>
 
     <div data-hook="outside_cart_form">
@@ -29,10 +25,11 @@ tr.line-item { font-size: 15px;  }
 
           <%= total_cart_breakdown %>
 
-          <div class="links columns sixteen alpha omega" data-hook="cart_buttons">
-            <button name="button" type="submit" class="button checkout primary" id="update-button">Update</button>
+          <div class="links columns sixteen alpha omega middle" data-hook="cart_buttons">
+            <button name="button" type="submit" class="button checkout" id="update-button">Update</button>
+
             <% unless @has_order_error %>
-              or
+              <span>or</span>
               <%= button_tag :class => 'button checkout primary large', :id => 'checkout-link', :name => 'checkout' do %>
                 <%= Spree.t(:checkout) %>
               <% end %>

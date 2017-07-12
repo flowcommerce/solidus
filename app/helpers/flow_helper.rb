@@ -174,16 +174,17 @@ module FlowHelper
   end
 
   # used in checkout and mailer to show complete price breakdown
-  def total_cart_breakdown
+  def total_cart_breakdown style=nil
     cart_data = @order.flow_cart_breakdown
 
     last = cart_data[cart_data.length - 1]
     last[1] = '<b>%s</b>' % last[1]
 
-    out =  ['<table style="float: right;">']
+    style ||= "float: right;"
+    out   =  ["<table id='total-cart-breakdown' style='#{style}'>"]
 
     cart_data.each do |price|
-      out.push '<tr><td>%s</td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
+      out.push '<tr><td><b>%s</b></td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
     end
 
     out.push '</table>'
@@ -256,6 +257,10 @@ module FlowHelper
     ico = Rails.root.join('./public%s' % path).read
     ico = ico.gsub(/#\{(\w+)\}/) { opts[$1.to_sym] }
     ico.html_safe
+  end
+
+  def flow_options_decorate text
+    text.gsub(/(\w+):/, '<b>\1</b>:').gsub(', ', '<br />').html_safe
   end
 
 end
