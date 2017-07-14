@@ -22,10 +22,10 @@
       <%= @order.flow_line_item_price(line_item) %>
     </td>
     -->
-    <td class="cart-item-quantity" data-hook="cart_item_quantity">
+    <td class="cart-item-quantity center" data-hook="cart_item_quantity">
       <%= item_form.number_field :quantity, min: 0, size: 2, class: 'w plus-minus line_item_quantity' %>
     </td>
-    <td class="cart-item-total" data-hook="cart_item_total">
+    <td class="cart-item-total right" data-hook="cart_item_total">
       <%= @order.flow_line_item_price(line_item, :with_quantity) %>
     </td>
     <!--

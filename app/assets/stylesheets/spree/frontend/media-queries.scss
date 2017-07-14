@@ -1,21 +1,32 @@
-// desktop
-@media only screen and (min-width: 1201px) {
+//mixins
+@mixin media-desktop {
+  @media only screen and (min-width: 1201px) { @content; }
+}
+
+@mixin media-tablet {
+  @media only screen and (max-width: 1200px) { @content; }
+}
+
+@mixin media-mobile {
+  @media only screen and (max-width: 767px) { @content; }
+}
+
+// implementation
+@include media-desktop {
   .hide-in-desktop   { display: none; }
   .center-in-desktop { text-align: center; }
 
   #products .columns.three { width: 210px !important; }
 }
 
-// tablet
-@media only screen and (max-width: 1200px) {
+@include media-tablet {
   .hide-in-tablet { display: none; }
   .center-in-tablet { text-align: center; }
 
   #products .columns.three { width: 170px !important; }
 }
 
-// mobile
-@media only screen and (max-width: 767px) {
+@include media-mobile {
   .hide-in-mobile, .hide-in-tablet { display: none; }
   .center-in-mobile { text-align: center; }
 

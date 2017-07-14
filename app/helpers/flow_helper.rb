@@ -181,13 +181,13 @@ module FlowHelper
     last[1] = '<b>%s</b>' % last[1]
 
     style ||= "float: right;"
-    out   =  ["<table id='total-cart-breakdown' style='#{style}'>"]
+    out   =  ["<div id='total-cart-breakdown' style='#{style}'><table>"]
 
     cart_data.each do |price|
       out.push '<tr><td><b>%s</b></td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
     end
 
-    out.push '</table>'
+    out.push '</table></div>'
     out.join('').html_safe
   rescue
     @has_order_error = true
