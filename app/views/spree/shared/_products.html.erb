@@ -39,7 +39,7 @@
   </ul>
 <% end %>
 
-<% if paginated_products.respond_to?(:total_pages) %>
+<% if paginated_products.respond_to?(:total_pages) && request.path != '/' %>
   <%= paginate paginated_products %>
 <% end %>
 

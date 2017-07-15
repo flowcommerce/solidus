@@ -1,4 +1,5 @@
 <div data-hook="homepage_products">
-  <%= render :partial => 'spree/shared/products', :locals => { :products => @products } %>
+  <h1>New arrivals</h1>
+  <%= render :partial => 'spree/shared/products', :locals => { :products => @products.limit(10).all } %>
 </div>
 

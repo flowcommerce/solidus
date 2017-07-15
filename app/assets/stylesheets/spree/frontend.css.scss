@@ -21,8 +21,26 @@ body {
   .current, span:hover a { border-color: #ddd; }
 }
 
+h1 {
+  font-family: Oswald;
+  font-size: 20px;
+  display: inline-block;
+  padding: 0 100px 10px 0;
+  border-bottom: 2px solid #777;
+}
+
 a { color:#0092A6 !important; }
-a.info { font-size: 14px !important; font-weight: normal; }
+a.info {
+  font-size: 17px !important;
+  font-weight: normal;
+  font-family: Oswald;
+  line-height: 24px;
+  height: 46px !important;
+  color: #444 !important;
+  display: block;
+  margin-bottom: 6px;
+  overflow: visible;
+}
 
 ul.taxons-list a     { font-size: 14px !important; line-height: 22px !important; margin-left: -10px; }
 ul.filter_choices li { line-height: 30px; list-style-type: none; }
