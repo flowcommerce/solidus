@@ -1,0 +1,40 @@
+<% @body_id = 'login' %>
+
+<div id="two-cols">
+  <div class="col">
+    <div class="form">
+      <% if flash[:alert] %>
+        <div class="flash errors"><%= flash[:alert] %></div>
+      <% end %>
+
+      <div id="existing-customer">
+        <h2>Returning customers</h2>
+        <div data-hook="login">
+          <%= render partial: 'spree/shared/login' %>
+          <%= link_to Spree.t(:forgot_password), spree.recover_password_path %>
+        </div>
+      </div>
+      <div data-hook="login_extras"></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form">
+      <%= render 'spree/shared/error_messages', target: resource %>
+
+      <div id="new-customer">
+        <h2>New customers</h2>
+
+        <div data-hook="signup">
+          <%= form_for resource, as: :spree_user, url: spree.registration_path(resource) do |f| %>
+            <div data-hook="signup_inside_form">
+              <%= render partial: 'spree/shared/user_form', locals: { f: f } %>
+              <p><%= f.submit Spree.t(:create), class: 'button primary' %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <div data-hook="login_extras"></div>
+    </div>
+  </div>
+</div>
+
