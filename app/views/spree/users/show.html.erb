@@ -23,7 +23,10 @@
       </tr>
       </thead>
       <tbody>
-      <% @orders.each do |order| %>
+      <%
+        @orders = @orders.page(params[:page]).per(30)
+        @orders.each do |order|
+      %>
         <tr class="<%= cycle('even', 'odd') %>">
           <td class="order-number"><%= link_to order.number, order_url(order) %></td>
           <td class="order-date"><%= l order.completed_at.to_date %></td>
@@ -35,6 +38,10 @@
       <% end %>
       </tbody>
     </table>
+
+    <br />
+
+    <%= paginate @orders %>
   <% else %>
     <p><%= Spree.t(:you_have_no_orders_yet) %></p>
   <% end %>
