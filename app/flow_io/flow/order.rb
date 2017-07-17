@@ -231,12 +231,16 @@ class Flow::Order
     write_cache   = false
     write_cache   = true  unless @use_get
     write_cache ||= true  if @response && response_total && response_total != @order.flow_data.dig('order', 'total', 'label')
-    write_cache   = false if @response.dig('code') == 'generic_error'
+    write_cache   = false if @response.dig('code') && @response.dig('messages').is_a?(Array)
 
     if write_cache
       @order.flow_data['order'] = @response.to_hash
-      @order.save
+    else
+      # remove cache if ther is an error
+      @order.flow_data.delete(:order)
     end
+
+    @order.save
   end
 
 end
