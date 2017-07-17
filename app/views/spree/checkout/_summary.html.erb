@@ -1,10 +1,5 @@
-<h3><%= Spree.t(:order_summary) %></h3>
+<fieldset class="form">
+  <legend>ORDER SUMMARY</legend>
 
-<table data-hook="order_summary">
-  <tbody>
-    <tr data-hook="item_total">
-      <td><strong><%= Spree.t(:item_total) %>:</strong></td>
-      <td><strong><%= @order.flow_total %></strong></td>
-    </tr>
-  </tbody>
-</table>
+  <%= total_cart_breakdown '' %>
+</fieldset>

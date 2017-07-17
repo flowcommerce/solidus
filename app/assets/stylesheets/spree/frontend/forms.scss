@@ -4,9 +4,6 @@ $progress-ligtht-color: #bbb;
   width: 100%;
   display: flex;
 
-  .completed-first, .completed {}
-  .current {}
-
   > li {
     flex: 1;
     text-align: center;
@@ -19,7 +16,7 @@ $progress-ligtht-color: #bbb;
       color: $progress-ligtht-color !important;
     }
 
-    &.current {
+      &.current, &.current-first {
       border-bottom: 2px solid #111;
       span { color: #111 !important; }
     }
@@ -62,5 +59,25 @@ $progress-ligtht-color: #bbb;
     padding: 6px 30px;
     font-family: Oswald;
     min-width: 200px;
+  }
+}
+
+fieldset#billing, fieldset#shipping, fieldset.form {
+  border: 1px solid $progress-ligtht-color;
+  border-radius: 5px;
+  margin: 0;
+
+  #total-cart-breakdown {
+    width: auto;
+  }
+
+  legend {
+    padding: 5px 20px;
+    color: #111;
+    text-align: center;
+    font-size: 16px;
+    font-family: Oswald;
+    font-weight: 500;
+    margin-bottom: 10px;
   }
 }

@@ -184,7 +184,9 @@ module FlowHelper
     out   =  ["<div id='total-cart-breakdown' style='#{style}'><table>"]
 
     cart_data.each do |price|
-      out.push '<tr><td><b>%s</b></td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
+      name = price.name
+      name = '<b>%s</b>' % name if name == 'Total'
+      out.push '<tr><td>%s</td><td style="text-align: right;">%s</td></tr>' % [price.name , price.label]
     end
 
     out.push '</table></div>'

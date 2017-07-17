@@ -1,22 +1,40 @@
 @import 'media-queries';
 
-$cart-border-color: #ccc;
+$cart-border-color: #bbb;
 $checkout-button-with: 270px;
+$border-radius: 5px;
 
 #cart-detail {
+  border: 1px solid $cart-border-color;
+  border-radius: $border-radius;
+
   .cart-subtotal { display: none; }
 
-  thead { background-color: #fff; }
+  thead {
+    background-color: transparent;
+    height: 1px;
+
+    // nudge quantity and total title
+    .cart-item-quantity-header, .cart-item-total-header {
+      span {
+        display: inline-block;
+        position: relative;
+        top: -14px;
+        background-color: #fff;
+        padding: 0 10px;
+      }
+    }
+  }
 
   tbody {
     tr {
       &.cart-total     { background-color: #fff; }
       &.line-item      { font-size: 15px;  }
 
-      &:first-child td { border-top: 1px solid $cart-border-color; }
-      td               { border-bottom: 1px solid $cart-border-color; }
-      & td:first-child { border-left: 1px solid $cart-border-color; }
-      & td:last-child  { border-right: 1px solid $cart-border-color; }
+      &:first-child td { border-top: none; }
+      td               { border-top: 1px solid $cart-border-color; }
+      // & td:first-child { border-left: 1px solid $cart-border-color; }
+      // & td:last-child  { border-right: 1px solid $cart-border-color; }
 
       td {
         padding: 0;
@@ -27,7 +45,11 @@ $checkout-button-with: 270px;
         }
 
         &.cart-item-image {
-          img { margin-bottom: -4px; }
+          img {
+            margin-bottom: -4px;
+            position: relative;
+            z-index: -1;
+          }
         }
 
         &.cart-item-description { padding: 0 10px; }
@@ -53,13 +75,18 @@ $checkout-button-with: 270px;
 
 #total-cart-breakdown {
   table {
-    width: $checkout-button-with;
+    width: 100%;
 
-    td { border:none !important; }
+    td {
+      border:none !important;
+    }
     tr {
       border-bottom: none;
 
-      &:last-child {  }
+      &:last-child td {
+        border-top: 1px solid #ccc !important;
+        padding-top: 10px;
+      }
     }
   }
 }
@@ -68,24 +95,21 @@ $checkout-button-with: 270px;
   width: $checkout-button-with - 8px;
 }
 
+@include media-desktop {
+  #total-cart-breakdown {
+    width: $checkout-button-with;
+  }
+}
+
 @include media-tablet {
   #total-cart-breakdown {
     border: 1px solid $cart-border-color;
+    border-radius: $border-radius;
     padding: 10px 0;
+    width: 100%;
 
     &, table { width: 100%; }
     td { padding: 10px 20px; }
     td:first-child { text-align: left; }
-  }
-}
-
-// nudge quantity and total title
-.cart-item-quantity-header, .cart-item-total-header {
-  span {
-    display: inline-block;
-    position: relative;
-    bottom: -15px;
-    background-color: #fff;
-    padding: 0 10px;
   }
 }
