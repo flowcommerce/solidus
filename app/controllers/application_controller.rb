@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
 
   protect_from_forgery    with: :exception
-  before_action           :flow_set_experience, :flow_update_order_attrbibutes
+  before_action           :flow_before_filters, :flow_set_experience, :flow_update_order_attrbibutes
 
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but
@@ -162,6 +162,14 @@ class ApplicationController < ActionController::Base
     if params[:debug] == 'flow' && @flow_exp
       flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
       @flow_render = { json: JSON.pretty_generate(flow_item) }
+    end
+  end
+
+  def flow_before_filters
+    # if we are somewhere in checkout and there is no session, force user to login
+    if request.path.start_with?('/checkout') && !@current_spree_user
+      flash[:error] = 'You need to be registred to continue with shopping'
+      redirect_to '/login'
     end
   end
 

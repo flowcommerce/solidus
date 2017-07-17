@@ -68,7 +68,7 @@ form {
   }
 }
 
-fieldset#billing, fieldset#shipping, fieldset.form {
+fieldset#billing, fieldset#shipping, fieldset#shipping_method, fieldset.form {
   border: 1px solid $progress-ligtht-color;
   border-radius: 5px;
   margin: 0;
