@@ -1,3 +1,12 @@
+.card_options p {
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+p input { margin-right: 10px; }
+
+label { cursor: pointer; }
+
 ul.list {
   margin: 15px 0 10px 20px; list-style: outside;
 
@@ -32,4 +41,8 @@ ul.shipping-methods {
     font-weight: 400 !important;
     font-size: 16px;
   }
+}
+
+tr.total {
+  border-bottom: none;
 }

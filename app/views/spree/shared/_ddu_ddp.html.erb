@@ -28,17 +28,15 @@
   <button class="btn btn-default" onclick="Popup.close(); return false;">Cancel</button>
 </div>
 
-<fieldset class="form">
+<fieldset class="form" style="margin-bottom: 28px;">
   <legend>EDIT DUTIES AND TAX PREFERENCES</legend>
 
   <p id="select-paid" onclick="Popup.select('paid')"><b>Duties & Taxes Paid:</b> You will pay duties & taxes with your order, if applicable.</p>
   <p id="select-unpaid" onclick="Popup.select('unpaid')" style="display: none;"><b>Duties & Taxes Unpaid:</b> You will not pay duties & taxes with your order. Your items might be subject to duties and/or taxes by your local customs authority.</p>
 
   <button class="button default" onclick="Popup.open(); return false;">Edit Duties & Taxes Preference</button>
-</fieldset>
 
-<br />
-<br />
+</fieldset>
 
 <script>
   Popup.select = function(value) {

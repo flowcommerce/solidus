@@ -1,0 +1,8 @@
+<%= render :partial => 'spree/shared/order_details', :locals => { :order => @order } %>
+
+<br />
+
+<div class="form-buttons" data-hook="buttons">
+  <%= submit_tag Spree.t(:place_order), :class => 'continue button primary' %>
+  <script>Spree.disableSaveOnClick();</script>
+</div>

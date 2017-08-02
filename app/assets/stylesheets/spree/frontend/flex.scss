@@ -1,0 +1,19 @@
+div.flex {
+  display: flex;
+
+  .flex-col {
+    flex: 1;
+    padding-left: 10px;
+
+    &:first-child { padding-left: 0; }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  div.flex { display: block; }
+  .flex-col {
+    width: 100% !important;
+    padding-bottom: 10px !important;
+    padding-left: 0 !important;
+  }
+}
