@@ -26,9 +26,6 @@
             </ul>
           <% end %>
         </div>
-
-        <%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_exp) %>
-
       <% end %>
 
       <% if @differentiator.try(:missing?) %>
@@ -76,6 +73,8 @@
 </fieldset>
 
 <br />
+
+<%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_exp) %>
 
 <div class="form-buttons" data-hook="buttons">
   <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>

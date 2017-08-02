@@ -7,3 +7,29 @@ ul.list {
 fieldset.order-summary {
   min-width: 210px;
 }
+
+ul.shipping-methods {
+  margin: 10px !important;
+
+  li.shipping-method {
+    input {
+      margin-right: 6px;
+      position: relative;
+      top: -1px;
+    }
+
+    span { font-weight: normal; }
+  }
+}
+
+#shipping_method p {
+  input {
+    position: relative;
+    top: -1px;
+  }
+
+  label {
+    font-weight: 400 !important;
+    font-size: 16px;
+  }
+}

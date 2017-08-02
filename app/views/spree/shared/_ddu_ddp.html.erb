@@ -3,11 +3,6 @@
     @delivered_duty = ::Io::Flow::V0::Models::DeliveredDuty.paid.value if @delivered_duty.blank?
 %>
 
-<br />
-
-<h5 class="stock-shipping-method-title" style="text-align: left;">Edit duties and tax preferences</h5>
-
-<div id="popup-bg"></div>
 <div id="popup">
   <h2>Duties & Taxes</h2>
 
@@ -33,10 +28,17 @@
   <button class="btn btn-default" onclick="Popup.close(); return false;">Cancel</button>
 </div>
 
-<p id="select-paid" onclick="Popup.select('paid')"><b>Duties & Taxes Paid:</b> You will pay duties & taxes with your order, if applicable.</p>
-<p id="select-unpaid" onclick="Popup.select('unpaid')" style="display: none;"><b>Duties & Taxes Unpaid:</b> You will not pay duties & taxes with your order. Your items might be subject to duties and/or taxes by your local customs authority.</p>
+<fieldset class="form">
+  <legend>EDIT DUTIES AND TAX PREFERENCES</legend>
 
-<button class="button primary" onclick="Popup.open(); return false;">Edit Duties & Taxes Preference</button>
+  <p id="select-paid" onclick="Popup.select('paid')"><b>Duties & Taxes Paid:</b> You will pay duties & taxes with your order, if applicable.</p>
+  <p id="select-unpaid" onclick="Popup.select('unpaid')" style="display: none;"><b>Duties & Taxes Unpaid:</b> You will not pay duties & taxes with your order. Your items might be subject to duties and/or taxes by your local customs authority.</p>
+
+  <button class="button default" onclick="Popup.open(); return false;">Edit Duties & Taxes Preference</button>
+</fieldset>
+
+<br />
+<br />
 
 <script>
   Popup.select = function(value) {

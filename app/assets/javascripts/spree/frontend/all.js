@@ -15,8 +15,16 @@ window.toggleSidebar = function() {
 }
 
 window.Popup = {
-  open:  function() { $('#popup, #popup-bg').show(); },
-  close: function() { $('#popup, #popup-bg').hide(); }
+  open:  function() {
+    var popup = $('#popup');
+    popup.before('<div id="popup-bg"></div>')
+    popup.show();
+  },
+
+  close: function() {
+    $('#popup-bg').remove();
+    $('#popup').hide();
+  }
 }
 
 $(function(){
