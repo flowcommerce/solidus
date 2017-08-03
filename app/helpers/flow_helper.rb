@@ -204,7 +204,10 @@ module FlowHelper
   end
 
   def flow_top_nav_data
-    data = ['using flow (%s)' % @flow_exp.key]
+    data = [
+      'using flow (<a href="https://console.flow.io/%{org}/experience/%{key}/localization" target="_console">%{key}</a>)' %
+      { org: Flow.organization, key: @flow_exp.key }
+    ]
 
     if respond_to?(:simple_current_order) && simple_current_order.number
       text = simple_current_order.number
