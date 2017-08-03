@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
     # call method if one defined
     target        = '%s#%s' % [params[:controller], params[:action]]
     filter_method = ('flow_filter_' + target.gsub!(/[^\w]/,'_')).to_sym
+
     send(filter_method) if self.class.private_instance_methods.include?(filter_method)
 
     # call all this methods
@@ -111,11 +112,6 @@ class ApplicationController < ActionController::Base
 
     return unless order
 
-    # opts = {}
-    # for el in [:outstanding_balance, :item_total, :adjustment_total, :included_tax_total, :additional_tax_total, :tax_total, :shipment_total, :total, :order_total_after_store_credit, :total_available_store_credit]
-    #   opts[el] = order.send(el)
-    # end
-
     return if request.path.include?('/admin/')
 
     if @flow_session.use_flow?
@@ -138,10 +134,15 @@ class ApplicationController < ActionController::Base
         @flow_render = { redirect_to: '/'}
       else
         @has_order_error  = true
-        flash.now[:error] = Flow::Error.format_message @flow_order.response
+        error_description = Flow::Error.format_message @flow_order.response
         order.flow_data   = {}
 
-        @flow_render = { redirect_to: '/cart'} if request.path.start_with?('/checkout')
+        if request.path.start_with?('/checkout')
+          @flow_render = { redirect_to: '/cart'}
+          flash[:error] = error_description
+        else
+          flash.now[:error] = error_description
+        end
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
