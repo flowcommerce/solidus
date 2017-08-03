@@ -13,11 +13,12 @@ div.flex {
 
 .fix-height {
   fieldset {
-    min-height: 150px;
+    min-height: 190px;
+    line-height: 24px;
   }
 
   .delivery {
-    padding-left: 25px;
+    padding-left: 20px;
   }
 
   .payment-info {
@@ -32,6 +33,13 @@ div.flex {
   i.fa-truck {
     position: absolute;
     margin-left: -25px;
+    margin-top: 4px;
+  }
+
+  img.paypal {
+    width: 32px;
+    height: 32px;
+    margin-top: -3px;
   }
 }
 
@@ -41,5 +49,11 @@ div.flex {
     width: 100% !important;
     padding-bottom: 10px !important;
     padding-left: 0 !important;
+  }
+
+  .fix-height {
+    fieldset {
+      min-height: auto;
+    }
   }
 }

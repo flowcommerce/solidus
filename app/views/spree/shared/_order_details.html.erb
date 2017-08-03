@@ -47,7 +47,7 @@
         <div class="payment-info">
           <% if order.flow_paymeny_method == 'paypal' %>
             <span>
-              <img src="/images/pay-pal-ico.png" style="width: 32px; height: 32px;" />
+              <img class="paypal" src="/images/pay-pal-ico.png" />
               Paid with PayPal &copy;
             </span>
           <% else%>
@@ -62,21 +62,12 @@
 <fieldset class="form">
   <legend>ORDER PRODUCTS</legend>
 
-  <table id='line-items' class="index columns alpha omega sixteen" data-hook="order_details" style="width: 100%;">
+  <table id='line-items' class="index columns alpha omega sixteen" data-hook="order_details">
     <col width="15%" valign="middle" halign="center">
     <col valign="middle">
     <col width="5%" valign="middle" halign="center">
     <col width="5%" valign="middle" halign="center">
     <col width="5%" valign="middle" halign="center">
-
-    <thead data-hook>
-      <tr data-hook="order_details_line_items_headers">
-        <th colspan="2"><%= Spree.t(:item) %></th>
-        <th class="price"><%= Spree.t(:price) %></th>
-        <th class="qty"><%= Spree.t(:qty) %></th>
-        <th class="total"><span><%= Spree.t(:total) %></span></th>
-      </tr>
-    </thead>
 
     <tbody data-hook>
       <% order.line_items.each do |item| %>
@@ -93,16 +84,21 @@
             <%= truncated_product_description(item.variant.product) %>
             <%= "(" + item.variant.options_text + ")" unless item.variant.option_values.empty? %>
           </td>
-          <td data-hook="order_item_price" class="price"><span><%= @order.flow_line_item_price(item) %></span></td>
-          <td data-hook="order_item_qty"><%= item.quantity %></td>
-          <td data-hook="order_item_total" class="total"><span><%= @order.flow_line_item_price(item, :with_quantity) %></span></td>
+          <td>
+            <%= @order.flow_line_item_price(item) %>&nbsp;&times;&nbsp;<%= item.quantity %>
+            <br />
+            <%= @order.flow_line_item_price(item, :with_quantity) %>
+          </td>
         </tr>
       <% end %>
     </tbody>
 
     <tfoot id="subtotal" data-hook="order_details_subtotal">
       <tr class="total" id="subtotal-row">
-        <td colspan="5"><%= total_cart_breakdown %></td>
+        <td colspan="5">
+          <br />
+          <%= total_cart_breakdown %>
+        </td>
       </tr>
     </tfoot>
   </table>

@@ -55,6 +55,9 @@ Widget.register 'experience_picker',
       line_item = $tag 'a.country', opts, =>
         image = $tag 'img', src: @flag_src(exp_country)
 
+        if exp_name.length > 24
+          exp_name = exp_name.substring(0, 21) + '&hellip;'
+
         [image, exp_name].join(' ')
 
       if exp_country == @default_country
