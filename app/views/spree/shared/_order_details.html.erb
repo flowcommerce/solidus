@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex fix-height">
   <% if order.has_step?("address") %>
     <div class="flex-col">
       <fieldset class="form">
@@ -28,7 +28,7 @@
               <% else %>
                 <% order.shipments.each do |shipment| %>
                   <div>
-                    <i class='fa fa-truck' style=""></i>
+                    <i class='fa fa-truck'></i>
                     <%= Spree.t(:shipment_details, :stock_location => shipment.stock_location.name, :shipping_method => shipment.selected_shipping_rate.name) %>
                   </div>
                 <% end %>
@@ -47,7 +47,7 @@
         <div class="payment-info">
           <% if order.flow_paymeny_method == 'paypal' %>
             <span>
-              <img src="http://i.imgur.com/pM4AOA6.png" style="width: 32px; height: 32px; vertical-align: middle;" />
+              <img src="/images/pay-pal-ico.png" style="width: 32px; height: 32px;" />
               Paid with PayPal &copy;
             </span>
           <% else%>

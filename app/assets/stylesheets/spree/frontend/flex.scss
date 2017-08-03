@@ -1,11 +1,37 @@
 div.flex {
   display: flex;
+  flex-direction: row;
+  align-content: stretch;
 
   .flex-col {
     flex: 1;
     padding-left: 10px;
 
     &:first-child { padding-left: 0; }
+  }
+}
+
+.fix-height {
+  fieldset {
+    min-height: 150px;
+  }
+
+  .delivery {
+    padding-left: 25px;
+  }
+
+  .payment-info {
+    padding-left: 40px;
+
+    img {
+      position: absolute;
+      margin-left: -40px;
+    }
+  }
+
+  i.fa-truck {
+    position: absolute;
+    margin-left: -25px;
   }
 }
 
