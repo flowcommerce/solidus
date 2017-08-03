@@ -10,7 +10,7 @@ module FlowHelper
       'usa'
     else
       exp = Flow::Experience.get(exp.key) unless exp.respond_to?(:region)
-      exp.region.id
+      exp.country.downcase
     end
 
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, flag]
