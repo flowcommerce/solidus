@@ -231,7 +231,7 @@ module FlowHelper
   def flow_build_main_menu
     flow_tag(:ul) do
       # 1.st lvl menu
-      Spree::Taxonomy.all.collect do |taxonomy|
+      main_data = Spree::Taxonomy.all.collect do |taxonomy|
         flow_tag :li do |opts|
           # link_to(taxonomy.name, '/t/%s' % taxonomy.taxons.first.permalink) +
           main_link = nil
@@ -252,6 +252,10 @@ module FlowHelper
           link_to(taxonomy.name, '/t/%s' % main_link) + sub_data
         end
       end
+
+      main_data.push %[<li><a href="/sale">Sale</a></li>]
+
+      main_data
     end.html_safe
   end
 

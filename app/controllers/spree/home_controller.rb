@@ -4,11 +4,18 @@ module Spree
     respond_to :html
 
     def index
-      # return render text: 'ok'
-
-      @searcher = build_searcher(params.merge(include_images: true))
-      @products = @searcher.retrieve_products
+      @title      = 'New arrivals'
+      @searcher   = build_searcher(params.merge(include_images: true))
+      @products   = @searcher.retrieve_products
       @taxonomies = Spree::Taxonomy.includes(root: :children)
+    end
+
+    # to add items to sale, just define meta_keywords field to sale
+    def sale
+      @title    = 'Products on sale'
+      @products = Product.where(meta_keywords: 'sale')
+
+      render :index
     end
   end
 end
