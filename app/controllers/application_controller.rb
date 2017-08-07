@@ -128,17 +128,24 @@ class ApplicationController < ActionController::Base
 
     return if order.line_items.length == 0
 
+    # ap @flow_order.response
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')
         order.finalize!
         @flow_render = { redirect_to: '/'}
       else
-        @has_order_error  = true
         error_description = Flow::Error.format_message @flow_order.response
         order.flow_data   = {}
 
+        @has_order_error  = true
+
+        # we have to disable order error, if it is shipping related
+        # because address in Solidus is not part of user profile but checkout process
+        # so can't prohibit access to /checkout/address
+        @has_order_error  = false if error_description.include?('Shipping not available to')
+
         if request.path.start_with?('/checkout')
-          @flow_render = { redirect_to: '/cart'}
+          # @flow_render = { redirect_to: '/cart'}
           flash[:error] = error_description
         else
           flash.now[:error] = error_description

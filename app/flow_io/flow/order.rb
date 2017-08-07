@@ -62,10 +62,6 @@ class Flow::Order
 
     @order.flow_data ||= {}
 
-    # r @order.flow_order['selections'] == @order.flow_data['selection']
-    # r @order.flow_order['selections']
-    # r @order.flow_data['selection']
-
     delivery_list = @order.flow_order['deliveries'][0]['options']
     delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
@@ -97,7 +93,9 @@ class Flow::Order
   def add_customer opts
     return unless @customer
 
-    if (address = @customer.ship_address)
+    address = @customer.ship_address
+    # address = nil
+    if address
       opts[:customer] = {
         name:   {
           first: address.firstname,
@@ -169,11 +167,18 @@ class Flow::Order
   def sync_body!
     opts, @body, digest = build_flow_request
 
-    @use_get = @order.state == 'complete' || @order.flow_data['digest'] == digest
+    @use_get = false
+
+    # use get if order is completed and closed
+    @use_get = true if @order.state == 'complete'
+
+    # use get if local digest hash check said there is no change
+    @use_get ||= true if @order.flow_data['digest'] == digest
+
+    # do not use get if there is no local order cache
     @use_get = false unless @order.flow_data['order']
 
     if @use_get
-      # if digest @body matches, use get to build request
       @response = Flow.api :get, '/:organization/orders/%s' % @body[:number], expand: 'experience'
     else
       @order.flow_data['digest'] = digest
@@ -185,7 +190,6 @@ class Flow::Order
       # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
 
       @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
-      # r({ selections: @order.flow_order['selections'], selection: @order.flow_data['selection'], reponse: @response['selections'] })
     end
   end
 
@@ -203,8 +207,7 @@ class Flow::Order
   end
 
   def add_item line_item
-    variant   = line_item.variant
-
+    variant    = line_item.variant
     price_root = variant.flow_data['exp'][@experience.key]['prices'][0] rescue {}
 
     # create flow order line item
@@ -224,22 +227,16 @@ class Flow::Order
   # set cache for total order ammount
   # written in flow_data field inside spree_orders table
   def write_response_in_cache
-    return unless @response
+    return if !@response || error?
 
     response_total = @response.dig('total', 'label')
+    cache_total    = @order.flow_data.dig('order', 'total', 'label')
 
-    write_cache   = false
-    write_cache   = true  unless @use_get
-    write_cache ||= true  if @response && response_total && response_total != @order.flow_data.dig('order', 'total', 'label')
-    write_cache   = false if @response.dig('code') && @response.dig('messages').is_a?(Array)
+    # return if total is not changed, no products removed or added
+    return if @use_get && response_total == cache_total
 
-    if write_cache
-      @order.flow_data['order'] = @response.to_hash
-    else
-      # remove cache if ther is an error
-      @order.flow_data.delete(:order)
-    end
-
+    # update local order
+    @order.flow_data['order'] = @response.to_hash
     @order.save
   end
 
