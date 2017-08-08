@@ -134,7 +134,7 @@ class ApplicationController < ActionController::Base
         order.finalize!
         @flow_render = { redirect_to: '/'}
       else
-        error_description = Flow::Error.format_message @flow_order.response
+        error_description = Flow::Error.format_message @flow_order.response, @flow_exp
         order.flow_data   = {}
 
         @has_order_error  = true

@@ -30,8 +30,19 @@
   .hide-in-mobile, .hide-in-tablet { display: none; }
   .center-in-mobile { text-align: center; }
 
-  #products .columns.three { width: 100% !important; }
+  #products {
+    margin-right: -20px !important;
+
+    .columns.three {
+      width: 205px !important;
+    }
+  }
 }
 
-#content { text-align: left !important; }
+#content {
+  text-align: left !important;
+}
 
+.container {
+  min-width: 420px !important;
+}

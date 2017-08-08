@@ -24,7 +24,7 @@ class Flow::Error < StandardError
     end
   end
 
-  def self.format_message order
+  def self.format_message order, flow_experience=nil
     message = if order['messages']
       msg = order['messages'].join(', ')
 
@@ -37,7 +37,10 @@ class Flow::Error < StandardError
       'Order not properly localized (sync issue)'
     end
 
-    '%s (Flow.io)' % message
+    sub_info = 'Flow.io'
+    sub_info += ' - %s' % flow_experience.key[0, 15] if flow_experience
+
+    '%s (%s)' % [message, sub_info]
   end
 
 end
