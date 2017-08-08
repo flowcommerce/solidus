@@ -21,7 +21,10 @@
     <div class="container">
       <div id="wrapper" class="row" data-hook>
 
-        <%= flow_normalize_categories taxon_breadcrumbs(@taxon) %>
+        <%=
+          # show breadcrumbs
+          # flow_normalize_categories taxon_breadcrumbs(@taxon)
+        %>
 
         <% if (@jumbo_image = flow_get_jumbo_image) %>
           <div class="sixteen columns"><img src="<%= @jumbo_image %>" style="width: 100%; margin-bottom: 30px;" /></div>

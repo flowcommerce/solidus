@@ -43,12 +43,16 @@ class Flow::Order
     @response
   end
 
-  def error?
-    @response && @response['code'] && @response['messages']
-  end
-
   def error
     @response['messages'].join(', ')
+  end
+
+  def error_code
+    @response['code']
+  end
+
+  def error?
+    @response && @response['code'] && @response['messages']
   end
 
   def delivery
