@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
 
   protect_from_forgery    with: :exception
-  before_action           :flow_before_filters, :flow_set_experience, :flow_update_order_attrbibutes
+  before_action           :flow_update_order_attrbibutes, :flow_before_filters, :flow_set_experience
 
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but
@@ -128,28 +128,12 @@ class ApplicationController < ActionController::Base
 
     return if order.line_items.length == 0
 
-    # ap @flow_order.response
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')
         order.finalize!
         @flow_render = { redirect_to: '/'}
       else
-        error_description = Flow::Error.format_message @flow_order.response, @flow_exp
-        order.flow_data   = {}
-
-        @has_order_error  = true
-
-        # we have to disable order error, if it is shipping related
-        # because address in Solidus is not part of user profile but checkout process
-        # so can't prohibit access to /checkout/address
-        @has_order_error  = false if error_description.include?('Shipping not available to')
-
-        if request.path.start_with?('/checkout')
-          # @flow_render = { redirect_to: '/cart'}
-          flash[:error] = error_description
-        else
-          flash.now[:error] = error_description
-        end
+        flash.now[:error] = Flow::Error.format_message @flow_order.response, @flow_exp
       end
     elsif params[:debug] == 'flow'
       @flow_render = { json: JSON.pretty_generate(@flow_order.response) }

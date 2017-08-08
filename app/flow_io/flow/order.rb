@@ -90,6 +90,11 @@ class Flow::Order
     @order.flow_total
   end
 
+  def delivered_duty
+    # paid is default
+    @order.flow_data['delivered_duty'] || ::Io::Flow::V0::Models::DeliveredDuty.paid.value
+  end
+
   private
 
   # if customer is defined, add customer info
@@ -163,13 +168,13 @@ class Flow::Order
     end
 
     # calculate digest body and cache it
-    digest = Digest::SHA1.hexdigest(opts.to_json + body.to_json)
+    @digest = Digest::SHA1.hexdigest(opts.to_json + body.to_json)
 
-    [opts, body, digest]
+    [opts, body]
   end
 
   def sync_body!
-    opts, @body, digest = build_flow_request
+    opts, @body = build_flow_request
 
     @use_get = false
 
@@ -177,7 +182,7 @@ class Flow::Order
     @use_get = true if @order.state == 'complete'
 
     # use get if local digest hash check said there is no change
-    @use_get ||= true if @order.flow_data['digest'] == digest
+    @use_get ||= true if @order.flow_data['digest'] == @digest
 
     # do not use get if there is no local order cache
     @use_get = false unless @order.flow_data['order']
@@ -185,8 +190,6 @@ class Flow::Order
     if @use_get
       @response = Flow.api :get, '/:organization/orders/%s' % @body[:number], expand: 'experience'
     else
-      @order.flow_data['digest'] = digest
-
       # replace when fixed integer error
       # @body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
       # opts[:experience] = @experience.key
@@ -231,16 +234,21 @@ class Flow::Order
   # set cache for total order ammount
   # written in flow_data field inside spree_orders table
   def write_response_in_cache
-    return if !@response || error?
+    if !@response || error?
+      @order.flow_data.delete('digest')
+      @order.flow_data.delete('order')
+    else
+      response_total = @response.dig('total', 'label')
+      cache_total    = @order.flow_data.dig('order', 'total', 'label')
 
-    response_total = @response.dig('total', 'label')
-    cache_total    = @order.flow_data.dig('order', 'total', 'label')
+      # return if total is not changed, no products removed or added
+      return if @use_get && response_total == cache_total
 
-    # return if total is not changed, no products removed or added
-    return if @use_get && response_total == cache_total
+      # update local order
+      @order.flow_data['digest'] = @digest
+      @order.flow_data['order']  = @response.to_hash
+    end
 
-    # update local order
-    @order.flow_data['order'] = @response.to_hash
     @order.save
   end
 

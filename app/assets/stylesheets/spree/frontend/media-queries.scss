@@ -24,6 +24,11 @@
   .center-in-tablet { text-align: center; }
 
   #products .columns.three { width: 170px !important; }
+
+  .form  #total-cart-breakdown {
+    border: none !important;
+    margin-left: -20px;
+  }
 }
 
 @include media-mobile {

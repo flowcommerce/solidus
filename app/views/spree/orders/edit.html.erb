@@ -25,7 +25,11 @@
           <div class="links columns sixteen alpha omega middle" data-hook="cart_buttons">
             <button name="button" type="submit" class="button checkout" id="update-button">UPDATE</button>
 
-            <% unless @has_order_error %>
+            <%
+              # unless @flow_order.error?
+              # if we had error categories then I could restrict by particualr category
+              if true
+            %>
               <span>or</span>
               <button id="checkout-link" class="button checkout primary large" name="checkout">CHECKOUT</button>
             <% end %>
