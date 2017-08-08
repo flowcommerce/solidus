@@ -34,15 +34,23 @@
     margin-right: -20px !important;
 
     .columns.three {
-      width: 205px !important;
+      width: 170px !important;
     }
+  }
+
+  #product-description, #taxon-crumbs {
+    padding: 0 10px;
+  }
+
+  #footer {
+    text-align: center;
+  }
+
+  .container, #content {
+    width: 100% !important;
   }
 }
 
 #content {
   text-align: left !important;
-}
-
-.container {
-  min-width: 420px !important;
 }
