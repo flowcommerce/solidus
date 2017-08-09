@@ -270,7 +270,16 @@ module FlowHelper
 
   def show_promotion
     return unless @flow_exp
-    promo = ActiveRecord::Base.connection.execute("select * from spree_promotions where advertise=true and flow_data->'filter'->'experience' ? '%s'" % @flow_exp.key).first
+
+    promo = ActiveRecord::Base.connection.execute("
+      select *
+      from spree_promotions
+      where
+        advertise=true
+        and name ilike '% top %'
+        and flow_data->'filter'->'experience' ? '#{@flow_exp.key}'
+    ").first
+
     return unless promo
 
     data  = promo['description'].upcase
