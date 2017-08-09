@@ -268,4 +268,16 @@ module FlowHelper
     text.gsub(/(\w+):/, '<b>\1</b>:').gsub(', ', '<br />').html_safe
   end
 
+  def show_promotion
+    return unless @flow_exp
+    promo = ActiveRecord::Base.connection.execute("select * from spree_promotions where advertise=true and flow_data->'filter'->'experience' ? '%s'" % @flow_exp.key).first
+    return unless promo
+
+    data  = promo['description'].upcase
+    data  = '<a href="%s">%s</a>' % [promo['path'], data] if promo['path']
+    data  = '<div id="top-promo">%s</div>' % data
+
+    data.html_safe
+  end
+
 end

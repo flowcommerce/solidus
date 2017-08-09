@@ -57,7 +57,11 @@ ul.filter_choices li { line-height: 30px; list-style-type: none; }
 #logo { margin-top: 20px; }
 
 #flow-bar {
-  background-color: #004; font-size: 11px; color: #fff;
+  background-color: #004;
+  font-size: 11px;
+  color: #fff;
+  border-bottom: 1px solid #aaa;
+
   div { text-align: right; padding-right: 30px; }
   a { color: #fff !important; text-decoration: underline; }
 }
@@ -107,3 +111,20 @@ ul.filter_choices li { line-height: 30px; list-style-type: none; }
   }
 }
 
+// black promo bar on top of the page
+#top-promo {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px;
+
+  a {
+    color: #fff !important;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
