@@ -33,19 +33,19 @@ class ApplicationController < ActionController::Base
 
     # call local per action filter if one defined
     target        = '%s#%s' % [params[:controller], params[:action]]
-    filter_method = ('flow_filter_' + target.gsub!(/[^\w]/,'_')).to_sym
+    filter_method = ('flow_action_' + target.gsub!(/[^\w]/,'_')).to_sym
     flow_filters.push filter_method if self.class.private_instance_methods.include?(filter_method)
 
     # add flow filters
     flow_filters.push :flow_set_experience
-    flow_filters.push :flow_update_order_attrbibutes
     flow_filters.push :flow_before_filters
     flow_filters.push :flow_sync_order
     flow_filters.push :flow_filter_products
     flow_filters.push :flow_restrict_product
 
     # call all this methods
-    flow_filters.each { |filter| send(filter) unless performed? }
+    flow_filters.each { |filter|
+      send(filter) unless performed? }
 
     # call native render unless redirect or render happend
     super unless performed?
@@ -82,21 +82,6 @@ class ApplicationController < ActionController::Base
   end
 
   ###
-
-  # update selection (delivery options) on /checkout/update/delivery
-  def flow_update_order_attrbibutes
-    [:selection, :delivered_duty].each do |el|
-      value = params["flow_#{el}".to_sym]
-      if value.present?
-        simple_current_order.flow_data[el.to_s] = value
-        @order_update = true
-      end
-    end
-
-    if @order_update
-      simple_current_order.update_column :flow_data, simple_current_order.flow_data
-    end
-  end
 
   # we need to prepare @order and sync to flow.io before render because we need
   # flow total price
@@ -150,18 +135,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def flow_filter_spree_products_show
-    if params[:debug] == 'flow' && @flow_exp
-      flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
-      render json: JSON.pretty_generate(flow_item)
-    end
-  end
-
   def flow_before_filters
     # if we are somewhere in checkout and there is no session, force user to login
     if request.path.start_with?('/checkout') && !@current_spree_user
       flash[:error] = 'You need to be registred to continue with shopping'
       redirect_to '/login'
+    end
+  end
+
+  def flow_action_spree_products_show
+    if params[:debug] == 'flow' && @flow_exp
+      flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
+      render json: JSON.pretty_generate(flow_item)
     end
   end
 

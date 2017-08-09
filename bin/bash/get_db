@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+source .env
+
+# get remote DB
+ssh -t $PRODUCTION_SERVER "
+  echo '$PRODUCTION_PASS' | sudo -S echo;
+  cd $PRODUCTION_PATH;
+  set -x;
+  sudo -u postgres pg_dump $DB_NAME > tmp/db.sql
+  gzip -f tmp/db.sql"
+
+set -x;
+
+scp $PRODUCTION_SERVER:$PRODUCTION_PATH/tmp/db.sql.gz tmp/
+
+gunzip -f tmp/db.sql.gz
+
+dropdb $DB_NAME
+
+createdb $DB_NAME
+
+psql $DB_NAME < tmp/db.sql

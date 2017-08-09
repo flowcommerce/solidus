@@ -83,6 +83,21 @@ class FlowController < ApplicationController
     render text: '%s: %s' % [$!.class.to_s, $!.message]
   end
 
+  def update_current_order
+    order = Spree::Order.find_by number: params[:number]
+    name  = params[:name]
+    value = params[:value]
+
+    raise ArgumentError.new('Order not found') unless order
+    raise ArgumentError.new('Name parameter not allowed') unless [:selection, :delivered_duty].include?(name.to_sym)
+    raise ArgumentError.new('Value not defined') unless value
+
+    order.flow_data[name] = value
+    order.update_column :flow_data, order.flow_data
+
+    render text: '%s - %s' % [name, value]
+  end
+
   def promotion_set_option
     param_type  = params[:type]  || raise(ArgumentError.new('Parameter "type" not defined'))
     param_name  = params[:name]  || raise(ArgumentError.new('Parameter "name" not defined'))
