@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
 
   protect_from_forgery    with: :exception
-  before_action           :flow_update_order_attrbibutes, :flow_before_filters, :flow_set_experience
 
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but
@@ -25,37 +24,34 @@ class ApplicationController < ActionController::Base
   # before render trigger
   # rails does not have before_render filter so we create it like this
   # to make things simple
-  def render(*args)
-    # call method if one defined
+  def render *args
+    # if we call render in one of the flow filters, call native render
+    return super *args if @in_before_render_filter
+    @in_before_render_filter = true
+
+    flow_filters = []
+
+    # call local per action filter if one defined
     target        = '%s#%s' % [params[:controller], params[:action]]
     filter_method = ('flow_filter_' + target.gsub!(/[^\w]/,'_')).to_sym
+    flow_filters.push filter_method if self.class.private_instance_methods.include?(filter_method)
 
-    send(filter_method) if self.class.private_instance_methods.include?(filter_method)
+    # add flow filters
+    flow_filters.push :flow_set_experience
+    flow_filters.push :flow_update_order_attrbibutes
+    flow_filters.push :flow_before_filters
+    flow_filters.push :flow_sync_order
+    flow_filters.push :flow_filter_products
+    flow_filters.push :flow_restrict_product
 
     # call all this methods
-    flow_sync_order
-    flow_filter_products
-    flow_restrict_product
+    flow_filters.each { |filter| send(filter) unless performed? }
 
-    # return our data or call super render
-    if @flow_render
-      return redirect_to @flow_render[:redirect_to] if @flow_render[:redirect_to]
-      super(@flow_render)
-    else
-      super
-    end
+    # call native render unless redirect or render happend
+    super unless performed?
   end
 
   private
-
-  # filter out restricted products, defined in flow console
-  # https://console.flow.io/:organization/restrictions
-  def flow_filter_products
-    return unless @products
-
-    # filter out excluded product for particular experience
-    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
-  end
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
@@ -75,10 +71,8 @@ class ApplicationController < ActionController::Base
       redirect_to request.path
     end
 
-    if @flow_session.use_flow?
-      # try to get experience
-      @flow_exp = @flow_session.local.experience
-    end
+    # try to get experience
+    @flow_exp = @flow_session.local.experience if @flow_session.use_flow?
 
     # save flow session ID for client side usage
     cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
@@ -114,46 +108,52 @@ class ApplicationController < ActionController::Base
 
     return if request.path.include?('/admin/')
 
-    if @flow_session.use_flow?
-      @flow_order = Flow::Order.new(experience: @flow_exp, order: order, customer: @current_spree_user)
-      @flow_order.synchronize!
-    else
-      if order.flow_data['order']
-        order.flow_data.delete('order')
-        order.update_column :flow_data, order.flow_data.dup
-      end
-
-      return
+    unless @flow_session.use_flow?
+      return unless order.flow_data['order']
+      order.flow_data.delete('order')
+      return order.update_column :flow_data, order.flow_data.dup
     end
 
+    @flow_order = Flow::Order.new(experience: @flow_exp, order: order, customer: @current_spree_user)
+    @flow_order.synchronize!
+
     return if order.line_items.length == 0
+
+    render json: JSON.pretty_generate(@flow_order.response) if params[:debug] == 'flow'
 
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')
         order.finalize!
-        @flow_render = { redirect_to: '/'}
+        redirect_to '/'
       else
         flash.now[:error] = Flow::Error.format_message @flow_order.response, @flow_exp
       end
-    elsif params[:debug] == 'flow'
-      @flow_render = { json: JSON.pretty_generate(@flow_order.response) }
     end
   end
 
+  # filter out restricted products, defined in flow console
+  # https://console.flow.io/:organization/restrictions
+  def flow_filter_products
+    return unless @products
+
+    # filter out excluded product for particular experience
+    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
+  end
+
+  # altert and redirect when restricted or exclued product found
   def flow_restrict_product
     return unless @product
 
     unless @product.flow_included?(@flow_exp)
       flash[:error] = 'Product "%s" is not included in "%s" catalog' % [@product.name, @flow_exp.key]
-      @flow_render  = { redirect_to: '/' }
+      redirect_to '/'
     end
   end
 
   def flow_filter_spree_products_show
-    # r @product.variants.first.id.to_s
     if params[:debug] == 'flow' && @flow_exp
       flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
-      @flow_render = { json: JSON.pretty_generate(flow_item) }
+      render json: JSON.pretty_generate(flow_item)
     end
   end
 
