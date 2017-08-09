@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-source .env
-
-lux assets
-
-rsync -vrh ./public/assets/ "$PRODUCTION_SERVER:$PRODUCTION_PATH/public/assets"

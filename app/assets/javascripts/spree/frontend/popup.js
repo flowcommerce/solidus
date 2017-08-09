@@ -1,3 +1,4 @@
+// updates current order in custom flow route
 window.CurrentOrder = {
   update: function(name, value) {
     if (window.in_reload) { return; }
@@ -18,6 +19,7 @@ window.CurrentOrder = {
   },
 }
 
+// popup is only visible for delivery options
 window.Popup = {
   open:  function() {
     var popup = $('#popup');

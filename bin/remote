@@ -28,19 +28,17 @@ module Cli
   end
 
   def remote command
-    run %[ssh -t $PRODUCTION_SERVER "cd $PRODUCTION_PATH; echo '$PRODUCTION_PASS' | sudo -S echo; %s"] % command
+    run %[ssh -t $REMOTE_SERVER "cd $REMOTE_PATH; echo '$REMOTE_PASS' | sudo -S echo; %s"] % command
   end
 end
 
 ###
 
 class Remote < Thor
-  define :assets, 'Deploy js and css assets to production'
   define :deploy, 'Deploy app to production'
-  define :get_db, 'Get and load production database'
 
   define :check, 'Check ENV' do
-    for name in [:DB_NAME, :PRODUCTION_SERVER, :PRODUCTION_PATH, :PRODUCTION_PASS, :PRODUCTION_DB_NAME, :PRODUCTION_DB_USER, :PRODUCTION_DB_PASS]
+    for name in [:REMOTE_SERVER, :REMOTE_PATH, :REMOTE_PASS]
       puts '%s - %s' % [name.to_s.ljust(20), ENV.fetch(name.to_s)]
     end
   end
@@ -50,13 +48,7 @@ class Remote < Thor
   end
 
   define :cli, 'Get production app cli' do
-    Cli.remote '~/.rbenv/shims/ruby lux/bin/lux c'
-  end
-
-  define :psql, 'get psql cli for remote db' do
-    puts '\l - list databases'
-    puts '\q - quit'
-    Cli.remote 'sudo -u postgres psql -d %s' % ENV.fetch('PRODUCTION_DB_NAME')
+    Cli.remote 'rails c'
   end
 
   define :restart, 'Restart services' do
@@ -65,7 +57,7 @@ class Remote < Thor
 
   desc 'upload FILE', 'Upload file to production server'
   def upload name
-    Cli.run 'scp "%s" $PRODUCTION_SERVER:~' % name
+    Cli.run 'scp "%s" $REMOTE_SERVER:~' % name
     Cli.remote 'ls -al; bash'
   end
 end

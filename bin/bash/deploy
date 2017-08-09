@@ -2,41 +2,24 @@
 
 source .env
 
-lux assets
-
-# assets deploy
-rsync -vrh ./public/assets/ "$PRODUCTION_SERVER:$PRODUCTION_PATH/public/assets"
-
-# copy app
-rsync -vrh \
+rsync \
+  -vrh \
   --executability \
   --delete \
   --exclude 'log/*' \
   --exclude '.env' \
   --exclude 'tmp/*' \
   --exclude '.git/*' \
+  --exclude 'public/spree/*' \
   --exclude 'public/assets/*' \
-  --exclude 'node_modules/*' \
-  --exclude 'lux/*' \
-  . $PRODUCTION_SERVER:$PRODUCTION_PATH
+  . $REMOTE_SERVER:$REMOTE_PATH
 
-# copy lux
-rsync -vrh \
-  --executability \
-  --delete \
-  --exclude 'log/*' \
-  --exclude '.env' \
-  --exclude 'tmp/*' \
-  --exclude '.git/*' \
-  ../lux/ "$PRODUCTION_SERVER:$PRODUCTION_PATH/lux"
-
-# install and login
-ssh -t $PRODUCTION_SERVER "
-  echo '$PRODUCTION_PASS' | sudo -S echo;
+ssh -t $REMOTE_SERVER "
+  echo '$REMOTE_PASS' | sudo -S echo '';
   set -x;
-  source ~/.bashrc;
-  cd $PRODUCTION_PATH;
-  /home/deployer/.rbenv/shims/bundle install;
-  /home/deployer/.rbenv/shims/bundle exec $PRODUCTION_PATH/lux/bin/lux am;
-  sudo service nginx restart;"
-
+  cd $REMOTE_PATH
+  bundle;
+  rake db:migrate;
+  rake assets:precompile;
+  sudo service nginx restart;
+  bash"
