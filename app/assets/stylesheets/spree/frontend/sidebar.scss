@@ -56,11 +56,11 @@
   }
 }
 
-@media only screen and (max-width: 1200px) {
+@mixin media-desktop {
   #sidebar { display: none !important; }
 }
 
-@media only screen and (max-width: 767px) {
+@mixin media-tablet {
   #header-logo { left: 60px; }
 
   #sidebar {
