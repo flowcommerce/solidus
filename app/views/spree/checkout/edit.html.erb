@@ -1,3 +1,7 @@
+<%
+  # @order.state
+%>
+
 <div id="checkout" data-hook>
   <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @order } %>
 
@@ -5,18 +9,19 @@
 
   <%= checkout_progress %>
 
-  <div class="row" data-hook="checkout_content">
-    <div class="columns <%= if @order.state != 'confirm' then 'alpha twelve' else 'alpha omega sixteen' end %>" data-hook="checkout_form_wrapper">
-      <%= form_for @order, :url => update_checkout_path(@order.state), :html => { :id => "checkout_form_#{@order.state}" } do |form| %>
+  <%= form_for @order, :url => update_checkout_path(@order.state), :html => { :id => "checkout_form_#{@order.state}" } do |form| %>
+    <div class="flex" data-hook="checkout_content">
+      <div class="flex-col" data-hook="checkout_form_wrapper">
         <%= render @order.state, :form => form %>
+      </div>
+
+      <% if @order.state != 'confirm' %>
+        <div class="flex-col no-border col-300">
+          <%= render :partial => 'summary', :locals => { :order => @order } %>
+        </div>
       <% end %>
     </div>
-    <% if @order.state != 'confirm' %>
-      <div data-hook="checkout_summary_box" class="columns omega four">
-        <%= render :partial => 'summary', :locals => { :order => @order } %>
-      </div>
-    <% end %>
-  </div>
+   <% end %>
 </div>
 
 <script>

@@ -1,3 +1,8 @@
+$flex-fixed-sizes: (200, 250, 260, 270, 280, 290, 300);
+$grid-spacing: 20px;
+
+body { padding: 0 10px; }
+
 div.flex {
   display: flex;
   flex-direction: row;
@@ -5,9 +10,34 @@ div.flex {
 
   .flex-col {
     flex: 1;
-    padding-left: 10px;
+    padding-left: $grid-spacing;
 
     &:first-child { padding-left: 0; }
+
+    select {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
+
+ .flex-col-2 {
+    @extend .flex-col;
+    flex: 2;
+  }
+
+ .flex-col-3 {
+    @extend .flex-col;
+    flex: 3;
+  }
+
+  @each $size in $flex-fixed-sizes {
+    .col-#{$size} {
+      flex: 1;
+      flex-basis: #{$size}px;
+      max-width: #{$size}px;
+      margin-right: $grid-spacing;
+      &:last-child { margin-right:0; }
+    }
   }
 }
 
@@ -18,7 +48,7 @@ div.flex {
   }
 
   .delivery {
-    padding-left: 20px;
+    padding-left: $grid-spacing;
   }
 
   .payment-info {
@@ -47,13 +77,18 @@ div.flex {
   div.flex { display: block; }
   .flex-col {
     width: 100% !important;
-    padding-bottom: 10px !important;
-    padding-left: 0 !important;
   }
 
   .fix-height {
     fieldset {
       min-height: auto;
+    }
+  }
+
+  @each $size in $flex-fixed-sizes {
+    .col-#{$size} {
+      max-width: 100% !important;
+      padding: 0 !important;
     }
   }
 }

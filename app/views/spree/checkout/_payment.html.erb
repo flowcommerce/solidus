@@ -1,7 +1,7 @@
-<div class="row">
-  <div class="columns alpha eight">
+<div class="flex">
+  <div class="flex-col">
     <% if @flow_session.use_flow? %>
-      <fieldset class="form" style="padding: 20px 0;">
+      <fieldset class="form" style="padding: 20px;">
         <legend>Using PayPal</legend>
 
         <div id="paypal-button"></div>
@@ -83,7 +83,8 @@
       </div>
     </fieldset>
   </div>
-  <div class="columns omega four">
+
+  <div class="col-280" style="padding-left: 20px;">
     <fieldset class="form">
       <legend>PROMO CODES</legend>
 
@@ -100,7 +101,9 @@
   </div>
 </div>
 
-<div class="form-buttons" data-hook="buttons">
-  <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
-  <script>Spree.disableSaveOnClick();</script>
-</div>
+<% content_for :sumbit_block do %>
+  <div class="form-buttons text-align-right" data-hook="buttons">
+    <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
+    <script>Spree.disableSaveOnClick();</script>
+  </div>
+<% end %>

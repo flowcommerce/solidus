@@ -1,5 +1,9 @@
-<% if defined?(image) && image %>
-  <%= image_tag image.attachment.url(:large), itemprop: "image" %>
-<% else %>
-  <%= image_tag @product.display_image.attachment(:large), itemprop: "image" %>
-<% end %>
+<%=
+  img_src = if defined?(image) && image
+      image.attachment.url(:large)
+    else
+      @product.display_image.attachment(:large)
+    end
+
+  image_tag img_src, itemprop: "image", id: 'main-image'
+%>

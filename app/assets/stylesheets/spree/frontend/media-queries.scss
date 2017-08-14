@@ -16,31 +16,23 @@
   .hide-in-desktop   { display: none; }
   .center-in-desktop { text-align: center; }
 
-  #products .columns.three { width: 210px !important; }
 }
 
 @include media-tablet {
   .hide-in-tablet { display: none; }
   .center-in-tablet { text-align: center; }
 
-  #products .columns.three { width: 170px !important; }
-
-  .form  #total-cart-breakdown {
-    border: none !important;
-    margin-left: -20px;
-  }
+button { width: auto !important; }
 }
 
 @include media-mobile {
   .hide-in-mobile, .hide-in-tablet { display: none; }
   .center-in-mobile { text-align: center; }
 
+  .flex-col { padding: 0 !important; }
+
   #products {
     margin-right: -20px !important;
-
-    .columns.three {
-      width: 170px !important;
-    }
   }
 
   #product-description, #taxon-crumbs {

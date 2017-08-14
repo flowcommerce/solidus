@@ -10,6 +10,8 @@
 
 h1 { margin: 10px 0 40px 0; }
 
+br.c { clear: both; }
+
 .middle {
   vertical-align: middle;
 
@@ -19,6 +21,9 @@ h1 { margin: 10px 0 40px 0; }
     padding: 10px;
   }
 }
+
+.text-align-right { text-align: right; }
+.middle { vertical-align: middle; }
 
 .button {
   border: 1px solid #ccc;
@@ -37,6 +42,16 @@ h1 { margin: 10px 0 40px 0; }
   }
 }
 
+.no-border {
+  div, table { border: none !important; }
+}
+
 a.button {
   color: #fff !important;
+}
+
+#main-image {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
 }

@@ -66,9 +66,16 @@ ul.filter_choices li { line-height: 30px; list-style-type: none; }
   a { color: #fff !important; text-decoration: underline; }
 }
 
-#products li {
-  padding-bottom: 40px;
-  a.info { border: none !important; }
+#products {
+  margin-left: -20px;
+
+  li {
+    float: left;
+    padding-left: 20px;
+    width: 195px;
+    padding-bottom: 40px;
+    a.info { border: none !important; }
+  }
 }
 
 // badly defined price ranges https://i.imgur.com/QCfkFWz.png
