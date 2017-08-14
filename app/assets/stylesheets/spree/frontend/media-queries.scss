@@ -22,7 +22,11 @@
   .hide-in-tablet { display: none; }
   .center-in-tablet { text-align: center; }
 
-button { width: auto !important; }
+  button { width: auto !important; }
+
+  #content {
+    padding: 0 10px;
+  }
 }
 
 @include media-mobile {
@@ -32,7 +36,8 @@ button { width: auto !important; }
   .flex-col { padding: 0 !important; }
 
   #products {
-    margin-right: -20px !important;
+    margin-right: -40px !important;
+    li { width: 160px; }
   }
 
   #product-description, #taxon-crumbs {
@@ -43,9 +48,6 @@ button { width: auto !important; }
     text-align: center;
   }
 
-  .container, #content {
-    width: 100% !important;
-  }
 }
 
 #content {

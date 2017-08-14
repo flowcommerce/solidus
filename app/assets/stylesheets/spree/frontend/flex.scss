@@ -1,8 +1,6 @@
 $flex-fixed-sizes: (200, 250, 260, 270, 280, 290, 300);
 $grid-spacing: 20px;
 
-body { padding: 0 10px; }
-
 div.flex {
   display: flex;
   flex-direction: row;
@@ -77,6 +75,7 @@ div.flex {
   div.flex { display: block; }
   .flex-col {
     width: 100% !important;
+    padding: 0 !important;
   }
 
   .fix-height {
