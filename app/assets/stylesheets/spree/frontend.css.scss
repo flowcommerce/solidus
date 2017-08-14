@@ -135,3 +135,17 @@ ul.filter_choices li { line-height: 30px; list-style-type: none; }
     }
   }
 }
+
+#jumbo-image {
+  margin-top: -20px;
+  max-height: 300px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    margin-bottom: 30px;
+    border: 1px solid #bbb;
+    border-left: none;
+    border-right: none;
+  }
+}

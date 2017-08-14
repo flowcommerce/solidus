@@ -20,6 +20,12 @@
 
     <%= render :partial => 'spree/shared/header' %>
 
+    <% if @jumbo_image = flow_get_jumbo_image %>
+      <div id="jumbo-image">
+        <img src="<%= @jumbo_image %>" />
+      </div>
+    <% end %>
+
     <div class="container">
       <div id="wrapper" class="row" data-hook>
 
@@ -28,9 +34,7 @@
           # flow_normalize_categories taxon_breadcrumbs(@taxon)
         %>
 
-        <% if (@jumbo_image = flow_get_jumbo_image) %>
-          <div class="sixteen columns"><img src="<%= @jumbo_image %>" style="width: 100%; margin-bottom: 30px;" /></div>
-        <% end %>
+        <% yield :banner %>
 
         <%= render :partial => 'spree/shared/sidebar' if content_for? :sidebar %>
 

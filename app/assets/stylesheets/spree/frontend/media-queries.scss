@@ -15,7 +15,6 @@
 @include media-desktop {
   .hide-in-desktop   { display: none; }
   .center-in-desktop { text-align: center; }
-
 }
 
 @include media-tablet {
