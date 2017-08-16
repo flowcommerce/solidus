@@ -17,24 +17,26 @@
       <div data-hook="login_extras"></div>
     </div>
   </div>
-  <div class="col">
-    <div class="form">
-      <%= render 'spree/shared/error_messages', target: resource %>
+  <% if request.request_method == 'GET' %>
+    <div class="col">
+      <div class="form">
+        <%= render 'spree/shared/error_messages', target: resource %>
 
-      <div id="new-customer">
-        <h2>New customers</h2>
+        <div id="new-customer">
+          <h2>New customers</h2>
 
-        <div data-hook="signup">
-          <%= form_for resource, as: :spree_user, url: spree.registration_path(resource) do |f| %>
-            <div data-hook="signup_inside_form">
-              <%= render partial: 'spree/shared/user_form', locals: { f: f } %>
-              <p><%= f.submit Spree.t(:create), class: 'button primary' %></p>
-            </div>
-          <% end %>
+          <div data-hook="signup">
+            <%= form_for resource, as: :spree_user, url: spree.registration_path(resource) do |f| %>
+              <div data-hook="signup_inside_form">
+                <%= render partial: 'spree/shared/user_form', locals: { f: f } %>
+                <p><%= f.submit Spree.t(:create), class: 'button primary' %></p>
+              </div>
+            <% end %>
+          </div>
         </div>
+      <div data-hook="login_extras"></div>
       </div>
-    <div data-hook="login_extras"></div>
     </div>
-  </div>
+  <% end %>
 </div>
 

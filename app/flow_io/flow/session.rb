@@ -40,11 +40,6 @@ class Flow::Session
   end
 
   def local
-    # @session.local.country
-    # @session.local.currency
-    # @session.local.experience
-    # @session.local.language
-
     @session.local
   end
 
