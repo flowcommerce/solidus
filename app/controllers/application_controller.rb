@@ -55,27 +55,20 @@ class ApplicationController < ActionController::Base
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
-    if value = session[FLOW_SESSION_KEY]
-      begin
-        @flow_session = Flow::Session.new(hash: JSON.load(value))
-      rescue
-        session.delete(FLOW_SESSION_KEY)
-      end
-    end
-
     # get by IP unless we got it from session
-    @flow_session ||= Flow::Session.new ip: request.ip unless @flow_session
+    @flow_session = Flow::Session.new ip: request.ip, json: session[FLOW_SESSION_KEY]
 
+    # we will allow live change of experience by key
     if flow_exp_key = params[:flow_experience]
       @flow_session.change_experience(flow_exp_key)
       redirect_to request.path
     end
 
-    # save flow session ID for client side usage
-    cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
-
     # save full cache for server side usage
     session[FLOW_SESSION_KEY] = @flow_session.to_json
+
+    # save flow session ID for client side usage
+    cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
   end
 
   ###

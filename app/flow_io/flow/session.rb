@@ -6,23 +6,23 @@ class Flow::Session
   attr_accessor :session
   attr_accessor :use_flow
 
+  # flow session can ve created via IP or local cached OrganizationSession dump
+  # Flow::Experience.all.first.key
+  def initialize ip:, json: nil, hash: nil, experience: nil
+    @session = if experience
+      get experience: experience
+    elsif json || hash
+      hash = JSON.load(json) if json
+      ::Io::Flow::V0::Models::OrganizationSession.new(hash)
+    end
+  ensure
+    # if all fails, get by IP
+    @session ||= get ip: ip
+  end
+
   def get opts
     session_model = ::Io::Flow::V0::Models::SessionForm.new opts
     FlowCommerce.instance.sessions.post_organizations_by_organization Flow.organization, session_model
-  end
-
-  # flow session can ve created via IP or local cached OrganizationSession dump
-  # Flow::Experience.all.first.key
-  def initialize ip: nil, hash: nil, experience: nil
-    @session = if experience
-      get experience: experience
-    elsif ip
-      get ip: ip
-    elsif hash
-      ::Io::Flow::V0::Models::OrganizationSession.new hash
-    else
-      raise ArgumentError, 'IP, hash or experience needed'
-    end
   end
 
   def change_experience experience
@@ -46,6 +46,10 @@ class Flow::Session
 
   def local
     @session.local
+  end
+
+  def id
+    @session.id
   end
 
   def use_flow?
