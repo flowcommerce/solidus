@@ -75,7 +75,7 @@
   </div>
 </fieldset>
 
-<%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_session.experience) %>
+<%= render '/spree/shared/ddu_ddp' if @flow_session.offers_delivered_duty_choice? %>
 
 <% unless @flow_order.error? %>
   <% content_for :sumbit_block do %>

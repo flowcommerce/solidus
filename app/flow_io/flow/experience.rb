@@ -21,22 +21,6 @@ module Flow::Experience
     nil
   end
 
-  def default
-    all.first
-  end
-
-  # because we do not get full experience from session, we have to get from exp list
-  def delivered_duty experience
-    key = experience.is_a?(String) ? experience : experience.key
-    Hashie::Mash.new get(key).settings.delivered_duty.to_hash
-  end
-
-  # if we have more than one choice, we show choice popup
-  def offers_delivered_duty_choice? experience
-    return false unless experience
-    delivered_duty(experience).available.length > 1
-  end
-
   def compact
     all.map { |exp| [exp.country, exp.key, exp.name] }
   end

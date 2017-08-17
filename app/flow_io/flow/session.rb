@@ -54,5 +54,15 @@ class Flow::Session
     return false if @use_flow.class == FalseClass
     local.country.iso_3166_3 != ENV.fetch('FLOW_BASE_COUNTRY').upcase
   end
+
+  # because we do not get full experience from session, we have to get from exp list
+  def delivered_duty_options
+    Hashie::Mash.new Flow::Experience.get(experience.key).settings.delivered_duty.to_hash
+  end
+
+  # if we have more than one choice, we show choice popup
+  def offers_delivered_duty_choice?
+    delivered_duty_options.available.length > 1
+  end
 end
 

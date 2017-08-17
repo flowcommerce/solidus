@@ -7,7 +7,7 @@
 # example:
 #  flow_order = Flow::Order.new    # init flow-order object
 #    order: Spree::Order.last,
-#    experience: Flow::Experience.default,
+#    experience: @flow_session.experience
 #    customer: Spree::User.last
 #  fo.build_flow_request           # builds json body to be posted to flow api
 #  fo.synchronize!                 # sends order to flow
