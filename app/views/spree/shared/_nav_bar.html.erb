@@ -1,6 +1,6 @@
 <nav id="top-nav-bar" class="columns sixteen" style="position: relative;">
   <div class="w experience_picker" data-experiences="<%= Flow::Experience.compact.to_json %>">
-    <img class="picker" src="<%= flow_flag(@flow_exp, 32) %>" />
+    <img class="picker" src="<%= flow_flag(@flow_session.experience, 32) %>" />
   </div>
 
   <ul id="nav-bar" class="inline" data-hook style="float: right;">

@@ -1,5 +1,5 @@
 <% if Rails.env.development? %><!-- <%= params[:controller] %>#<%= params[:action] %> --><% end %>
-<!-- <%= @flow_exp.to_json.html_safe %> -->
+<!-- <%= @flow_session.experience.to_json.html_safe %> -->
 <!doctype html>
 <!--[if lt IE 7 ]> <html class="ie ie6" lang="<%= I18n.locale %>"> <![endif]-->
 <!--[if IE 7 ]>    <html class="ie ie7" lang="<%= I18n.locale %>"> <![endif]-->
@@ -63,7 +63,7 @@
         state: {
           exp: {
             default: '<%= ENV.fetch('FLOW_BASE_COUNTRY') %>',
-            selected: '<%= @flow_exp.try(:country) %>',
+            selected: '<%= @flow_session.experience.try(:country) %>',
             experiences: <%= Flow::Experience.compact.to_json.html_safe %>
           },
           order_number: '<%= @order.try(:number) %>'

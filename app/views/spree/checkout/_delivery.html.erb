@@ -12,6 +12,9 @@
                 </label>
               </p>
             <% end %>
+            <% if @flow_order.deliveries.empty? && @flow_order.error? %>
+              <p>Order had erorrs, please fix them before choosing delivery.</p>
+            <% end %>
           <% else %>
             <ul class="field radios shipping-methods">
               <% ship_form.object.shipping_rates.each do |rate| %>
@@ -72,10 +75,12 @@
   </div>
 </fieldset>
 
-<%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_exp) %>
+<%= render '/spree/shared/ddu_ddp' if Flow::Experience.offers_delivered_duty_choice?(@flow_session.experience) %>
 
-<% content_for :sumbit_block do %>
-  <div class="form-buttons" data-hook="buttons">
-    <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
-  </div>
+<% unless @flow_order.error? %>
+  <% content_for :sumbit_block do %>
+    <div class="form-buttons" data-hook="buttons">
+      <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
+    </div>
+  <% end %>
 <% end %>

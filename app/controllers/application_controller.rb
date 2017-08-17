@@ -71,9 +71,6 @@ class ApplicationController < ActionController::Base
       redirect_to request.path
     end
 
-    # try to get experience
-    @flow_exp = @flow_session.local.experience if @flow_session.use_flow?
-
     # save flow session ID for client side usage
     cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
 
@@ -99,7 +96,7 @@ class ApplicationController < ActionController::Base
       return order.update_column :flow_data, order.flow_data.dup
     end
 
-    @flow_order = Flow::Order.new(experience: @flow_exp, order: order, customer: @current_spree_user)
+    @flow_order = Flow::Order.new(experience: @flow_session.experience, order: order, customer: @current_spree_user)
     @flow_order.synchronize!
 
     return if order.line_items.length == 0
@@ -111,7 +108,7 @@ class ApplicationController < ActionController::Base
         order.finalize!
         redirect_to '/'
       else
-        flash.now[:error] = Flow::Error.format_message @flow_order.response, @flow_exp
+        flash.now[:error] = Flow::Error.format_message @flow_order.response, @flow_session.experience
       end
     end
   end
@@ -122,15 +119,15 @@ class ApplicationController < ActionController::Base
     return unless @products
 
     # filter out excluded product for particular experience
-    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_exp.key) if @flow_exp
+    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_session.experience.key) if @flow_session.experience
   end
 
   # altert and redirect when restricted or exclued product found
   def flow_restrict_product
     return unless @product
 
-    unless @product.flow_included?(@flow_exp)
-      flash[:error] = 'Product "%s" is not included in "%s" catalog' % [@product.name, @flow_exp.key]
+    unless @product.flow_included?(@flow_session.experience)
+      flash[:error] = 'Product "%s" is not included in "%s" catalog' % [@product.name, @flow_session.experience.key]
       redirect_to '/'
     end
   end
@@ -144,8 +141,8 @@ class ApplicationController < ActionController::Base
   end
 
   def flow_action_spree_products_show
-    if params[:debug] == 'flow' && @flow_exp
-      flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_exp.key)
+    if params[:debug] == 'flow' && @flow_session.experience
+      flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_session.experience.key)
       render json: JSON.pretty_generate(flow_item)
     end
   end

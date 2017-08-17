@@ -34,6 +34,11 @@ class Flow::Session
     @session = Flow::Session.new(experience: experience).session
   end
 
+  # get local experience or return nil
+  def experience
+    @session.local.experience
+  end
+
   # we dump this to session and recreate one from
   def to_hash
     @session.to_hash
@@ -47,7 +52,7 @@ class Flow::Session
     # use flow if we are not in default country
     return false unless local
     return false if @use_flow.class == FalseClass
-    local.country.iso_3166_3 != ENV.fetch('FLOW_BASE_COUNTRY')
+    local.country.iso_3166_3 != ENV.fetch('FLOW_BASE_COUNTRY').upcase
   end
 end
 

@@ -3,14 +3,14 @@
 module FlowHelper
   extend self
 
-  def flow_flag exp, size=32
-    return '/images/world.png' if exp && exp.key == 'world'
+  def flow_flag experience, size=32
+    return '/images/world.png' if experience && experience.key == 'world'
 
-    flag = unless exp
+    flag = unless experience
       'usa'
     else
-      exp = Flow::Experience.get(exp.key) unless exp.respond_to?(:region)
-      exp.country.downcase
+      experience = Flow::Experience.get(experience.key) unless experience.respond_to?(:region)
+      experience.country.downcase
     end
 
     'https://flowcdn.io/util/icons/flags/%s/%s.png' % [size, flag]
@@ -32,7 +32,7 @@ module FlowHelper
 
   def flow_product_price product_or_variant
     if @flow_session.use_flow?
-      product_or_variant.flow_local_price @flow_exp
+      product_or_variant.flow_local_price @flow_session.experience
     else
       product_or_variant.price_for(current_pricing_options).to_html
     end
@@ -152,7 +152,7 @@ module FlowHelper
 
   # used in single product page to show complete price of a product
   def product_price_long variant
-    prices = variant.flow_prices @flow_exp
+    prices = variant.flow_prices @flow_session.experience
     return variant.flow_spree_price unless prices.try(:first).present?
 
     prices.map do |price|
@@ -202,7 +202,7 @@ module FlowHelper
   def flow_top_nav_data
     data = [
       'using flow (<a href="https://console.flow.io/%{org}/experience/%{key}/localization" target="_console">%{key}</a>)' %
-      { org: Flow.organization, key: @flow_exp.key }
+      { org: Flow.organization, key: @flow_session.experience.key }
     ]
 
     if respond_to?(:simple_current_order) && simple_current_order.number
@@ -269,7 +269,7 @@ module FlowHelper
   end
 
   def show_promotion
-    return unless @flow_exp
+    return unless @flow_session.experience
 
     promo = ActiveRecord::Base.connection.execute("
       select *
@@ -277,7 +277,7 @@ module FlowHelper
       where
         advertise=true
         and name ilike '% top %'
-        and flow_data->'filter'->'experience' ? '#{@flow_exp.key}'
+        and flow_data->'filter'->'experience' ? '#{@flow_session.experience.key}'
     ").first
 
     return unless promo
