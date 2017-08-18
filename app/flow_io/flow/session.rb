@@ -1,6 +1,5 @@
 # Flow.io (2017)
 # communicates with flow api, easy access to session
-# to basic shop frontend and backend needs
 
 class Flow::Session
   attr_accessor :session
@@ -9,10 +8,11 @@ class Flow::Session
   # flow session can ve created via IP or local cached OrganizationSession dump
   # Flow::Experience.all.first.key
   def initialize ip:, json: nil, hash: nil, experience: nil
+    hash = JSON.load(json) if json
+
     @session = if experience
       get experience: experience
-    elsif json || hash
-      hash = JSON.load(json) if json
+    elsif hash
       ::Io::Flow::V0::Models::OrganizationSession.new(hash)
     end
   ensure

@@ -64,6 +64,8 @@ class ApplicationController < ActionController::Base
       redirect_to request.path
     end
 
+    # puts JSON.pretty_generate JSON.load ''
+
     # save full cache for server side usage
     session[FLOW_SESSION_KEY] = @flow_session.to_json
 

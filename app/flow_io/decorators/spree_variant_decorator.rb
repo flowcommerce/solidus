@@ -40,19 +40,15 @@ Spree::Variant.class_eval do
     '%s %s' % [self.price, self.cost_currency]
   end
 
-  def flow_prices(flow_exp)
-    if cache = flow_data['exp']
-      if data = cache[flow_exp.key]
-        return data['prices'] || []
-      end
-    end
-    []
+  def flow_prices flow_exp
+    flow_data.dig('exp', flow_exp.key, 'prices') || []
   end
 
   # returns price tied to local experience
-  def flow_local_price(flow_exp)
-    # TODO: Show all prices, not just first
-    if flow_exp && (price = flow_prices(flow_exp).first)
+  def flow_local_price flow_exp
+    price = flow_prices(flow_exp).first
+
+    if flow_exp && price
       price['label']
     else
       flow_spree_price

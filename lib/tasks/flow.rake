@@ -231,14 +231,9 @@ namespace :flow do
     thread_pool.shutdown
   end
 
+  # creates needed fields in DB for Flow to work
   desc 'Ensure we have DB prepared for flow'
   task :migrate => :environment do |t|
-    # Flow::Experience.all.each do |exp|
-    #   zone = Spree::Zone.find_by name: exp.key
-    #   raise 'Spree::Zone "%s" is not defiend'.red % exp.key unless zone
-    #   puts 'Spree::Zone name:"%s" found'.green % zone.name
-    # end
-
     migrate = []
     migrate.push [:spree_orders, :flow_number, :string]
     migrate.push [:spree_credit_cards, :flow_data, :jsonb, default: {}]
@@ -257,17 +252,6 @@ namespace :flow do
         puts 'Field %s in table %s added'.blue % [field, table]
       end
     end
-
-    # I needed this for excluded products
-    # now it is solved by flow_data field in spree_products
-    # if FlowOption.table_exists?
-    #   puts 'Table flow_options exists'.green
-    # else
-    #   ActiveRecord::Migration.create_table :flow_options do |t|
-    #     t.string  :experience_region_id
-    #     t.integer :restricted_ids, array: true, default: []
-    #   end
-    # end
   end
 end
 
