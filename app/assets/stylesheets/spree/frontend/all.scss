@@ -26,29 +26,38 @@ br.c { clear: both; }
 .text-align-right { text-align: right; }
 .middle { vertical-align: middle; }
 
-.button {
+button.large, a.button, button.button, input.button {
   border: 1px solid #ccc;
   font-family: Oswald;
-  padding: 6px 30px;
+  padding: 5px 40px;
   font-size: 15px !important;
   letter-spacing: 1px !important;
   background-color: #fff;
-  color: #272727;
+  color: #222 !important;
   font-weight: 300;
+  text-transform: uppercase;
+  vertical-align: middle;
+
+  &:hover {
+    background-color: #B3B3B3;
+    border: 1px solid #B3B3B3;
+    color: #fff !important;
+  }
 
   &.primary {
     border: none;
-    color: #fff;
+    color: #fff !important;
     background-color: #FE4101 !important;
+  }
+
+  &.disabled {
+    @extend .primary;
+    opacity: 0.6;
   }
 }
 
 .no-border {
   div, table { border: none !important; }
-}
-
-a.button {
-  color: #fff !important;
 }
 
 #main-image {

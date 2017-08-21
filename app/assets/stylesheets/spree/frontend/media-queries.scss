@@ -14,7 +14,12 @@
 // implementation
 @include media-desktop {
   .hide-in-desktop   { display: none; }
+
   .center-in-desktop { text-align: center; }
+
+  button, .button {
+    &.wide { width: 100%; }
+  }
 }
 
 @include media-tablet {

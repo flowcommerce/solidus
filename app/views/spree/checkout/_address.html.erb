@@ -24,7 +24,7 @@
 
 <% content_for :sumbit_block do %>
   <div class="form-buttons" data-hook="buttons">
-    <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
+    <%= submit_tag Spree.t(:save_and_continue), :class => 'button primary wide' %>
       <% if try_spree_current_user %>
       <div style="padding-top: 15px;">
         <%= check_box_tag 'save_user_address', '1', try_spree_current_user.respond_to?(:persist_order_address) %>

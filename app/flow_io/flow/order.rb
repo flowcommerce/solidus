@@ -20,7 +20,18 @@ class Flow::Order
   attr_reader     :customer
   attr_reader     :body
 
+  class << self
+    def clear_cache order
+      return unless order.flow_data['order']
+      order.flow_data.delete('order')
+      order.update_column :flow_data, order.flow_data.dup
+    end
+  end
+
+  ###
+
   def initialize order:, experience: nil, customer: nil
+    # when sending email, we do not have experience defined
     unless experience
       if order.flow_order
         experience = Flow::Experience.get(order.flow_order['experience']['key'])

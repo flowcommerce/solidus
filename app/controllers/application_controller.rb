@@ -82,14 +82,10 @@ class ApplicationController < ActionController::Base
     order ||= simple_current_order if respond_to?(:simple_current_order) && simple_current_order.try(:id)
 
     return unless order
-
     return if request.path.include?('/admin/')
 
-    unless @flow_session.use_flow?
-      return unless order.flow_data['order']
-      order.flow_data.delete('order')
-      return order.update_column :flow_data, order.flow_data.dup
-    end
+    # we need to clear any cached flow order data if we do not use flow
+    return Flow::Order.clear_cache(order) unless @flow_session.use_flow?
 
     @flow_order = Flow::Order.new(experience: @flow_session.experience, order: order, customer: @current_spree_user)
     @flow_order.synchronize!

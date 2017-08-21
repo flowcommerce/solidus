@@ -36,7 +36,7 @@ class Flow::Session
 
   # get local experience or return nil
   def experience
-    @session.local.experience
+    @session.local ? @session.local.experience : Flow::Experience.default
   end
 
   # we dump this to session and recreate one from

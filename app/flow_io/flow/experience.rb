@@ -25,6 +25,10 @@ module Flow::Experience
     all.map { |exp| [exp.country, exp.key, exp.name] }
   end
 
+  def default
+    Flow::Experience.all.select{ |exp| exp.key == 'united-states-of-america' }.first
+  end
+
   private
 
   def get_from_flow

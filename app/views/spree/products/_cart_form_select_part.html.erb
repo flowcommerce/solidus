@@ -1,5 +1,5 @@
-        <select>
-        <% @product.variants_and_option_values_for(current_pricing_options).each_with_index do |variant, index| %>
-          <option value="<%= variant.id %>" data-price="<%= variant.price_for(current_pricing_options) %>"></option>
-        <% end %>
-        </select>
+<select>
+<% @product.variants_and_option_values_for(current_pricing_options).each_with_index do |variant, index| %>
+  <option value="<%= variant.id %>" data-price="<%= variant.price_for(current_pricing_options) %>"></option>
+<% end %>
+</select>
