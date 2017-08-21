@@ -3,6 +3,61 @@
 module FlowHelper
   extend self
 
+  # <% if @jumbo_image = flow_get_jumbo_image %>
+  #   <div id="jumbo-image">
+  #     <img src="<%= @jumbo_image %>" />
+  #   </div>
+  # <% end %>
+  def flow_render_header
+    banner = case request.path
+      when '/'
+        {
+          url:   :homepage,
+          title: 'Ready for the road',
+          desc:  'Boots and accessories that go where you go'
+        }
+      when '/sale'
+        {
+          url:   :sale,
+          title: 'Sale',
+          desc:  'Last chance on summer steals'
+        }
+      when '/t/apparel-and-accessories/shoes'
+        {
+          url:   :accessories,
+          title: 'Advanture awaits',
+          desc:  'Vacation ready coats and boots'
+        }
+      when '/t/apparel-and-accessories'
+        {
+          url:   :clothing,
+          title: 'Lived-in fasion',
+          desc:  'Travel with confort and style'
+        }
+    end
+
+    return unless banner
+
+    %[<div id="jumbo-banner">
+        <img src="/banners/#{banner[:url]}.jpg" />
+      </div>
+      <div id="jumbo-banner-text" class="container">
+        <h2>#{banner[:title]}</h2>
+        <h3>#{banner[:desc]}</h3>
+      </div>].html_safe
+  end
+
+  # gets jumbo image, returns nil unless found, no default
+  def flow_get_jumbo_image
+    if !params[:page] && request.path == '/'
+      '/jumbo/home.jpg'
+    else
+      return nil unless @taxon
+      image = @taxon.icon(:original)
+      image.include?('default_taxon.png') ? nil : image
+    end
+  end
+
   def flow_flag experience, size=32
     return '/images/world.png' if experience && experience.key == 'world'
 
@@ -137,17 +192,6 @@ module FlowHelper
 
   def flow_normalize_categories taxonomy_string
     taxonomy_string.sub('<li itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"><a itemprop="item" href="/products"><span itemprop="name">Products</span><meta itemprop="position" content="2" /></a>&nbsp;&raquo;&nbsp;</li>','').html_safe
-  end
-
-  # gets jumbo image, returns nil unless found, no default
-  def flow_get_jumbo_image
-    if !params[:page] && request.path == '/'
-      '/jumbo/home.jpg'
-    else
-      return nil unless @taxon
-      image = @taxon.icon(:original)
-      image.include?('default_taxon.png') ? nil : image
-    end
   end
 
   # used in single product page to show complete price of a product

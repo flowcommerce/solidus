@@ -20,22 +20,10 @@
 
     <%= render :partial => 'spree/shared/header' %>
 
-    <% if @jumbo_image = flow_get_jumbo_image %>
-      <div id="jumbo-image">
-        <img src="<%= @jumbo_image %>" />
-      </div>
-    <% end %>
+    <%= flow_render_header %>
 
     <div class="container">
       <div id="wrapper" class="row" data-hook>
-
-        <%=
-          # show breadcrumbs
-          # flow_normalize_categories taxon_breadcrumbs(@taxon)
-        %>
-
-        <% yield :banner %>
-
         <%= render :partial => 'spree/shared/sidebar' if content_for? :sidebar %>
 
         <div id="content">
@@ -44,7 +32,6 @@
         </div>
 
         <%= yield :templates %>
-
       </div>
 
       <%= yield :sidebar_base %>
@@ -53,7 +40,6 @@
       <br />
 
       <%= render :partial => 'spree/shared/footer' %>
-
     </div>
 
     <%= render :partial => 'spree/shared/sidebar' %>
@@ -61,12 +47,12 @@
     <script>
       window.app = {
         state: {
+          order_number: '<%= @order.try(:number) %>',
           exp: {
             default: '<%= ENV.fetch('FLOW_BASE_COUNTRY') %>',
             selected: '<%= @flow_session.experience.try(:country) %>',
             experiences: <%= Flow::Experience.compact.to_json.html_safe %>
-          },
-          order_number: '<%= @order.try(:number) %>'
+          }
         }
       }
     </script>

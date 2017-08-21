@@ -136,16 +136,44 @@ ul.filter_choices li { line-height: 30px; list-style-type: none; }
   }
 }
 
-#jumbo-image {
+#jumbo-banner {
   margin-top: -20px;
-  max-height: 300px;
+  max-height: 400px;
   overflow: hidden;
+  // background-size: cover;
+  // background-position: 50% 30%;
 
   img {
     width: 100%;
-    margin-bottom: 30px;
     border: 1px solid #bbb;
     border-left: none;
     border-right: none;
   }
 }
+
+#jumbo-banner-text {
+  text-align: right;
+  position: relative;
+  margin-top: -100px;
+  margin-bottom: 60px;
+
+  img {
+    border-bottom: 1px solid #aaa;
+  }
+
+  h2, h3 {
+    color: #eee;
+    font-weight: 400;
+    margin-right: 15px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+
+  h2 { font-size: 35px;}
+
+  h3 {
+    font-size: 16px;
+    margin-top: 3px;
+  }
+}
+
+

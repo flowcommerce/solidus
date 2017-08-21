@@ -12,7 +12,7 @@ module Spree
 
     # to add items to sale, just define meta_keywords field to sale
     def sale
-      @title    = 'Products on sale'
+      @title    = 'Sale'
       @products = Product.where(meta_keywords: 'sale')
 
       render :index
