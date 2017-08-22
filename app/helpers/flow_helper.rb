@@ -12,25 +12,25 @@ module FlowHelper
     banner = case request.path
       when '/'
         {
-          url:   :homepage,
+          url:   'http://i.imgur.com/9EnpmO7.jpg', # :homepage
           title: 'Ready for the road',
           desc:  'Boots and accessories that go where you go'
         }
       when '/sale'
         {
-          url:   :sale,
+          url:   'http://i.imgur.com/KlgPyTV.jpg', # :sale
           title: 'Sale',
           desc:  'Last chance on summer steals'
         }
       when '/t/apparel-and-accessories/shoes'
         {
-          url:   :accessories,
+          url:   'http://i.imgur.com/0za1RWv.jpg', # :accessories
           title: 'Advanture awaits',
           desc:  'Vacation ready coats and boots'
         }
       when '/t/apparel-and-accessories'
         {
-          url:   :clothing,
+          url:   'http://i.imgur.com/WYjqXMp.jpg', # :clothing
           title: 'Lived-in fasion',
           desc:  'Travel with confort and style'
         }
@@ -38,10 +38,10 @@ module FlowHelper
 
     return unless banner
 
-    %[<div id="jumbo-banner">
-        <img src="/banners/#{banner[:url]}.jpg" />
+    %[<div id="jumbo-top">
+        <img src="#{banner[:url]}" style="display: block !important;" />
       </div>
-      <div id="jumbo-banner-text" class="container">
+      <div id="jumbo-top-text" class="container">
         <h2>#{banner[:title]}</h2>
         <h3>#{banner[:desc]}</h3>
       </div>].html_safe
