@@ -88,8 +88,29 @@ button.large, a.button, button.button, input.button {
 .right         { text-align: right; }
 
 .pagination {
-  span a, .current       { display: inline-block; padding: 5px 10px; border: 1px solid #fff; }
-  .current, span:hover a { border-color: #ddd; }
+  span {
+    display: inline-block;
+    border: 1px solid #fff;
+    cursor: pointer;
+
+    &.current, a {
+      padding: 4px 10px;
+      display: inline-block;
+      color: rgba(0, 0, 0, 0.42) !important;
+      font-family: Oswald;
+    }
+
+    &.current { color: #000 !important; }
+
+    &.current, &:hover { border: 1px solid #ddd; }
+
+    &.gap {
+      border-color: #fff;
+      cursor: auto;
+    }
+
+    &.prev { display: none; }
+  }
 }
 
 .no-border {
