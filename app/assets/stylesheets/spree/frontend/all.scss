@@ -229,9 +229,15 @@ button.large, a.button, button.button, input.button {
     -text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   }
 
-  h2 { font-size: 35px;}
+  h2 {
+    font-family: "Playfair Display";
+    font-size: 36px;
+  }
 
   h3 {
+    font-family:Roboto;
+    font-weight: 200;
+    letter-spacing: 0.5px;
     font-size: 16px;
     margin-top: 3px;
   }

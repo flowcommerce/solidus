@@ -13,8 +13,8 @@ module FlowHelper
       when '/'
         {
           url:   'http://i.imgur.com/9EnpmO7.jpg', # :homepage
-          title: 'Ready for the road',
-          desc:  'Boots and accessories that go where you go'
+          title: 'Adventure awaits',
+          desc:  'Vacation ready coats and boots'
         }
       when '/sale'
         {
@@ -25,14 +25,20 @@ module FlowHelper
       when '/t/apparel-and-accessories/shoes'
         {
           url:   'http://i.imgur.com/0za1RWv.jpg', # :accessories
-          title: 'Advanture awaits',
-          desc:  'Vacation ready coats and boots'
+          title: 'Wherever you go',
+          desc:  'Durable footwear for an active life'
         }
       when '/t/apparel-and-accessories'
         {
           url:   'http://i.imgur.com/WYjqXMp.jpg', # :clothing
-          title: 'Lived-in fasion',
-          desc:  'Travel with confort and style'
+          title: 'Lived-in fashion',
+          desc:  'Travel with comfort and style'
+        }
+      when '/t/luggage-and-bags'
+        {
+          url:   'http://i.imgur.com/z58J56Q.jpg', # :lugage
+          title: 'Ready for the road',
+          desc:  'Luggage and accessories to go where you do'
         }
     end
 
