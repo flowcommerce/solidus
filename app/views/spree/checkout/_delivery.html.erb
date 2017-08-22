@@ -71,13 +71,12 @@
       </p>
     <% end %>
 
-
   </div>
 </fieldset>
 
 <%= render '/spree/shared/ddu_ddp' if @flow_session.offers_delivered_duty_choice? %>
 
-<% unless @flow_order.error? %>
+<% unless @flow_order.try(:error?) %>
   <% content_for :sumbit_block do %>
     <div class="form-buttons" data-hook="buttons">
       <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary wide' %>
