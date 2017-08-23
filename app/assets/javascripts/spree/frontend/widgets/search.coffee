@@ -21,6 +21,11 @@ Widget.register 'search',
     if @state.open
       @root.addClass 'active'
       @render_form()
+
+      # focus input
+      input = $('#search-form input[name=keywords]')
+      val = input.val()
+      input.val('').focus().val(val)
     else
       @root.removeClass 'active'
       $('#search-form').remove()
@@ -38,11 +43,6 @@ Widget.register 'search',
       </form>"""
 
     @root.before(form)
-
-    if @state.keywords
-      input = $('#search-form input[name=keywords]')
-      val = input.val()
-      input.val('').focus().val(val)
 
 
 

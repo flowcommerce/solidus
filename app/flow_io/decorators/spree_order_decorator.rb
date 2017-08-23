@@ -85,17 +85,6 @@ Spree::Order.class_eval do
     price || Flow.format_default_price(total)
   end
 
-  # returns localized price part if in flow, or solidus one if not
-  def flow_total_part
-    model = Struct.new(:amount, :currency)
-
-    if flow_order
-      model.new(flow_order.total.amount, flow_order.total.currency)
-    else
-      model.new(total, currency)
-    end
-  end
-
   def flow_experience
     model = Struct.new(:key)
     model.new flow_order.experience.key
