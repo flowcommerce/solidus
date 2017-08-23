@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex" id="product-details">
   <div class="flex-col-2">
     <%= render :partial => 'image' %>
 
@@ -17,17 +17,25 @@
     <%= render :partial => 'taxons' %>
   </div>
   <div class="flex-col-3">
-    <h1 class="product-title" itemprop="name"><%= @product.name %></h1>
+    <%= form_for :order, :url => populate_orders_path do |f| %>
+      <h1 class="product-title" itemprop="name"><%= @product.name %></h1>
 
-    <div id="product-description-details" itemprop="description" data-hook="description">
-      <%= flow_product_description(@product) rescue Spree.t(:product_has_no_description) %>
-    </div>
+      <div id="product-price">
+        <span class="price selling" itemprop="price">&nbsp;</span>
+        <span itemprop="priceCurrency" content="<%= current_pricing_options.currency %>"></span>
+      </div>
 
-    <br />
+      <div id="product-description-details" itemprop="description" data-hook="description">
+        <h6>DETAILS</h6>
+        <%= flow_product_description(@product) rescue Spree.t(:product_has_no_description) %>
+      </div>
 
-    <div id="cart-form" data-hook="cart_form">
-      <%= render :partial => 'cart_form' %>
-    </div>
+      <br />
+
+      <div id="cart-form" data-hook="cart_form">
+        <%= render :partial => 'cart_form' %>
+      </div>
+    <% end %>
   </div>
 </div>
 

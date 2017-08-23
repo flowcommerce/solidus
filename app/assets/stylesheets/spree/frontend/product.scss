@@ -1,0 +1,48 @@
+#product-details {
+  margin-top: 50px;
+
+  h6 {
+    color: #111;
+    margin-bottom: 10px;
+  }
+
+  .add-to-cart {
+    margin-top: 60px;
+  }
+}
+
+#variant_select {
+  font-family: Oswald;
+  font-size: 200;
+  font-size: 15px;
+  color: #444;
+  letter-spacing: 0.5px;
+  border: 0;
+  outline: 1px solid #bbb;
+  outline-offset:-1px;
+  height: 34px !important;
+}
+
+#product-price {
+  margin: -20px 0 30px 0;
+
+  .price {
+    font-family: Roboto;
+    font-weight: 200;
+  }
+}
+
+h1.product-title {
+  border-bottom: none;
+  font-family: Oswald;
+  font-weight: 400;
+  font-size: 32px;
+  margin-top: 0;
+  color: #000;
+}
+
+@mixin media-mobile {
+  h1.product-title {
+    font-size: 20px !important;
+  }
+}
