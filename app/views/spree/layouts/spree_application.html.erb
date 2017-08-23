@@ -10,7 +10,7 @@
   </head>
   <body class="<%= body_class %>" id="<%= @body_id || 'default' %>" data-hook="body">
     <div id="loader"></div>
-    <% if @flow_session.use_flow? %>
+    <% if @flow_session.localized? %>
       <div id="flow-bar">
         <div class="container"><%= flow_top_nav_data %></div>
       </div>

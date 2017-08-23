@@ -20,7 +20,7 @@ RSpec.describe Flow::Session do
     flow_seession = Flow::Session.new ip: canada_ip
 
     expect(flow_seession.local.experience.name).to eq 'Canada'
-    expect(flow_seession.use_flow?).to be_truthy
+    expect(flow_seession.localized?).to be_truthy
   end
 
   it 'creates session from hash' do

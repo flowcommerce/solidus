@@ -92,7 +92,7 @@ module FlowHelper
   end
 
   def flow_product_price product_or_variant
-    if @flow_session.use_flow?
+    if @flow_session.localized?
       product_or_variant.flow_local_price @flow_session.experience
     else
       product_or_variant.price_for(current_pricing_options).to_html
@@ -100,7 +100,7 @@ module FlowHelper
   end
 
   def flow_show_product_price
-    if @flow_session.use_flow?
+    if @flow_session.localized?
       @variants.each.inject({}) { |h, v| h[v.id] = product_price_long(v); h }.to_json.html_safe
     else
       { @variants.first.id=>display_price(@product) }.to_json.html_safe

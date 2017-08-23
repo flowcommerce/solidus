@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
     return if request.path.include?('/admin/')
 
     # we need to clear any cached flow order data if we do not use flow
-    return Flow::Order.clear_cache(order) unless @flow_session.use_flow?
+    return Flow::Order.clear_cache(order) unless @flow_session.localized?
 
     @flow_order = Flow::Order.new(experience: @flow_session.experience, order: order, customer: @current_spree_user)
     @flow_order.synchronize!

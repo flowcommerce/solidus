@@ -22,7 +22,7 @@
 
           <div class="delivery">
             <div>
-              <% if @flow_session.use_flow? %>
+              <% if @flow_session.localized? %>
                 <i class='fa fa-truck'></i>
                 <%= @flow_order.delivery[:name] %>
               <% else %>

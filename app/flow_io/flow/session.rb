@@ -3,7 +3,7 @@
 
 class Flow::Session
   attr_accessor :session
-  attr_accessor :use_flow
+  attr_accessor :localized
 
   # flow session can ve created via IP or local cached OrganizationSession dump
   # Flow::Experience.all.first.key
@@ -52,10 +52,10 @@ class Flow::Session
     @session.id
   end
 
-  def use_flow?
+  def localized?
     # use flow if we are not in default country
     return false unless local
-    return false if @use_flow.class == FalseClass
+    return false if @localized.class == FalseClass
     local.country.iso_3166_3 != ENV.fetch('FLOW_BASE_COUNTRY').upcase
   end
 

@@ -4,7 +4,7 @@
     <div id="methods">
       <%= form.fields_for :shipments do |ship_form| %>
         <div class="shipment">
-          <% if @flow_session.use_flow? %>
+          <% if @flow_session.localized? %>
             <% @flow_order.deliveries.each do |delivery| %>
               <p style="margin-top: 0;">
                 <label>
