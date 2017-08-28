@@ -78,14 +78,12 @@ button.large, a.button, button.button, input.button {
 
 // raw classes
 .price         { color: #333 !important; }
-
 .product-image { border: none !important; }
-
 .flash.error   { margin-bottom: 30px; }
-
 .center        { text-align: center; }
-
 .right         { text-align: right; }
+.dimmed        { opacity: 0.5; }
+
 
 .pagination {
   span {
@@ -270,3 +268,14 @@ button.large, a.button, button.button, input.button {
   height: auto;
 }
 
+#variant_select {
+  font-family: Oswald;
+  font-size: 200;
+  font-size: 15px;
+  color: #444;
+  letter-spacing: 0.5px;
+  border: 0;
+  outline: 1px solid #bbb;
+  outline-offset:-1px;
+  height: 34px !important;
+}
