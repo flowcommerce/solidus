@@ -1,25 +1,17 @@
 version: '2'
 services:
-  db:
-    image: postgres:9.4.5
+  nginx:
+    image: "nginx:1.13"
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
+    restart: always
 
   app:
     build: "."
     env_file: ./config/docker/.env
     links:
-      - "db"
+      - "nginx"
     ports:
       - "3000:3000"
-    restart: always
-    # command: bundle exec rails s -p 3000 -b '0.0.0.0'
-
-  # nginx:
-  #   image: "nginx:1.13"
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./config/docker/nginx/conf.d:/etc/nginx/conf.d
-  #   restart: always
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
