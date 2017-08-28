@@ -2,7 +2,7 @@
 
 class FlowController < ApplicationController
   layout 'flow'
-  skip_before_filter :verify_authenticity_token, only: :handle_flow_web_hook_event
+  skip_before_filter :verify_authenticity_token, only: [:handle_flow_web_hook_event, :schedule_refresh]
 
   # forward all incoming requests to Flow Webhook service object
   # /flow/event-target
@@ -135,6 +135,11 @@ class FlowController < ApplicationController
     @list = {}
   end
 
+  def schedule_refresh
+    FolwApiRefresh.schedule_refresh!
+    render text: 'Scheduled'
+  end
+
   private
 
   def paypal_get_order_from_param
@@ -147,5 +152,4 @@ class FlowController < ApplicationController
     render text: 'You must be admin to access flow admin'
     false
   end
-
 end

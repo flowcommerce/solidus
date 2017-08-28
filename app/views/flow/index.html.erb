@@ -1,5 +1,14 @@
+<button class="btn btn-secondary btn-sm" style="float: right; text-align: left; cursor: pointer;" onclick="$.post('/flow/schedule_refresh', function(data){ location.href = location.href; })">
+  <b>Refresh localized items now?</b>
+  <br />
+  <small>click to set schedule - now</small>
+  <br />&mdash;<br />
+  <%= last_api_refresh %>
+</button>
+
 <h3>Orders</h3>
 
+<br clear="all" />
 <br />
 
 <table class="table table-striped">

@@ -2,6 +2,7 @@
   <head>
     <title>Flow admin</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
   </head>
   <body>
     <header class="navbar navbar-light navbar-toggleable-md bd-navbar" style="border-bottom: 1px solid #ccc; margin-bottom: 40px;">
@@ -12,9 +13,6 @@
             <% if current_spree_user.try(:admin?) %>
               <li class="nav-item active">
                 <a class="nav-item nav-link " href="/admin/flow">Flow Admin</a>
-              </li>
-              <li class="nav-item active">
-                <a class="nav-item nav-link " href="/admin/flow/restrictions">Restrictions</a>
               </li>
               <li class="nav-item">
                 <a class="nav-item nav-link " href="https://console.flow.io/<%= Flow.organization %>" target="_new">Flow console <small>(<%= Flow.organization %>)</small> &rarr;</a>

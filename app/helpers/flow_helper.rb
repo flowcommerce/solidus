@@ -339,4 +339,27 @@ module FlowHelper
     data.html_safe
   end
 
+  def last_api_refresh
+    schedule_data = FolwApiRefresh.get_data
+
+    data = []
+
+    data.push 'Forced refresh scheduled: '
+    data.push schedule_data['force_refresh'] ? 'YES' : 'No'
+    data.push '<br />'
+
+    data.push 'Last refresh before: '
+
+    file = FolwApiRefresh.source_file
+    if schedule_data['last']
+      data.push distance_of_time_in_words_to_now Time.at(schedule_data['last'])
+    else
+      data.push 'unkonwn'
+    end
+
+    data.push '<br />'
+
+    data.join('').html_safe
+  end
+
 end

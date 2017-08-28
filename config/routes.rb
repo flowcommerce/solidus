@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     post '/paypal_finish',        to: '/flow#paypal_finish'
     post '/promotion_set_option', to: '/flow#promotion_set_option'
     post '/update_current_order', to: '/flow#update_current_order'
+    post '/schedule_refresh',     to: '/flow#schedule_refresh'
   end
 
   get '/about', to: 'flow#about'
