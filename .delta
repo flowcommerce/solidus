@@ -1,0 +1,6 @@
+builds:
+  - root:
+      port.container: 3000
+      port.host: 8080
+      instance.type: t2.micro
+      version: 1.2
