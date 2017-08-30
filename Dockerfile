@@ -1,22 +1,16 @@
-FROM ruby:2.3.3
+FROM flowdocker/rails:0.0.78
 
 MAINTAINER Dino Reic (dino@flow.io)
 
-RUN apt-get update -qq && apt-get install -y build-essential
+RUN apt-get install -y ruby2.3
+RUN gem install bundler
 
-RUN apt-get install -y libpq-dev
-
-RUN apt-get install -y libxml2-dev libxslt1-dev
-
-RUN apt-get install -y libqt4-webkit libqt4-dev xvfb
-
-RUN apt-get install -y nodejs
-
-ENV APP_HOME /solidus
-RUN mkdir $APP_HOME
-WORKDIR $APP_HOME
-
-ADD . $APP_HOME
-ADD ./config/docker/.env .env
+ADD . /opt/rails
+WORKDIR /opt/rails
 
 RUN bundle install
+
+ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "rails", "solidus", "need-run-script"]
+
+HEALTHCHECK --interval=5s --timeout=5s --retries=10 \
+  CMD curl -f http://localhost:3000/_internal_/healthcheck || exit 1
