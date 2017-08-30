@@ -1,5 +1,5 @@
 # Flow.io (2017)
-# communicates with flow payments api, easy access to session
+# communicates with Flow payments API, easy access to session
 # to basic shop frontend and backend needs
 
 class Flow::SimpleGateway

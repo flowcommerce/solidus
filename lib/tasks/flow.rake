@@ -160,42 +160,44 @@ namespace :flow do
       end
     end
 
+    FolwApiRefresh.log_refresh!
+
     puts 'Finished with total of %s rows.' % total.to_s.green
   end
 
-  desc 'Sync restricted products'
-  task :sync_restricted_products => :environment do |t|
-    page_size  = 25
-    offset     = 0
-    total      = 0
-    products   = {}
-    flow_data  = []
+  # desc 'Sync restricted products'
+  # task :sync_restricted_products => :environment do |t|
+  #   page_size  = 25
+  #   offset     = 0
+  #   total      = 0
+  #   products   = {}
+  #   flow_data  = []
 
-    while offset == 0 || flow_data.length == page_size
-      flow_data = Flow.api :get, '/:organization/item-restrictions', offset: offset, page_size: page_size
-      offset += page_size
-      total  += flow_data.length
+  #   while offset == 0 || flow_data.length == page_size
+  #     flow_data = Flow.api :get, '/:organization/item-restrictions', offset: offset, page_size: page_size
+  #     offset += page_size
+  #     total  += flow_data.length
 
-      # build hash of restricted products
-      #  key is experience id
-      #  value is array of restricted products
-      flow_data.each do |item|
-        number = item['item']['number']
-        item['regions'].each do |region|
-          products[region['id']] ||= []
-          products[region['id']].push number.to_i
-        end
-      end
-    end
+  #     # build hash of restricted products
+  #     #  key is experience id
+  #     #  value is array of restricted products
+  #     flow_data.each do |item|
+  #       number = item['item']['number']
+  #       item['regions'].each do |region|
+  #         products[region['id']] ||= []
+  #         products[region['id']].push number.to_i
+  #       end
+  #     end
+  #   end
 
-    products.each do |experience_id, list_of_restricted_products|
-      flow_option = FlowOption.find_or_initialize_by(experience_region_id: experience_id)
-      flow_option.restricted_ids = list_of_restricted_products
-      flow_option.save!
-    end
+  #   products.each do |experience_id, list_of_restricted_products|
+  #     flow_option = FlowOption.find_or_initialize_by(experience_region_id: experience_id)
+  #     flow_option.restricted_ids = list_of_restricted_products
+  #     flow_option.save!
+  #   end
 
-    puts 'Added total of %s restricted products from Flow' % total.to_s.blue
-  end
+  #   puts 'Added total of %s restricted products from Flow' % total.to_s.blue
+  # end
 
   # checks existance of every item in local produt catalog
   # remove product from flow unless exists localy
