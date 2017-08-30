@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   # We ask that you don't use the :as option here, as Spree relies on it being the default of "spree"
   mount Spree::Core::Engine, :at => '/'
 
+  # local api targets
   namespace :flow do
     post '/event-target',         to: '/flow#handle_flow_web_hook_event'
     post '/paypal_id',            to: '/flow#paypal_get_id'
@@ -16,8 +17,13 @@ Rails.application.routes.draw do
     post '/schedule_refresh',     to: '/flow#schedule_refresh'
   end
 
+  # custom from Flow for Solidus frontend
   get '/about', to: 'flow#about'
-  get '/admin/flow', to:'flow#index'
-
   get '/sale', to: 'spree/home#sale'
+
+  # health check ping
+  get '/_internal_/healthcheck', to: lambda { |env| [200, {}, ['ok']] }
+
+  # sigle page for flow specific admin
+  get '/admin/flow', to:'flow#index'
 end
