@@ -33,6 +33,16 @@ module FolwApiRefresh
     end
   end
 
+  def last_refresh
+    json = get_data
+
+    return 'No last sync data' unless json['last']
+
+    diff = (Time.now.to_i - json['last'].to_i)/60
+
+    "Last sync happend %d minutes ago.\nWe sync every %d minutes." % [diff, SYNC_INTERVAL_IN_MINUTES]
+  end
+
   def sync_products_if_needed!
     json = get_data
 
@@ -42,11 +52,8 @@ module FolwApiRefresh
     if sync_needed
       puts 'Sync needed, running ...'
       system 'bundle exec rake flow:sync_localized_items'
-
     else
-      diff = (Time.now.to_i - json['last'].to_i)/60
-      return puts 'Last sync happend %d minutes ago. We sync every %d minutes.' % [diff, SYNC_INTERVAL_IN_MINUTES]
-
+      return puts last_refresh
     end
   end
 end

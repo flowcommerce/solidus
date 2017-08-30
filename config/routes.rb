@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   get '/sale', to: 'spree/home#sale'
 
   # health check ping
-  get '/_internal_/healthcheck', to: lambda { |env| [200, {}, ['ok']] }
+  get '/_internal_/healthcheck', to: lambda { |env| [200, {}, ['alive']] }
 
   # sigle page for flow specific admin
   get '/admin/flow', to:'flow#index'

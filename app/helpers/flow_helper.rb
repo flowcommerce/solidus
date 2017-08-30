@@ -344,20 +344,15 @@ module FlowHelper
 
     data = []
 
-    data.push 'Forced refresh scheduled: '
-    data.push schedule_data['force_refresh'] ? 'YES' : 'No'
-    data.push '<br />'
-
-    data.push 'Last refresh before: '
-
-    file = FolwApiRefresh.source_file
-    if schedule_data['last']
-      data.push distance_of_time_in_words_to_now Time.at(schedule_data['last'])
+    if schedule_data['force_refresh']
+      data.push '&mdash;<br />Wating for forced refresh to finish'
     else
-      data.push 'unkonwn'
+      data.push 'Forced refresh scheduled: Not set'
+      data.push '<br /><small>click to set schedule - now</small>'
     end
+    data.push '<br />&mdash;<br />'
 
-    data.push '<br />'
+    data.push FolwApiRefresh.last_refresh.sub($/, '<br />')
 
     data.join('').html_safe
   end
