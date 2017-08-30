@@ -120,6 +120,8 @@ namespace :flow do
     # https://api.flow.io/reference/countries
     # https://docs.flow.io/#/module/localization/resource/experiences
 
+    start = Time.now
+
     total = 0
 
     experiences = FlowCommerce.instance.experiences.get(Flow.organization)
@@ -160,7 +162,7 @@ namespace :flow do
       end
     end
 
-    FolwApiRefresh.log_refresh!
+    FolwApiRefresh.log_refresh! start
 
     puts 'Finished with total of %s rows.' % total.to_s.green
   end

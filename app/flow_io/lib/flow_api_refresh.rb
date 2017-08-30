@@ -4,8 +4,8 @@
 module FolwApiRefresh
   extend self
 
-  SYNC_INTERVAL_IN_MINUTES = 60
-  CHECK_FILE = Pathname.new './tmp/last-flow-refresh.txt'
+  SYNC_INTERVAL_IN_MINUTES = 60 unless defined?(SYNC_INTERVAL_IN_MINUTES)
+  CHECK_FILE = Pathname.new './tmp/last-flow-refresh.txt' unless defined?(CHECK_FILE)
 
   ###
 
@@ -26,9 +26,10 @@ module FolwApiRefresh
     end
   end
 
-  def log_refresh!
+  def log_refresh! start=nil
     write do |data|
       data['force_refresh'] = false
+      data['duration_in_seconds'] = Time.now.to_i - start.to_i
       data['last'] = Time.now.to_i
     end
   end
@@ -40,7 +41,11 @@ module FolwApiRefresh
 
     diff = (Time.now.to_i - json['last'].to_i)/60
 
-    "Last sync happend %d minutes ago.\nWe sync every %d minutes." % [diff, SYNC_INTERVAL_IN_MINUTES]
+    info = []
+    info.push 'Last sync happend %d minutes ago.' % diff
+    info.push 'We sync every %d minutes.'         % SYNC_INTERVAL_IN_MINUTES
+    info.push 'Last sync took %d seconds.'        % json['duration_in_seconds'] if json['duration_in_seconds']
+    info.join($/)
   end
 
   def sync_products_if_needed!

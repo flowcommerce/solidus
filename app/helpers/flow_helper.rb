@@ -352,7 +352,7 @@ module FlowHelper
     end
     data.push '<br />&mdash;<br />'
 
-    data.push FolwApiRefresh.last_refresh.sub($/, '<br />')
+    data.push FolwApiRefresh.last_refresh.gsub($/, '<br />')
 
     data.join('').html_safe
   end
