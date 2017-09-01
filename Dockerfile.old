@@ -1,23 +1,16 @@
-# FROM flowdocker/rails:0.0.78
-FROM ruby:2.3.1
+FROM flowdocker/rails:0.0.78
 
-# Install dependencies
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+MAINTAINER Dino Reic (dino@flow.io)
 
+RUN apt-get install -y ruby2.3-dev
 RUN gem install bundler
 
 ADD . /opt/rails
-ADD ./public/assets /opt/rails/public/assets
-
 WORKDIR /opt/rails
 
 RUN bundle install
 
-# add to get vars from flow
 COPY ./config/docker/.env /opt/rails/.env
-
-ENTRYPOINT bundle exec puma -p 3000 -w 2 -t 0:16
-
 # ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "default", "solidus", "need-run-script"]
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=10 \

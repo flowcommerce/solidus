@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require 'awesome_print'
+require 'colorize'
+
+def Thor.define name, desc, &block
+  block ||= -> { Cli.bash name }
+
+  Thor.desc name, desc
+  Thor.send :define_method, name, &block
+end
+
+#
+
+module Cli
+  extend self
+
+  def run command
+    command = command.gsub(/\$([A-Z_]+)/) { ENV[$1] }
+    puts command.green
+    system command
+  end
+
+  def yes_no question
+    print question.yellow
+    print ' (y/N): '
+    response = $stdin.gets.chomp.downcase
+    response == 'y'
+  end
+end
+
+#
+
+class Local < Thor
+  define :build_docker, 'Build docker file with assets compile' do
+    Cli.run 'rake assets:clean'
+    Cli.run 'rake assets:compile'
+    Cli.run 'docker build flowdocker/solidus:0.2.0 .'
+  end
+
+  define :nginx_log, 'Show nginx log' do
+    Cli.run 'sudo tail -300 /var/log/nginx/error.log'
+  end
+
+  define :edit, 'Open full local edit with all gems' do
+    Cli.run 'subl `bundle show flowcommerce` `bundle show solidus_api` `bundle show solidus_core` `bundle show solidus_backend` `bundle show solidus_frontend` `bundle show solidus_auth_devise` .'
+  end
+end
+
+Local.start ARGV
+

@@ -9,9 +9,10 @@ services:
 
   app:
     build: "."
-    env_file: ./config/docker/.env
+    image: flowdocker/solidus:0.2.0
+    # env_file: ./config/docker/.env
     # links:
     #   - "nginx"
     ports:
       - "3000:3000"
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    command: bundle exec rails s -e production -p 3000 -b '0.0.0.0'

@@ -12,6 +12,7 @@ end
 gem 'rails', '5.0.2'
 gem 'pg'
 gem 'hashie'
+gem 'tzinfo-data'
 gem 'flowcommerce'
 # gem 'activemerchant_flow'
 gem 'pry-rails'                # better console
