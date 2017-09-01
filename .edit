@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+subl `bundle show flowcommerce` `bundle show solidus_api` `bundle show solidus_core` `bundle show solidus_backend` `bundle show solidus_frontend` `bundle show solidus_auth_devise` .

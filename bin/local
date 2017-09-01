@@ -34,9 +34,9 @@ end
 
 class Local < Thor
   define :build_docker, 'Build docker file with assets compile' do
-    Cli.run 'rake assets:clean'
-    Cli.run 'rake assets:compile'
-    Cli.run 'docker build flowdocker/solidus:0.2.0 .'
+    # Cli.run 'rake assets:clean'
+    # Cli.run 'rake assets:compile'
+    Cli.run 'docker build -t flowdocker/solidus:0.2.0 .'
   end
 
   define :nginx_log, 'Show nginx log' do
