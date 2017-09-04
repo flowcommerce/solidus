@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'pathname'
-require 'json'
-require './app/flow_io/lib/flow_api_refresh'
+app_folder = __FILE__.split('/')[0..-3].join('/')
 
-FolwApiRefresh.sync_products_if_needed!
+# change dir to app dir and run script there
+Dir.chdir app_folder do
+  require 'pathname'
+  require 'json'
+  require './app/flow_io/lib/flow_api_refresh'
+
+  FolwApiRefresh.sync_products_if_needed!
+end

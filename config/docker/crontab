@@ -1,0 +1,1 @@
+* * * * * bash -l -c 'cd /opt/rails && bin/sync_products_check'
