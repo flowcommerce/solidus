@@ -26,7 +26,7 @@ module FolwApiRefresh
 
   def log message
     $stdout.puts message
-    LOGGER.info message
+    LOGGER.info '%s (pid: %d)' % [message, Process.pid]
   end
 
   def schedule_refresh!
