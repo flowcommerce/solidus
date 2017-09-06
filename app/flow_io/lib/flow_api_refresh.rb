@@ -26,7 +26,7 @@ module FolwApiRefresh
 
   def log message
     $stdout.puts message
-    LOGGER.info '%s (pid: %d)' % [message, Process.pid]
+    LOGGER.info '%s (pid/ppid: %d/%d)' % [message, Process.pid, Process.ppid]
   end
 
   def schedule_refresh!
@@ -35,20 +35,26 @@ module FolwApiRefresh
     end
   end
 
-  def log_refresh! start=nil
+  def log_refresh! start_time=nil
     write do |data|
       data['force_refresh'] = false
-      data['duration_in_seconds'] = Time.now.to_i - start.to_i
-      data['last'] = Time.now.to_i
+
+      if start_time
+        data['duration_in_seconds'] = Time.now.to_i - start_time.to_i if start_time
+        data['start'] = start_time.to_i
+        data['end']   = Time.now.to_i
+      else
+        data['start'] = Time.now.to_i
+      end
     end
   end
 
   def last_refresh
     json = get_data
 
-    return 'No last sync data' unless json['last']
+    return 'No last sync data' unless json['end']
 
-    diff = (Time.now.to_i - json['last'].to_i)/60
+    diff = (Time.now.to_i - json['end'].to_i)/60
 
     'Last sync happend %d minutes ago and lasted for %s sec. We sync every %d minutes.' %
       [diff, json['duration_in_seconds'] || '?', SYNC_INTERVAL_IN_MINUTES]
@@ -57,7 +63,9 @@ module FolwApiRefresh
   def sync_products_if_needed!
     json = get_data
 
-    sync_needed = json['force_refresh'] || json['last'].to_i < (Time.now.to_i - SYNC_INTERVAL_IN_MINUTES * 60)
+    sync_needed = false
+    sync_needed ||= true if json['force_refresh']
+    sync_needed ||= true if json['start'].to_i < (Time.now.to_i - SYNC_INTERVAL_IN_MINUTES * 60)
 
     if sync_needed
       log 'Sync needed, running ...'
