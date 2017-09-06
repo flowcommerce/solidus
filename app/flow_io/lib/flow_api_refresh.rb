@@ -36,10 +36,9 @@ module FolwApiRefresh
   end
 
   def log_refresh! start_time=nil
-    data['force_refresh'] = false
-
     write do |data|
       if start_time
+        data['force_refresh'] = false
         data['duration_in_seconds'] = Time.now.to_i - start_time.to_i if start_time
         data['start'] = start_time.to_i
         data['end']   = Time.now.to_i
@@ -74,8 +73,11 @@ module FolwApiRefresh
     json = get_data
 
     sync_needed = false
-    sync_needed ||= true if json['force_refresh']
-    sync_needed ||= true if json['start'].to_i < (Time.now.to_i - SYNC_INTERVAL_IN_MINUTES * 60)
+
+    unless json['started']
+      sync_needed ||= true if json['force_refresh']
+      sync_needed ||= true if json['start'].to_i < (Time.now.to_i - SYNC_INTERVAL_IN_MINUTES * 60)
+    end
 
     if sync_needed
       log 'Sync needed, running ...'
