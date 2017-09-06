@@ -36,14 +36,16 @@ module FolwApiRefresh
   end
 
   def log_refresh! start_time=nil
-    write do |data|
-      data['force_refresh'] = false
+    data['force_refresh'] = false
 
+    write do |data|
       if start_time
         data['duration_in_seconds'] = Time.now.to_i - start_time.to_i if start_time
         data['start'] = start_time.to_i
         data['end']   = Time.now.to_i
+        data.delete('started')
       else
+        data['started'] = true
         data['start'] = Time.now.to_i
       end
     end
@@ -54,10 +56,18 @@ module FolwApiRefresh
 
     return 'No last sync data' unless json['end']
 
-    diff = (Time.now.to_i - json['end'].to_i)/60
+    info = []
 
-    'Last sync happend %d minutes ago and lasted for %s sec. We sync every %d minutes.' %
-      [diff, json['duration_in_seconds'] || '?', SYNC_INTERVAL_IN_MINUTES]
+    info.push 'Sync started %d seconds ago (it is in progress).' % (Time.now.to_i - json['start'].to_i) if json['started']
+
+    info.push 'Last sync finished %{finished} minutes ago and lasted for %{duration} sec. We sync every %{every} minutes.' %
+      {
+        finished: (Time.now.to_i - json['end'].to_i)/60,
+        duration: json['duration_in_seconds'] || '?',
+        every:    SYNC_INTERVAL_IN_MINUTES
+      }
+
+    info.join(' ')
   end
 
   def sync_products_if_needed!

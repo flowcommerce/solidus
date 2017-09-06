@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-app_folder = __FILE__.split('/')[0..-3].join('/')
+app_folder = File.expand_path(File.dirname(__FILE__)).split('/')[0..-2].join('/')
 
 # change dir to app dir and run script there
 Dir.chdir app_folder do
