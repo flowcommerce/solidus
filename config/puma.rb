@@ -1,35 +1,21 @@
-# # load .env if exists
-# if File.exists?('./.env')
-#   require 'dotenv'
-#   Dotenv.load
-# end
+require 'dotenv'
+Dotenv.load
 
-# # RACK_ENV from RAILS_ENV if defined
-# ENV['RACK_ENV'] ||= ENV['RAILS_ENV']
+port    3000
+threads 0, 8
 
-# # die unless RACK_ENV set
-# raise LoadError, 'RACK_ENV is not set' unless ENV['RACK_ENV']
+if ENV.fetch('RACK_ENV') == 'production'
+  workers 2
 
-# # check if in supported environments
-# unless ['development', 'test', 'production'].index(ENV['RACK_ENV'])
-#   raise LoadError, "RACK_ENV #{ENV['RACK_ENV']} is not supported"
-# end
+  # on_worker_boot do
+  #   ActiveRecord::Base.establish_connection
+  # end
 
-# # add more workers to production
-# if ENV['RACK_ENV'] == 'production'
-#   threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 5)
-#   threads threads_count, threads_count
-#   workers Integer(ENV['WEB_CONCURRENCY'] || 2)
-#   preload_app!
-# end
-
-# rackup      DefaultRackup
-# port        ENV['PORT']     || 3000
-# environment ENV['RACK_ENV']
-
-# on_worker_boot do
-#   ActiveRecord::Base.establish_connection
-# end
+  before_fork do
+    require 'puma_worker_killer'
+    PumaWorkerKiller.enable_rolling_restart 3 * 3600
+  end
+end
 
 # refresh and sync products
 require './app/flow_io/lib/flow_api_refresh'

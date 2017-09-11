@@ -27,6 +27,7 @@ group :manual_load do
   gem 'dotenv'
   gem 'faraday'
   gem 'thread'
+  gem 'puma_worker_killer'
 end
 
 group :development do
