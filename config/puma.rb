@@ -15,13 +15,14 @@ if ENV.fetch('RACK_ENV') == 'production'
     require 'puma_worker_killer'
     PumaWorkerKiller.enable_rolling_restart 3 * 3600
   end
-end
 
-# refresh and sync products
-require './app/flow_io/lib/flow_api_refresh'
-Thread.new do
-  while true
-    FolwApiRefresh.sync_products_if_needed!
-    sleep 59
+  # refresh and sync products
+  require './app/flow/lib/flow_api_refresh'
+  Thread.new do
+    while true
+      FolwApiRefresh.sync_products_if_needed!
+      sleep 59
+    end
   end
 end
+

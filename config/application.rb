@@ -28,10 +28,10 @@ module DemoShop
   class Application < Rails::Application
 
     # solidus overrides
-    config.to_prepare do
-      overload = Dir.glob('./app/flow_io/**/*.rb')
-      overload.reverse.each { |c| load(c) }
-    end
+    # config.to_prepare do
+    #   overload = Dir.glob('./app/flow/**/*.rb')
+    #   overload.reverse.each { |c| load(c) }
+    # end
 
     config.after_initialize do |app|
       app.config.spree.payment_methods << Spree::Gateway::Flow

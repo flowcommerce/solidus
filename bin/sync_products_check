@@ -2,11 +2,13 @@
 
 app_folder = File.expand_path(File.dirname(__FILE__)).split('/')[0..-2].join('/')
 
+puts app_folder
+
 # change dir to app dir and run script there
 Dir.chdir app_folder do
   require 'pathname'
   require 'json'
-  require './app/flow_io/lib/flow_api_refresh'
+  require './app/flow/lib/flow_api_refresh'
 
   FolwApiRefresh.sync_products_if_needed!
 end
