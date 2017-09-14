@@ -4,12 +4,9 @@ Dir.chdir File.expand_path('../..', __FILE__)
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
 require 'bundler/setup' # Set up gems listed in the Gemfile.
+require 'dotenv'
 
-# better way to do it, if there is dot env file, load it
-if File.exists?('./.env')
-  require 'dotenv'
-  Dotenv.load
-end
+Dotenv.load
 
 ENV['LANG'] = 'en_US.UTF-8'
 

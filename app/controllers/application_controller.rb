@@ -1,7 +1,10 @@
+require './app/flow/before_render'
+
 class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
 
-  protect_from_forgery    with: :exception
+  protect_from_forgery with: :exception
+  before_filter        :flow_set_experience, :flow_before_filters
 
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but
@@ -21,42 +24,27 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # before render trigger
-  # rails does not have before_render filter so we create it like this
-  # to make things simple
-  def render *args
-    # if we call render in one of the flow filters, call native render
-    return super *args if @in_before_render_filter
-    @in_before_render_filter = true
-
-    flow_filters = []
-
-    # call local per action filter if one defined
-    target        = '%s#%s' % [params[:controller], params[:action]]
-    filter_method = ('flow_action_' + target.gsub!(/[^\w]/,'_')).to_sym
-    flow_filters.push filter_method if self.class.private_instance_methods.include?(filter_method)
-
-    # add flow filters
-    flow_filters.push :flow_set_experience
-    flow_filters.push :flow_before_filters
-    flow_filters.push :flow_sync_order
-    flow_filters.push :flow_filter_products
-    flow_filters.push :flow_restrict_product
-
-    # call all this methods
-    flow_filters.each { |filter|
-      send(filter) unless performed? }
-
-    # call native render unless redirect or render happend
-    super unless performed?
+  before_render do
+    flow_sync_order
+    flow_filter_products
+    flow_restrict_product
+    flow_debug_product
   end
 
   private
 
+  def flow_visitor_id
+    if wu = session['warden.user.spree_user.key']
+      wu[0] ? 'uid-%d' % wu[0][0] : wu[1]
+    else
+      Digest::SHA1.hexdigest request.ip
+    end
+  end
+
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
     # get by IP unless we got it from session
-    @flow_session = Flow::Session.new ip: request.ip, json: session[FLOW_SESSION_KEY]
+    @flow_session = Flow::Session.new ip: request.ip, json: session[FLOW_SESSION_KEY], visitor: flow_visitor_id
 
     # we will allow live change of experience by key
     if flow_exp_key = params[:flow_experience]
@@ -73,10 +61,17 @@ class ApplicationController < ActionController::Base
     cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
   end
 
-  ###
+  def flow_before_filters
+    # if we are somewhere in checkout and there is no session, force user to login
+    if request.path.start_with?('/checkout') && !@current_spree_user
+      flash[:error] = 'You need to be registred to continue with shopping'
+      redirect_to '/login'
+    end
+  end
+
+  # ###
 
   # we need to prepare @order and sync to flow.io before render because we need
-  # flow total price
   def flow_sync_order
     order = @order if @order.try :id
     order ||= simple_current_order if respond_to?(:simple_current_order) && simple_current_order.try(:id)
@@ -123,16 +118,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def flow_before_filters
-    # if we are somewhere in checkout and there is no session, force user to login
-    if request.path.start_with?('/checkout') && !@current_spree_user
-      flash[:error] = 'You need to be registred to continue with shopping'
-      redirect_to '/login'
-    end
-  end
-
-  def flow_action_spree_products_show
-    if params[:debug] == 'flow' && @flow_session.experience
+  def flow_debug_product
+    if params[:debug] == 'flow' && @flow_session.experience && @product
       flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_session.experience.key)
       render json: JSON.pretty_generate(flow_item)
     end

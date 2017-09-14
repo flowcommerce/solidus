@@ -20,6 +20,9 @@ Spree::Variant.class_eval do
 
   # syncs product variant with flow
   def flow_sync_product
+    # initial Solidus seed will fail, so skip unless we have Flow data folder
+    return unless respond_to?(:flow_data)
+
     flow_item     = flow_api_item
     flow_item_sh1 = Digest::SHA1.hexdigest flow_api_item.to_json
 

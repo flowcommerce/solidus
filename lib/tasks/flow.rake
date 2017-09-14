@@ -1,6 +1,7 @@
 require 'flowcommerce'
 require 'thread/pool'
 require 'digest/sha1'
+require 'colorize'
 
 desc 'lists all flow tasks'
 task :flow do |t|
@@ -37,7 +38,7 @@ namespace :flow do
   desc 'Upload catalog'
   task :upload_catalog => :environment do |t|
     # do reqests in paralel
-    thread_pool  = Thread.pool(5)
+    # thread_pool  = Thread.pool(5)
     update_sum   = 0
     total_sum    = 0
     current_page = 0
@@ -51,7 +52,7 @@ namespace :flow do
         total_sum    += 1
 
         # multiprocess upload
-        thread_pool.process do
+        # thread_pool.process do
           # skip if sync not needed
           if variant.flow_sync_product
             update_sum += 1
@@ -59,11 +60,11 @@ namespace :flow do
           else
             $stdout.print '.'
           end
-        end
+        # end
       end
     end
 
-    thread_pool.shutdown
+    # thread_pool.shutdown
 
     puts "\nFor total of %s products, %s needed update" % [total_sum.to_s.blue, (update_sum == 0 ? 'none' : update_sum).to_s.green]
   end

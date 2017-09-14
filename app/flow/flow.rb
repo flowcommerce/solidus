@@ -11,7 +11,7 @@ module Flow
   extend self
 
   # builds curl command and gets remote data
-  def api(action, path, params={}, body=nil)
+  def api action, path, params={}, body=nil
     body ||= params.delete(:BODY)
 
     remote_params = URI.encode_www_form params

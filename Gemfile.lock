@@ -1,3 +1,9 @@
+PATH
+  remote: /Users/dux/dev/ruby/gems/rails_before_render
+  specs:
+    rails_before_render (0.1.0)
+      fast_blank (~> 1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -75,6 +81,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    colorize (0.8.1)
     concurrent-ruby (1.0.5)
     css_parser (1.6.0)
       addressable
@@ -97,10 +104,11 @@ GEM
     execjs (2.7.0)
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
+    fast_blank (1.0.0)
     ffaker (2.6.0)
     ffi (1.9.18)
     flow-reference (0.3.2)
-    flowcommerce (0.2.33)
+    flowcommerce (0.2.34)
       json
     flowcommerce-activemerchant (0.0.7)
       activemerchant (~> 1.63)
@@ -379,6 +387,7 @@ DEPENDENCIES
   awesome_print
   clipboard
   coffee-rails (~> 4.2)
+  colorize
   dotenv
   faraday
   flowcommerce
@@ -393,6 +402,7 @@ DEPENDENCIES
   puma_worker_killer
   rack-timeout
   rails (= 5.0.2)
+  rails_before_render!
   rspec-rails
   sass-rails (~> 5.0)
   solidus (= 2.1.0)

@@ -7,7 +7,9 @@ class Flow::Session
 
   # flow session can ve created via IP or local cached OrganizationSession dump
   # Flow::Experience.all.first.key
-  def initialize ip:, json: nil, hash: nil, experience: nil
+  def initialize ip:, visitor:, json: nil, hash: nil, experience: nil
+    ip = '127.0.0.1' if ip == '::1'
+
     hash = JSON.load(json) if json
 
     @session = if experience
@@ -17,10 +19,15 @@ class Flow::Session
     end
   ensure
     # if all fails, get by IP
-    @session ||= get ip: ip
+    @session ||= get ip: ip, visitor: visitor
   end
 
   def get opts
+    opts[:visit] = {
+      id:         opts[:visitor],
+      expires_at: (Time.now+30.minutes).iso8601
+    }
+
     session_model = ::Io::Flow::V0::Models::SessionForm.new opts
     FlowCommerce.instance.sessions.post_organizations_by_organization Flow.organization, session_model
   end
