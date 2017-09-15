@@ -19,7 +19,7 @@ gem 'pry-rails'                # better console
 gem 'awesome_print'
 gem 'flowcommerce'
 gem 'flowcommerce-activemerchant'
-gem 'rails_before_render', path: '/Users/dux/dev/ruby/gems/rails_before_render'
+gem 'rails_before_render'
 
 # solidus fw
 gem 'solidus', '2.1.0',    require: false

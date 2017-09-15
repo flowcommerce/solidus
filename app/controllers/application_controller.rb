@@ -1,7 +1,9 @@
-require './app/flow/before_render'
-
 class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
+  @@session_cache  = {}
+  @@semaphore      = Mutex.new
+
+  private
 
   protect_from_forgery with: :exception
   before_filter        :flow_set_experience, :flow_before_filters
@@ -24,16 +26,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  before_render do
+  before_render_filter do
     flow_sync_order
     flow_filter_products
     flow_restrict_product
-    flow_debug_product
+    flow_debug
   end
 
-  private
-
-  def flow_visitor_id
+  def flow_get_visitor_id
     if wu = session['warden.user.spree_user.key']
       wu[0] ? 'uid-%d' % wu[0][0] : wu[1]
     else
@@ -43,8 +43,9 @@ class ApplicationController < ActionController::Base
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
-    # get by IP unless we got it from session
-    @flow_session = Flow::Session.new ip: request.ip, json: session[FLOW_SESSION_KEY], visitor: flow_visitor_id
+    flow_visitor_id = flow_get_visitor_id
+
+    @flow_session = @@session_cache[flow_visitor_id] || Flow::Session.new(ip: request.ip, visitor: flow_visitor_id)
 
     # we will allow live change of experience by key
     if flow_exp_key = params[:flow_experience]
@@ -52,10 +53,7 @@ class ApplicationController < ActionController::Base
       redirect_to request.path
     end
 
-    # puts JSON.pretty_generate JSON.load ''
-
-    # save full cache for server side usage
-    session[FLOW_SESSION_KEY] = @flow_session.to_json
+    @@semaphore.synchronize { @@session_cache[flow_visitor_id] = @flow_session }
 
     # save flow session ID for client side usage
     cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
@@ -85,10 +83,6 @@ class ApplicationController < ActionController::Base
     @flow_order = Flow::Order.new(experience: @flow_session.experience, order: order, customer: @current_spree_user)
     @flow_order.synchronize!
 
-    return if order.line_items.length == 0
-
-    render json: JSON.pretty_generate(@flow_order.response) if params[:debug] == 'flow'
-
     if @flow_order.error?
       if @flow_order.error.include?('been submitted')
         order.finalize!
@@ -102,10 +96,10 @@ class ApplicationController < ActionController::Base
   # filter out restricted products, defined in flow console
   # https://console.flow.io/:organization/restrictions
   def flow_filter_products
-    return unless @products
+    return unless @products && @flow_session.experience
 
     # filter out excluded product for particular experience
-    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_session.experience.key) if @flow_session.experience
+    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_session.experience.key)
   end
 
   # altert and redirect when restricted or exclued product found
@@ -118,10 +112,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def flow_debug_product
-    if params[:debug] == 'flow' && @flow_session.experience && @product
+  def flow_debug
+    return unless params[:debug] == 'flow' && @flow_session.experience
+
+    if @product
       flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_session.experience.key)
       render json: JSON.pretty_generate(flow_item)
+    elsif @flow_order
+      render json: JSON.pretty_generate(@flow_order.response) if params[:debug] == 'flow'
     end
   end
 

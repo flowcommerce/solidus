@@ -10,7 +10,7 @@ class Flow::Session
   def initialize ip:, visitor:, json: nil, hash: nil, experience: nil
     ip = '127.0.0.1' if ip == '::1'
 
-    hash = JSON.load(json) if json
+    hash = JSON.load(json) if json && json.is_a?(String)
 
     @session = if experience
       get experience: experience

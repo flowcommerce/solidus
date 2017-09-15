@@ -30,8 +30,7 @@ module DemoShop
 
     # solidus overrides
     config.to_prepare do
-      overload = Dir.glob('./app/flow/**/*.rb')
-      overload.each { |c| load(c) }
+      Dir.glob('./app/flow/**/*.rb').each { |c| load(c) }
     end
 
     config.after_initialize do |app|
@@ -47,9 +46,5 @@ module DemoShop
 
       Flow::SimpleGateway.clear_zero_amount_payments = true
     end
-
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
   end
 end
