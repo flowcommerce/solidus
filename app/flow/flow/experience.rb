@@ -34,7 +34,7 @@ module Flow::Experience
   def get_from_flow
     return cached_experinces if cache_valid?
 
-    experiences = FlowCommerce.instance.experiences.get(Flow.organization)
+    experiences = FlowCommerce.instance.experiences.get Flow.organization
     @cache = [experiences, Time.now]
     experiences
   end

@@ -27,10 +27,12 @@ class ApplicationController < ActionController::Base
   end
 
   before_render_filter do
-    flow_sync_order
-    flow_filter_products
-    flow_restrict_product
-    flow_debug
+    if @flow_session.experience
+      flow_sync_order
+      flow_filter_products
+      flow_restrict_product
+      flow_debug
+    end
   end
 
   def flow_get_visitor_id
@@ -93,13 +95,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # filter out restricted products, defined in flow console
   # https://console.flow.io/:organization/restrictions
+  # filter out excluded product for particular experience
   def flow_filter_products
-    return unless @products && @flow_session.experience
-
-    # filter out excluded product for particular experience
-    @products = @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_session.experience.key)
+    @products &&= @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_session.experience.key)
   end
 
   # altert and redirect when restricted or exclued product found
@@ -113,7 +112,7 @@ class ApplicationController < ActionController::Base
   end
 
   def flow_debug
-    return unless params[:debug] == 'flow' && @flow_session.experience
+    return unless params[:debug] == 'flow'
 
     if @product
       flow_item = Flow.api(:get, '/:organization/experiences/items/%s' % @product.variants.first.id, experience: @flow_session.experience.key)
