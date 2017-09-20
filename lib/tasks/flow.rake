@@ -20,6 +20,7 @@ task :flow do |t|
   puts '    -'
   print 'Task number: '
   task = $stdin.gets.to_i
+  exit if task == 0
   task = tasks[task - 1].to_s.split(/\s+/)[1]
 
   if task.present?
@@ -237,6 +238,12 @@ namespace :flow do
         puts 'Field %s in table %s added'.blue % [field, table]
       end
     end
+  end
+
+  desc 'Pretty print flow_data of last updated product variant'
+  task :sync_check => :environment do |t|
+    data = Spree::Variant.order('updated_at desc').first.flow_data
+    puts JSON.pretty_generate(data).gsub(/"(\w+)":/) { '"%s":' % $1.yellow }
   end
 end
 
