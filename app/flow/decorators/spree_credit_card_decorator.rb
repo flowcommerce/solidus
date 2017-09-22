@@ -5,6 +5,7 @@ Spree::CreditCard.class_eval do
   validate :flow_fetch_cc_token
 
   def flow_fetch_cc_token
+    return false unless respond_to?(:flow_data) # Flow not installed
     return false if flow_data['cc_token']
     return false unless number
     return errors.add(:verification_value, 'CVV verification value is required') unless verification_value.present?

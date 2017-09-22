@@ -221,7 +221,6 @@ namespace :flow do
   desc 'Ensure we have DB prepared for flow'
   task :migrate => :environment do |t|
     migrate = []
-    migrate.push [:spree_orders, :flow_number, :string]
     migrate.push [:spree_credit_cards, :flow_data, :jsonb, default: {}]
     migrate.push [:spree_products,     :flow_data, :jsonb, default: {}]
     migrate.push [:spree_variants,     :flow_data, :jsonb, default: {}]
