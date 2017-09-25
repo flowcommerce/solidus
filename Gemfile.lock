@@ -102,7 +102,7 @@ GEM
     ffaker (2.6.0)
     ffi (1.9.18)
     flow-reference (0.3.2)
-    flowcommerce (0.2.34)
+    flowcommerce (0.2.37)
       json
     flowcommerce-activemerchant (0.0.7)
       activemerchant (~> 1.63)

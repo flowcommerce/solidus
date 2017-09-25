@@ -45,20 +45,43 @@ class ApplicationController < ActionController::Base
 
   # checks current experience (defined by parameter) and sets default one unless one preset
   def flow_set_experience
-    flow_visitor_id = flow_get_visitor_id
+    # get uniq visitor id
+    visitor = flow_get_visitor_id
 
-    @flow_session = @@session_cache[flow_visitor_id] || Flow::Session.new(ip: request.ip, visitor: flow_visitor_id)
+    # create session from cache if possible
+    if cached = @@session_cache[visitor]
+      session = Flow::Session.restore cached
+      session = nil if session.session.visit.expires_at < DateTime.now
+    end
+
+    # create session if needed
+    unless session
+      session = Flow::Session.new ip: request.ip, visitor: visitor
+      session.create
+      @save_session = true
+    end
 
     # we will allow live change of experience by key
     if flow_exp_key = params[:flow_experience]
-      @flow_session.change_experience(flow_exp_key)
+      session.update flow_exp_key == 'null' ?
+        { country: Flow.base_country } :
+        { experience: flow_exp_key }
+
       redirect_to request.path
+      @save_session = true
     end
 
-    @@semaphore.synchronize { @@session_cache[flow_visitor_id] = @flow_session }
+    # save session if needed
+    @@session_cache[visitor] = session.dump if @save_session
 
-    # save flow session ID for client side usage
-    cookies.permanent[FLOW_SESSION_KEY] = @flow_session.session.id
+    # expose flow session object
+    @flow_session = session
+  rescue
+    # clear session
+    @@session_cache[visitor] = nil
+
+    # and safe redirect
+    redirect_to '?redirected=true' unless params[:redirected]
   end
 
   def flow_before_filters

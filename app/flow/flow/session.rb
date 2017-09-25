@@ -1,54 +1,52 @@
 # Flow.io (2017)
-# communicates with flow api, easy access to session
+  # communicates with flow api, easy access to session
 
 class Flow::Session
-  attr_accessor :session
-  attr_accessor :localized
+  attr_accessor :session, :localized, :visitor
+
+  def self.restore packed_session
+    Marshal.load packed_session
+  end
 
   # flow session can ve created via IP or local cached OrganizationSession dump
   # Flow::Experience.all.first.key
-  def initialize ip:, visitor:, json: nil, hash: nil, experience: nil
+  # Flow sessions need buest-guess visitor_id and
+  def initialize ip:, visitor:
     ip = '127.0.0.1' if ip == '::1'
 
-    hash = JSON.load(json) if json && json.is_a?(String)
-
-    @session = if experience
-      get experience: experience
-    elsif hash
-      ::Io::Flow::V0::Models::OrganizationSession.new(hash)
-    end
-  ensure
-    # if all fails, get by IP
-    @session ||= get ip: ip, visitor: visitor
+    @ip      = ip
+    @visitor = visitor
   end
 
-  def get opts
-    opts[:visit] = {
-      id:         opts[:visitor],
-      expires_at: (Time.now+30.minutes).iso8601
+  # create session with blank data
+  def create
+    data = {
+      ip:    @ip,
+      visit: {
+        id:         @visitor,
+        expires_at: (Time.now+30.minutes).iso8601
+      }
     }
 
-    session_model = ::Io::Flow::V0::Models::SessionForm.new opts
-    FlowCommerce.instance.sessions.post_organizations_by_organization Flow.organization, session_model
+    session_model = ::Io::Flow::V0::Models::SessionForm.new data
+    @session      = FlowCommerce.instance.sessions.post_organizations_by_organization Flow.organization, session_model
   end
 
-  def change_experience experience
+  # if we want to manualy switch to specific country or experience
+  def update data
     @session = FlowCommerce.instance.sessions.put_by_session(
       @session.id,
-      ::Io::Flow::V0::Models::SessionPutForm.new(experience: experience)
+      ::Io::Flow::V0::Models::SessionPutForm.new(data)
     )
-  rescue
-    @session = Flow::Session.new(experience: experience).session
+  end
+
+  def dump
+    Marshal.dump self
   end
 
   # get local experience or return nil
   def experience
     @session.local ? @session.local.experience : Flow::Experience.default
-  end
-
-  # we dump this to session and recreate one from
-  def to_hash
-    @session.to_hash
   end
 
   def local
