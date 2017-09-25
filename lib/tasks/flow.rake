@@ -111,6 +111,13 @@ namespace :flow do
       end
     end
 
+    # database fields
+    puts 'Database field (flow_data)'
+    for klass in [Spree::CreditCard, Spree::Product, Spree::Variant, Spree::Order, Spree::Promotion]
+      state = klass.new.respond_to?(:flow_data) ? 'exists'.green : 'not present (run rake flow:migrate)'.red
+      puts ' %s - %s' % [klass.to_s.ljust(18), state]
+    end
+
     # default URL
     puts 'Default store URL:'
     url = Spree::Store.find_by(default:true).url
