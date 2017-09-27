@@ -29,8 +29,7 @@ class ApplicationController < ActionController::Base
   before_render_filter do
     if @flow_session.experience
       flow_sync_order
-      flow_filter_products
-      flow_restrict_product
+      flow_filter_and_restrict_products
       flow_debug
     end
   end
@@ -118,17 +117,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # https://console.flow.io/:organization/restrictions
-  # filter out excluded product for particular experience
-  def flow_filter_products
+  def flow_filter_and_restrict_products
+    # filter out excluded product for particular experience
+    # https://console.flow.io/:organization/restrictions
     @products &&= @products.where("coalesce(spree_products.flow_data->'%s.excluded', '0') = '0'" % @flow_session.experience.key)
-  end
 
-  # altert and redirect when restricted or exclued product found
-  def flow_restrict_product
-    return unless @product
-
-    unless @product.flow_included?(@flow_session.experience)
+    # altert and redirect when restricted or exclued product found
+    if @product && !@product.flow_included?(@flow_session.experience)
       flash[:error] = 'Product "%s" is not included in "%s" catalog' % [@product.name, @flow_session.experience.key]
       redirect_to '/'
     end
