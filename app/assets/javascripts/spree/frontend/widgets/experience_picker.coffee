@@ -35,7 +35,7 @@ Widget.register 'experience_picker',
       $('#sidebar-data').show()
 
   flag_src: (key) ->
-    "https://flowcdn.io/util/icons/flags/32/#{key.toLowerCase()}.png"
+    "https://flowcdn.io/util/icons/flags/24/#{key.toLowerCase()}.png"
 
   toggle: ->
     @state.open = if @state.open then false else true
@@ -55,8 +55,8 @@ Widget.register 'experience_picker',
       line_item = $tag 'a.country', opts, =>
         image = $tag 'img', src: @flag_src(exp_country)
 
-        if exp_name.length > 24
-          exp_name = exp_name.substring(0, 21) + '&hellip;'
+        if exp_name.length > 26
+          exp_name = exp_name.substring(0, 23) + '&hellip;'
 
         [image, exp_name].join(' ')
 
