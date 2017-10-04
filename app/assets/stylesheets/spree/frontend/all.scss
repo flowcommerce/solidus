@@ -65,7 +65,8 @@ button.large, a.button, button.button, input.button {
   }
 
   &.primary {
-    border: none;
+    border: 1px solid #CB6C4B;
+    font-size: 14px !important;
     color: #fff !important;
     background-color: #FE4101 !important;
   }

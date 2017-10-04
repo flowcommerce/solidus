@@ -2,7 +2,7 @@
 
 <h5 class="sidebar-title">Flow details</h5>
 
-<%= total_cart_breakdown '' %>
+<%= total_cart_breakdown %>
 
 <% if @order.flow_data['order'] %>
   <p>Experience: <b><%= @order.flow_data.dig('order', 'experience', 'key') %></b></p>
