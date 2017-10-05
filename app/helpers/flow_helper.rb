@@ -189,7 +189,7 @@ module FlowHelper
     order = @order || simple_current_order
     order = nil if order && (order.state == 'complete' || order.item_count.zero?)
 
-    count = order.nil? ? '-' : order.item_count
+    count = order.nil? ? '' : order.item_count
     color = order.nil? ? '#000000' : '#880000'
 
     svg_ico '/images/nav-bag.svg', count: count, color: color
@@ -298,11 +298,11 @@ module FlowHelper
 
           opts[:class] = 'active' if request.path.include?(main_link)
 
-          link_to(taxonomy.name, '/t/%s' % main_link) + sub_data
+          link_to(taxonomy.name.upcase, '/t/%s' % main_link) + sub_data
         end
       end
 
-      main_data.push %[<li><a href="/sale">Sale</a></li>]
+      main_data.push %[<li><a href="/sale">SALE</a></li>]
 
       main_data
     end.html_safe
