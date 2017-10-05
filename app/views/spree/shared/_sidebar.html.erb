@@ -3,7 +3,7 @@
     <span class="close">&times;</span>
     <div id="sidebar-data">
       <% Spree::Taxonomy.all.each do |taxonomy| %>
-        <h5><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h5>
+        <h5><%= taxonomy.name %></h5>
         <%= flow_taxons_tree(taxonomy.root, @taxon) %>
       <% end %>
     </div>
