@@ -46,7 +46,8 @@
           > li {
             font-size: 14pt;
             display: inline-block;
-            margin-right: 20px;
+            margin: 0 21px 0 0;
+            padding: 16px 0;
             border-bottom: 2px solid #fff;
             position: relative;
             z-index: 1;
@@ -72,7 +73,7 @@
                 display: block;
                 z-index: 0;
                 position: absolute;
-                margin: 2px 0 0 0;
+                margin: 18px 0 0 0;
                 padding: 20px;
                 border: 1px solid #dedede;
                 background-color: #fff;
@@ -130,6 +131,6 @@
 
 @include media-tablet {
   #top-nav {
-    border-bottom: 1px solid #e7e7e7;
+    border-bottom: 0.5pt solid #ddd;
   }
 }

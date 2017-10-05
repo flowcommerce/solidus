@@ -99,6 +99,7 @@ class ApplicationController < ActionController::Base
     order ||= simple_current_order if respond_to?(:simple_current_order) && simple_current_order.try(:id)
 
     return unless order
+    return if order.line_items.length == 0
     return if request.path.include?('/admin/')
 
     # we need to clear any cached flow order data if we do not use flow
