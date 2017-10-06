@@ -2,6 +2,7 @@
 # for now all in same class
 
 require 'logger'
+require 'awesome_print'
 
 module Flow
   mattr_accessor :organization
@@ -40,12 +41,9 @@ module Flow
 
     data = JSON.load `#{command}`
 
-    if data.kind_of?(Hash) && data['code'] == 'generic_error'
-      ap data
-      data
-    else
-      data
-    end
+    ap data if data.kind_of?(Hash) && data['code'] == 'generic_error'
+
+    data
   end
 
   def log_api_error
