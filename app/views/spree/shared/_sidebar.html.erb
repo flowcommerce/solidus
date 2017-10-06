@@ -3,9 +3,13 @@
     <span class="close">&times;</span>
     <div id="sidebar-data">
       <% Spree::Taxonomy.all.each do |taxonomy| %>
-        <h5><%= taxonomy.name %></h5>
-        <%= flow_taxons_tree(taxonomy.root, @taxon) %>
+        <h5><a href="<%= taxonomy.taxons.first.permalink %>"><%= taxonomy.name.upcase %></a></h5>
+        <%=
+          # flow_taxons_tree(taxonomy.root, @taxon)
+          ''
+        %>
       <% end %>
+      <h5><a href="/sale">Sale</a></h5>
     </div>
     <div id="sidebar-data-exp"></div>
 

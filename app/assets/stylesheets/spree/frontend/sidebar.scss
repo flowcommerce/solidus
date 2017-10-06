@@ -12,11 +12,17 @@
     padding: 10px;
     box-shadow: 4px 2px 20px 1px rgba(0,0,0,0.55);
 
+    #sidebar-data {
+      padding-top: 100px;
+    }
+
     h5 {
       font-family: Oswald;
-      font-size: 10pt;
-      font-size: 13pt;
+      font-size: 15px;
       font-weight: 400;
+      margin-bottom: 40px;
+
+      a { color: #000 !important; }
     }
 
     ul {
@@ -32,7 +38,14 @@
       }
     }
 
-    span.close { display: block; font-size: 45px; margin-bottom: 30px; cursor: pointer; }
+    span.close {
+      display: block;
+      font-size: 35px;
+      font-weight: 300;
+      cursor: pointer;
+      float: right;
+      margin: 15px;
+    }
 
     .bottom-nav {
       position: absolute;
