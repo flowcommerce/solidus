@@ -8,7 +8,7 @@
       <% end %>
 
       <div id="existing-customer">
-        <h2>Returning customers</h2>
+        <h2 class="big">Returning customers</h2>
         <div data-hook="login">
           <%= render partial: 'spree/shared/login' %>
           <%= link_to Spree.t(:forgot_password), spree.recover_password_path %>
@@ -17,13 +17,14 @@
       <div data-hook="login_extras"></div>
     </div>
   </div>
+
   <% if request.request_method == 'GET' %>
     <div class="col">
       <div class="form">
         <%= render 'spree/shared/error_messages', target: resource %>
 
         <div id="new-customer">
-          <h2>New customers</h2>
+          <h2 class="big">New customers</h2>
 
           <div data-hook="signup">
             <%= form_for resource, as: :spree_user, url: spree.registration_path(resource) do |f| %>

@@ -24,15 +24,25 @@ $progress-ligtht-color: #bbb;
 }
 
 #two-cols {
-  margin-top: 50px;
+  margin-top: 100px;
   display: flex;
 
   > .col {
     flex: 1;
 
+    form {
+      width: 330px;
+
+      input[type=submit] {
+        width: 100%;
+        padding: 10px;
+      }
+    }
+
     &:first-child {
       .form {
-        padding-right: 40px;
+        float: right;
+        padding-right: 64px;
       }
     }
 
@@ -40,7 +50,7 @@ $progress-ligtht-color: #bbb;
       border-left: 1px solid #ccc;
 
       .form {
-        padding-left: 40px;
+        padding-left: 64px;
       }
     }
   }

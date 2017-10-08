@@ -25,6 +25,12 @@ h1 {
 
 h2 {
   font-family: Oswald;
+
+  &.big {
+    font-size: 32px;
+    font-weight: 300;
+    margin-bottom: 60px;
+  }
 }
 
 // html elements with classes
