@@ -21,6 +21,7 @@ h1 {
   padding: 0 100px 10px 0;
   border-bottom: 2px solid #777;
   margin: 10px 0 40px 0;
+  letter-spacing: 1px;
 }
 
 h2 {
@@ -40,7 +41,7 @@ a.info {
   font-weight: normal;
   font-family: Oswald;
   line-height: 24px;
-  height: 46px !important;
+  -height: 46px !important;
   color: #444 !important;
   display: block;
   margin-bottom: 6px;
@@ -161,7 +162,15 @@ button.large, a.button, button.button, input.button {
     padding-left: 20px;
     width: 195px;
     padding-bottom: 40px;
-    a.info { border: none !important; }
+
+    a.info {
+      border: none !important;
+      font-size: 16px;
+    }
+
+    span.price {
+      font-weight: 400;
+    }
   }
 }
 

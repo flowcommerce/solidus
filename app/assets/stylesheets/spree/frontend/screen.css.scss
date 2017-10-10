@@ -408,7 +408,9 @@ span.price {
 }
 
 .taxon-title {
-  font-size: $product_list_header_font_size;
+  font-size: 20px;
+  letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .search-results-title {
@@ -434,7 +436,6 @@ ul#products {
       display: block;
 
       &.info {
-        height: 35px;
         margin-top: 5px;
         font-size: $product_list_name_font_size;
         color: $product_link_text_color;
