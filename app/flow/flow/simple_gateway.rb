@@ -102,10 +102,10 @@ class Flow::SimpleGateway
 
   # gets credit card token
   def cc_get_token
-    cards = @order.credit_cards.select{ |cc| cc[:flow_data]['cc_token'] }
-    raise StandarError.new('Credit card not found') unless cards.first
+    cards = @order.credit_cards.select{ |cc| cc.gateway_customer_profile_id }
+    raise StandarError.new('Credit card with token not found') unless cards.first
 
-    cards.first.flow_data['cc_token'] || raise(StandardError.new 'Flow credit card token not found')
+    cards.first.gateway_customer_profile_id
   end
 
   # we want to return errors in standardized format

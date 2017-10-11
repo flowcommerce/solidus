@@ -64,6 +64,8 @@ module Spree
     end
 
     def create_profile payment
+      # binding.pry
+
       # payment.order.state
       @credit_card = payment.source
 
@@ -83,7 +85,8 @@ module Spree
 
     # create payment profile with Flow and tokenize Credit Card
     def create_flow_cc_profile!
-      return if @credit_card.flow_data['cc_token']
+      return if @credit_card.gateway_customer_profile_id
+      return unless @credit_card.verification_value
 
       # build credit card hash
       data = {}
@@ -98,8 +101,7 @@ module Spree
       card_form = ::Io::Flow::V0::Models::CardForm.new(data)
       result    = FlowCommerce.instance.cards.post(::Flow.organization, card_form)
 
-      # save in credit card flow_data field
-      @credit_card.update_column :flow_data, @credit_card.flow_data.merge({ cc_token: result.token })
+      @credit_card.update_column :gateway_customer_profile_id, result.token
     end
 
     def load_order options
