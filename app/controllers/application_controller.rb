@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
       @save_session = true
     end
 
-    # we will allow live change of experience by key
+    # allow changing between experiences by key
     if flow_exp_key = params[:flow_experience]
       session.update flow_exp_key == 'null' ?
         { country: Flow.base_country } :

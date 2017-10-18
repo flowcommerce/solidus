@@ -107,11 +107,11 @@
           &.active { border-bottom: 2px solid #555; }
         }
 
-        form {
-          width: 150px;
+        #search-form {
+          width: 250px;
           text-align: right;
           position: absolute;
-          margin-left: 140px;
+          margin-left: 240px;
           margin-top: 41px;
 
           &.hidden { display: none; }
@@ -121,7 +121,7 @@
             font-size: 12pt;
             width: 50px;
 
-            &:focus { width: 150px; display: inline-block; border-color: #ccc; }
+            &:focus { width: 250px; display: inline-block; border-color: #ccc; }
           }
         }
       }
