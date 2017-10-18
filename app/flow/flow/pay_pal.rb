@@ -1,5 +1,5 @@
 # Flow.io (2017)
-# communicates with flow api, responds to webhook events
+# communicates with flow api to synchronize Solidus order with PayPal
 
 module Flow::PayPal
   extend self

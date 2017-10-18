@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   private
 
   protect_from_forgery with: :exception
-  before_filter        :flow_set_experience, :flow_before_filters
+  before_action        :flow_set_experience, :flow_before_filters
 
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but

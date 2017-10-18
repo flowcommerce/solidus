@@ -2,14 +2,13 @@
 # for now all in same class
 
 require 'logger'
-require 'awesome_print'
 
 module Flow
-  mattr_accessor :organization
-  mattr_accessor :base_country
-  mattr_accessor :api_key
-
   extend self
+
+  def organization() ENV.fetch('FLOW_ORGANIZATION') end
+  def base_country() ENV.fetch('FLOW_BASE_COUNTRY') end
+  def api_key()      ENV.fetch('FLOW_API_KEY') end
 
   # builds curl command and gets remote data
   def api action, path, params={}, body=nil
@@ -41,13 +40,12 @@ module Flow
 
     data = JSON.load `#{command}`
 
-    ap data if data.kind_of?(Hash) && data['code'] == 'generic_error'
-
-    data
-  end
-
-  def log_api_error
-
+    if data.kind_of?(Hash) && data['code'] == 'generic_error'
+      ap data
+      data
+    else
+      data
+    end
   end
 
   def logger

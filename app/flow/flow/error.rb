@@ -1,12 +1,12 @@
 # Flow (2017)
-# for flow errors
+# api error logger and formater
 
 require 'digest/sha1'
 
 class Flow::Error < StandardError
 
   # logs error to file for easy discovery and fix
-  def self.log(exception, request)
+  def self.log exception, request
     history = exception.backtrace.reject{ |el| el.index('/gems/') }.map{ |el| el.sub(Rails.root.to_s, '') }.join($/)
 
     msg  = '%s in %s' % [exception.class, request.url]

@@ -1,5 +1,5 @@
 # Flow.io (2017)
-  # communicates with flow api, easy access to session
+# communicates with flow api, easy access to session
 
 class Flow::Session
   attr_accessor :session, :localized, :visitor

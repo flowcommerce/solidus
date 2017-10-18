@@ -35,13 +35,9 @@ module DemoShop
 
     config.after_initialize do |app|
       app.config.spree.payment_methods << Spree::Gateway::Flow
-      # app.config.spree.payment_methods << Spree::Gateway::StripeGateway
-
-      Flow.organization = ENV.fetch('FLOW_ORGANIZATION')
-      Flow.base_country = ENV.fetch('FLOW_BASE_COUNTRY')
-      Flow.api_key      = ENV.fetch('FLOW_API_KEY')
 
       ActionMailer::Base.default_url_options[:host] = Spree::Store.find_by(default:true).try(:url)
+
       Hashie.logger = Logger.new(nil)
 
       Flow::SimpleGateway.clear_zero_amount_payments = true
