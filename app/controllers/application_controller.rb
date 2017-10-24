@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     if wu = session['warden.user.spree_user.key']
       wu[0] ? 'uid-%d' % wu[0][0] : wu[1]
     else
-      Digest::SHA1.hexdigest request.ip
+      Digest::SHA1.hexdigest request.ip + request.user_agent
     end
   end
 
