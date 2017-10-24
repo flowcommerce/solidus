@@ -460,11 +460,15 @@ ul#products {
 
     }
 
-    .price {
-      color: $link_text_color;
-      font-size: $product_list_price_font_size;
-      padding-top: 5px;
-      display: block;
+    .product-name-and-price {
+      height: 80px;
+
+      .price {
+        color: $link_text_color;
+        font-size: $product_list_price_font_size;
+        padding-top: 5px;
+        display: block;
+      }
     }
   }
 }
