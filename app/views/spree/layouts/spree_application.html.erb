@@ -49,7 +49,7 @@
           order_number: '<%= @order.try(:number) %>',
           exp: {
             default: '<%= ENV.fetch('FLOW_BASE_COUNTRY') %>',
-            selected: '<%= @flow_session.experience.try(:country) %>',
+            current: '<%= @flow_session.experience.try(:country) %>',
             experiences: <%= Flow::Experience.compact.to_json.html_safe %>
           }
         }

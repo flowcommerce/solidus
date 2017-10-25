@@ -27,3 +27,5 @@ Widget.register 'plus-minus',
 
   render: ->
     @root.val @value
+
+

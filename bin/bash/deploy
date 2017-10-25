@@ -21,5 +21,4 @@ ssh -t $REMOTE_SERVER "
   bundle;
   rake db:migrate;
   rake assets:precompile;
-  sudo service nginx restart;
-  bash"
+  sudo service nginx restart;"

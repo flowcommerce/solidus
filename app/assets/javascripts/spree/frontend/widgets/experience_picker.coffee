@@ -15,6 +15,9 @@ Widget.register 'experience_picker',
     # default experience to expose
     @default_country = window.app.state.exp.default
 
+    # current experience
+    @current_country = window.app.state.exp.current
+
     @root.after @render_popup() unless $('#choose_experience')[0]
 
   render: ->
@@ -60,7 +63,7 @@ Widget.register 'experience_picker',
 
         [image, exp_name].join(' ')
 
-      if exp_country == @default_country
+      if exp_country == @current_country
         first_item = line_item
       else
         countries.push line_item
