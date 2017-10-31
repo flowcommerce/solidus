@@ -49,10 +49,12 @@ Widget.register 'experience_picker',
     first_item = null
     countries  = []
 
+    sufix = if location.href.indexOf('?') > -1 then '&' else '?'
+
     # deconstruct country experience from array and loop
     for [exp_country, exp_key, exp_name] in @experiences
       opts =
-        href: "?flow_experience=#{exp_key}"
+        href: "#{location.href}#{sufix}flow_experience=#{exp_key}"
 
       # create link with image and exp name, and push to array
       line_item = $tag 'a.country', opts, =>

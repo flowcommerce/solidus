@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
         { country: Flow.base_country } :
         { experience: flow_exp_key }
 
-      redirect_to request.path
+      redirect_to request.url.sub /.flow_experience=.*/, ''
       @save_session = true
     end
 
