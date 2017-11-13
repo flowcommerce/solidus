@@ -15,6 +15,7 @@ WORKDIR /opt/rails
 RUN bundle install
 
 # COPY ./config/docker/.env /opt/rails/.env
-# ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "default", "solidus", "need-run-script"]
 
-# HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl -f http://localhost:3000/_internal_/healthcheck || exit 1
+ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "default", "solidus", "puma -p 3000 -e production"]
+
+HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl -f http://localhost:3000/_internal_/healthcheck || exit 1
