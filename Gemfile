@@ -25,6 +25,8 @@ gem 'rails_before_render'
 gem 'solidus', '2.1.0',    require: false
 gem 'solidus_auth_devise', require: false
 
+gem "bugsnag"
+
 group :manual_load do
   gem 'dotenv'
   gem 'faraday'
