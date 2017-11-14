@@ -17,5 +17,10 @@ module Spree
 
       render :index
     end
+
+    def not_found
+      @title    = 'Page not found'
+      response.status = 404
+    end
   end
 end

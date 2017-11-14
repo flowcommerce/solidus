@@ -26,4 +26,7 @@ Rails.application.routes.draw do
 
   # sigle page for flow specific admin
   get '/admin/flow', to:'flow#index'
+
+  # 404
+  get '*all', to: 'spree/home#not_found'
 end

@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
     # hard log error
     Flow::Error.log exception, request
 
-    if Rails.env.production?
+    if !Rails.env.production?
       # render small error template with basic info for the user
       info_hash = { message: exception.message, klass: exception.class }
 
