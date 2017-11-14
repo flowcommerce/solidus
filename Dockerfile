@@ -18,6 +18,6 @@ RUN bundle install
 # COPY ./config/docker/.env /opt/rails/.env
 
 # java -jar /root/environment-provider.jar --service default solidus bin/start.sh production
-ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "default", "solidus", "bin/start.sh", "production"]
+ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "default", "solidus", "bin/start.sh"]
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl -f http://localhost:3000/_internal_/healthcheck || exit 1
