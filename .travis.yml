@@ -3,7 +3,7 @@ dist: trusty
 sudo: enabled
 
 script:
-  - echo "TODO: run tests"
+  - echo 'TODO run tests'
 
 branches:
   except:
