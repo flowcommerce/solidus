@@ -3,6 +3,7 @@
 
 require 'json'
 require 'logger'
+require 'pathname'
 
 module FolwApiRefresh
   extend self
