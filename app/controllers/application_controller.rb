@@ -12,16 +12,18 @@ class ApplicationController < ActionController::Base
   # idea is to not have any errors in the future, but
   # if they happen we will show hopefully meaning full info
   rescue_from StandardError do |exception|
-    # hard log error
-    Flow::Error.log exception, request
-
     if Rails.env.production?
+      Bugsnag.notify(exception)
+
       # render small error template with basic info for the user
       info_hash = { message: exception.message, klass: exception.class }
 
       # show customized error only in production
       render text: Rails.root.join('app/views/flow/_error.html').read % info_hash
     else
+      # hard log error
+      Flow::Error.log exception, request
+
       raise exception
     end
   end
