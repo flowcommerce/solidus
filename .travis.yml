@@ -1,0 +1,10 @@
+language: ruby
+dist: trusty
+sudo: enabled
+
+script:
+  - echo "TODO: run tests"
+
+branches:
+  except:
+      - /^\d+\.\d+\.\d+$/
