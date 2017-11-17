@@ -60,6 +60,10 @@ class Remote < Thor
     Cli.run 'scp "%s" $REMOTE_SERVER:~' % name
     Cli.remote 'ls -al; bash'
   end
+
+  define :sync_to_s3, 'Sync public public folder to S3' do
+    Cli.run 'aws s3 sync ./public s3://io.flow.solidus-s3 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1'
+  end
 end
 
 Remote.start(ARGV)
