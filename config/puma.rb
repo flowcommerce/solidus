@@ -20,13 +20,13 @@ if ENV.fetch('RACK_ENV') == 'production'
   end
 
   # refresh and sync products
-  require './app/flow/lib/flow_api_refresh'
-  Thread.new do
-    while true
-      FolwApiRefresh.sync_products_if_needed!
+  # require './app/flow/lib/flow_api_refresh'
+  # Thread.new do
+  #   while true
+  #     FolwApiRefresh.sync_products_if_needed!
 
-      sleep 3600
-    end
-  end
+  #     sleep 3600
+  #   end
+  # end
 end
 

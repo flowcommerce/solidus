@@ -67,6 +67,7 @@ class Remote < Thor
   end
 
   define :sync_to_s3, 'Sync public public folder to S3' do |folder=nil|
+    # we should push only assets
     folder ||= 'assets'
     folder   = '/%s' % folder unless folder.to_s[0, 1] == '/'
 
