@@ -30,6 +30,11 @@ module Cli
   def remote command
     run %[ssh -t $REMOTE_SERVER "cd $REMOTE_PATH; echo '$REMOTE_PASS' | sudo -S echo; %s"] % command
   end
+
+  def die text
+    puts text.red
+    exit
+  end
 end
 
 ###
@@ -61,8 +66,23 @@ class Remote < Thor
     Cli.remote 'ls -al; bash'
   end
 
-  define :sync_to_s3, 'Sync public public folder to S3' do
-    Cli.run 'aws s3 sync ./public s3://io.flow.solidus-s3 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1'
+  define :sync_to_s3, 'Sync public public folder to S3' do |folder=nil|
+    folder ||= 'assets'
+    folder   = '/%s' % folder unless folder.to_s[0, 1] == '/'
+
+    # compile assets in production mode
+    Cli.run 'RAILS_ENV=production bundle exec rake assets:precompile'
+
+    # ensure we have backup manifest file
+    manifest  = './public/assets/.sprockets-manifest.json'
+    manifests = Dir['./public/assets/.sprockets-manifest-*']
+
+    Cli.die 'Manifest file not found?' unless manifests.first
+    Cli.die '%d manifests found!' % manifests.length if manifests.length > 1
+    Cli.run 'cp %s ./public/assets/.sprockets-manifest.json' % manifests.first
+
+    # upload to S3
+    Cli.run "aws s3 sync ./public#{folder} s3://io.flow.solidus-s3#{folder} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1"
   end
 end
 
