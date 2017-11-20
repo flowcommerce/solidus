@@ -1,3 +1,7 @@
-command=-$1-
+# put this inside jar runer start.sh
 
-echo $command
+while [ true ]
+do
+  echo 'running ...'
+  sleep 5
+done

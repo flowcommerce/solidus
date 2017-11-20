@@ -10,9 +10,9 @@ threads 0, 16
 if ENV.fetch('RACK_ENV') == 'production'
   # workers 2
 
-  # on_worker_boot do
-  #   ActiveRecord::Base.establish_connection
-  # end
+  on_worker_boot do
+    ActiveRecord::Base.establish_connection
+  end
 
   before_fork do
     require 'puma_worker_killer'
@@ -20,13 +20,16 @@ if ENV.fetch('RACK_ENV') == 'production'
   end
 
   # refresh and sync products
-  # require './app/flow/lib/flow_api_refresh'
-  # Thread.new do
-  #   while true
-  #     FolwApiRefresh.sync_products_if_needed!
+  if ENV['SYNC_PRODUCTS'] == 'true'
+    require './app/flow/lib/flow_api_refresh'
 
-  #     sleep 3600
-  #   end
-  # end
+    Thread.new do
+      while true
+        FolwApiRefresh.sync_products_if_needed!
+
+        sleep 3600
+      end
+    end
+  end
 end
 
