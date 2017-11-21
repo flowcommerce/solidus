@@ -183,12 +183,24 @@ button.large, a.button, button.button, input.button {
 #product-price h6, #taxon-crumbs h6 { margin-bottom: 5px; }
 
 #product-description-details {
-  line-height: 20px;
+  line-height: 16px;
 
   p, li {
+    font-size: 14px;
     display: block;
     margin: 0;
     padding: 0 0 15px 0;
+  }
+
+  li {
+    list-style-type: square;
+    padding-left: 14px;
+
+    &:before {
+      position: absolute;
+      margin-left: -10px;
+      content: "-";
+    }
   }
 }
 
