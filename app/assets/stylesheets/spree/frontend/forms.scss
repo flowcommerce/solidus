@@ -57,6 +57,16 @@ $progress-ligtht-color: #bbb;
 }
 
 form {
+  .form-link-right {
+    float: right;
+    color: #000 !important;
+    font-family: Roboto;
+  }
+
+  .small {
+    font-size: 12px;
+  }
+
   input[type=email], input[type=password] {
     width: 100%;
     height: 30px;

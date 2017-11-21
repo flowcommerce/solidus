@@ -84,7 +84,7 @@
             <%= truncated_product_description(item.variant.product) %>
             <%= "(" + item.variant.options_text + ")" unless item.variant.option_values.empty? %>
           </td>
-          <td>
+          <td style="min-width: 150px;">
             <%= @order.flow_line_item_price(item) %>&nbsp;&times;&nbsp;<%= item.quantity %>
             <br />
             <%= @order.flow_line_item_price(item, :with_quantity) %>

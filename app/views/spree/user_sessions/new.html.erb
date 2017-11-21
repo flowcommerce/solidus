@@ -8,10 +8,27 @@
       <% end %>
 
       <div id="existing-customer">
-        <h2 class="big">Returning customers</h2>
+        <h2 class="big">Returning Customers</h2>
         <div data-hook="login">
-          <%= render partial: 'spree/shared/login' %>
-          <%= link_to Spree.t(:forgot_password), spree.recover_password_path %>
+          <%= form_for Spree::User.new, as: :spree_user, url: spree.create_new_session_path do |f| %>
+            <div id="password-credentials">
+              <p>
+                <%= f.label :email, Spree.t(:email) %><br />
+                <%= f.email_field :email, class: 'title', tabindex: 1, autofocus: true %>
+              </p>
+              <p>
+                <%= f.label :password, Spree.t(:password) %><br />
+                <%= f.password_field :password, class: 'title', tabindex: 2 %>
+              </p>
+            </div>
+            <p class="small">
+              <a href="/password/recover" class="form-link-right">Forgot Password?</a>
+              <%= f.check_box :remember_me, tabindex: 3 %>
+              <%= f.label :remember_me, Spree.t(:remember_me) %>
+            </p>
+
+            <p><%= f.submit Spree.t(:login), class: 'button primary', tabindex: 4 %></p>
+          <% end %>
         </div>
       </div>
       <div data-hook="login_extras"></div>
@@ -24,7 +41,7 @@
         <%= render 'spree/shared/error_messages', target: resource %>
 
         <div id="new-customer">
-          <h2 class="big">New customers</h2>
+          <h2 class="big">New Customers</h2>
 
           <div data-hook="signup">
             <%= form_for resource, as: :spree_user, url: spree.registration_path(resource) do |f| %>
@@ -33,6 +50,9 @@
                 <p><%= f.submit 'Sign Up', class: 'button primary' %></p>
               </div>
             <% end %>
+            <div style="padding-left: 155px;">or</div>
+            <br />
+            <button class="button large" onclick="location.href='/'" style="width: 330px !important;">Continue as guest</button>
           </div>
         </div>
       <div data-hook="login_extras"></div>

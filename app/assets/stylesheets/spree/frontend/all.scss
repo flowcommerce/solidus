@@ -31,20 +31,21 @@ h2 {
     font-size: 32px;
     font-weight: 300;
     margin-bottom: 60px;
+    color: #000;
   }
 }
 
 // html elements with classes
 a { color:#0092A6 !important; }
 a.info {
-  font-size: 17px !important;
-  font-weight: normal;
-  font-family: Oswald;
-  line-height: 24px;
   color: #444 !important;
   display: block;
-  margin-bottom: 6px;
   overflow: visible;
+  font-size: 16px !important;
+  font-weight: normal;
+  font-family: Oswald;
+  line-height: 22px;
+  margin-bottom: 6px;
 }
 
 ul.taxons-list a     { font-size: 14px !important; line-height: 22px !important; margin-left: -10px; }
@@ -53,10 +54,11 @@ ul.filter_choices li { line-height: 30px; list-style-type: none; }
 br.c { clear: both; }
 
 button.large, a.button, button.button, input.button {
+  border-radius: 0;
   border: 1px solid #ccc;
   font-family: Oswald;
-  padding: 5px 40px;
-  font-size: 15px !important;
+  padding: 10px 40px;
+  font-size: 14px !important;
   letter-spacing: 1px !important;
   background-color: #fff;
   color: #222 !important;
@@ -232,7 +234,7 @@ button.large, a.button, button.button, input.button {
   text-align: center;
   font-size: 14px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   padding: 5px;
 
   a {
@@ -253,7 +255,6 @@ button.large, a.button, button.button, input.button {
 
   img {
     width: 100%;
-    border: 1px solid #bbb;
     border-left: none;
     border-right: none;
   }
@@ -270,21 +271,24 @@ button.large, a.button, button.button, input.button {
   }
 
   h2, h3 {
-    color: #eee;
+    color: #000;
     font-weight: 400;
     margin-right: 15px;
     -text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   }
 
   h2 {
-    font-family: "Playfair Display";
+    font-family: 'Playfair Display';
+    line-height: 12px;
+    padding-bottom: 7px;
     font-size: 36px;
   }
 
   h3 {
-    font-family:Roboto;
+    font-family: Roboto;
     font-weight: 200;
-    letter-spacing: 0.5px;
+    font-size: 12px;
+    letter-spacing: 0;
     font-size: 16px;
     margin-top: 3px;
   }
