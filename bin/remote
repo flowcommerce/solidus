@@ -83,7 +83,7 @@ class Remote < Thor
     Cli.run 'cp %s ./public/assets/.sprockets-manifest.json' % manifests.first
 
     # upload to S3
-    Cli.run "aws s3 sync ./public#{folder} s3://io.flow.solidus-s3#{folder} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1"
+    Cli.run "AWS_PROFILE=flowcommerce aws s3 sync ./public#{folder} s3://io.flow.solidus-s3#{folder} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1"
   end
 end
 
