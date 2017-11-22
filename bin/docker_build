@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-rake assets:clean
-rake assets:precompile
-
-docker build flowdocker/solidus:0.2.0 .
