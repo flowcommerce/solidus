@@ -121,7 +121,9 @@
 
           input {
             transition: width 0.2s ease;
+            padding: 0 10px;
             font-size: 12pt;
+            height: 40px;
             width: 50px;
 
             &:focus { width: 250px; display: inline-block; border-color: #ccc; }

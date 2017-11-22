@@ -271,7 +271,7 @@ button.large, a.button, button.button, input.button {
   }
 
   h2, h3 {
-    color: #000;
+    color: #fff;
     font-weight: 400;
     margin-right: 15px;
     -text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
@@ -282,6 +282,7 @@ button.large, a.button, button.button, input.button {
     line-height: 12px;
     padding-bottom: 7px;
     font-size: 36px;
+    font-weight: bold;
   }
 
   h3 {
@@ -290,7 +291,7 @@ button.large, a.button, button.button, input.button {
     font-size: 12px;
     letter-spacing: 0;
     font-size: 16px;
-    margin-top: 3px;
+    margin-top: 5px;
   }
 }
 
