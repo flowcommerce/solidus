@@ -111,7 +111,7 @@ module FlowHelper
   def flow_taxons_tree root_taxon, current_taxon
     return '' if root_taxon.children.empty?
 
-    max_level = 2
+    max_level = 1
 
     content_tag :ul, class: 'taxons-list' do
       taxons = root_taxon.children.map do |taxon|
