@@ -56,6 +56,36 @@ $progress-ligtht-color: #bbb;
   }
 }
 
+@media only screen and (max-width: 900px) {
+  #two-cols {
+    display: block;
+    margin-top: 40px;
+
+    * { float: none !important; }
+    .form-link-right { float: right !important; }
+
+    > .col {
+      display: block;
+      padding-bottom: 30px;
+
+      h2 {
+        white-space: nowrap;
+        margin-bottom: 20px;
+      }
+
+      .form {
+        padding: 0 !important;
+      }
+
+      &:last-child {
+        border-left: none;
+        border-top: 1px solid #ddd;
+        padding-top: 30px;
+      }
+    }
+  }
+}
+
 form {
   .form-link-right {
     float: right;

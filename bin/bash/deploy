@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -x
+
+bin/remote sync_to_s3
+
 source .env
 
 rsync \
