@@ -72,7 +72,7 @@ class Remote < Thor
     folder   = '/%s' % folder if folder && folder[0, 1] != '/'
 
     # compile assets in production mode
-    Cli.run 'RAILS_ENV=production bundle exec rake assets:clean && assets:precompile'
+    Cli.run 'RAILS_ENV=production bundle exec rake assets:clean && rake assets:precompile'
 
     # ensure we have backup manifest file
     manifests = Dir['./public/assets/.sprockets-manifest-*']
