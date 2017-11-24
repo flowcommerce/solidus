@@ -466,10 +466,16 @@ ul#products {
       height: 80px;
 
       .price {
-        color: $link_text_color;
         font-size: $product_list_price_font_size;
+        font-weight: 300;
+        font-size: 14px;
+        color: $link_text_color;
         padding-top: 5px;
         display: block;
+      }
+
+      a.info {
+        color: #000 !important;
       }
     }
   }
