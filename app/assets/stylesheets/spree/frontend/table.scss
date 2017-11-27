@@ -1,0 +1,30 @@
+@import 'media-queries';
+
+@include media-mobile {
+  table.responsive {
+    border: 0;
+
+    tr {
+      display: block;
+
+      th {
+        display: none;
+      }
+
+      td {
+        border: none !important;
+        display: block;
+        text-align: right;
+        padding: 10px 5px !important;
+
+        &:before {
+          float: left;
+        }
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}

@@ -29,10 +29,6 @@
   .center-in-tablet { text-align: center; }
 
   button { width: auto !important; }
-
-  #content {
-    padding: 0 10px;
-  }
 }
 
 @include media-mobile {
@@ -76,5 +72,6 @@
 }
 
 #content {
+  padding: 0 10px;
   text-align: left !important;
 }
