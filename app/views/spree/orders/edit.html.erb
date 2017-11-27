@@ -34,7 +34,7 @@
     <% end %>
   </div>
 
-  <div id="empty-cart" data-hook>
+  <div id="empty-cart" class="hide-in-mobile" data-hook>
     <%= form_tag empty_cart_path, :method => :put do %>
       <p id="clear_cart_link" data-hook>
       <%= link_to Spree.t(:continue_shopping), products_path %>

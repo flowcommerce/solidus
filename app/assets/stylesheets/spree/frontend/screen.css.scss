@@ -7,6 +7,7 @@
 @import 'spree/frontend/skeleton';
 @import 'spree/frontend/variables';
 @import 'font-awesome';
+@import 'media-queries';
 
 /*--------------------------------------*/
 /* Basic styles
@@ -638,6 +639,16 @@ ul#products {
           }
         }
       }
+    }
+  }
+}
+
+@include media-mobile {
+  .progress-steps li {
+    display: none;
+
+    &.current-first, &.current {
+      display: inline;
     }
   }
 }

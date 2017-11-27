@@ -62,7 +62,7 @@
 <fieldset class="form">
   <legend>ORDER PRODUCTS</legend>
 
-  <table id='line-items' class="index columns alpha omega sixteen" data-hook="order_details">
+  <table id='line-items' class="index columns alpha omega sixteen responsive" data-hook="order_details">
     <col width="15%" valign="middle" halign="center">
     <col valign="middle">
     <col width="5%" valign="middle" halign="center">
@@ -92,14 +92,8 @@
         </tr>
       <% end %>
     </tbody>
-
-    <tfoot id="subtotal" data-hook="order_details_subtotal">
-      <tr class="total" id="subtotal-row">
-        <td colspan="5">
-          <br />
-          <%= total_cart_breakdown %>
-        </td>
-      </tr>
-    </tfoot>
   </table>
 </fieldset>
+
+<%= total_cart_breakdown %>
+<br style="clear: both;" />

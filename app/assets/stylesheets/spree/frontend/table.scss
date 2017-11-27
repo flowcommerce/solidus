@@ -4,27 +4,39 @@
   table.responsive {
     border: 0;
 
-    tr {
-      display: block;
+    thead {
+      display: none;
+    }
 
-      th {
-        display: none;
-      }
-
-      td {
-        border: none !important;
+    > tbody {
+      > tr {
         display: block;
-        text-align: right;
-        padding: 10px 5px !important;
 
-        &:before {
-          float: left;
+        > th {
+          display: none;
         }
 
-        &:last-child {
-          border-bottom: 0;
+        > td {
+          border: none !important;
+          display: block;
+          text-align: right;
+          padding: 10px 5px !important;
+
+          &:before {
+            float: left;
+          }
+
+          &:last-child {
+            border-bottom: 0;
+          }
         }
       }
     }
+  }
+}
+
+#line-items {
+  tr:last-child {
+    border-bottom: none;
   }
 }
