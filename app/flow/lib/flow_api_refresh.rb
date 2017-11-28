@@ -70,12 +70,10 @@ module FolwApiRefresh
     info.join(' ')
   end
 
-  def sync_products_if_needed!
+  def sync_products_if_needed! sync_needed=false
     json = get_data
 
-    sync_needed = false
-
-    unless json['started']
+      unless json['started']
       sync_needed ||= true if json['force_refresh']
       sync_needed ||= true if json['start'].to_i < (Time.now.to_i - SYNC_INTERVAL_IN_MINUTES * 60)
     end
