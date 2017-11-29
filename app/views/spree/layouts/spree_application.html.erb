@@ -9,6 +9,7 @@
     <%= render :partial => 'spree/shared/head' %>
   </head>
   <body class="<%= body_class %>" id="<%= @body_id || 'default' %>" data-hook="body">
+    <%= render_tmp_site_info %>
     <div id="loader"></div>
     <% if @flow_session.localized? %>
       <div id="flow-bar">

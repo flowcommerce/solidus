@@ -313,3 +313,20 @@ button.large, a.button, button.button, input.button {
   outline-offset:-1px;
   height: 34px !important;
 }
+
+#tmp-site-info {
+  background-color: #800;
+  padding: 4px;
+  text-align: right;
+
+  .container {
+    padding-right: 40px;
+  }
+
+  &, a {
+    color: #fff !important;
+    font-size: 13px;
+  }
+
+  a { font-weight: bold; }
+}

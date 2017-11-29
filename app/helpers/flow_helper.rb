@@ -3,11 +3,16 @@
 module FlowHelper
   extend self
 
-  # <% if @jumbo_image = flow_get_jumbo_image %>
-  #   <div id="jumbo-image">
-  #     <img src="<%= @jumbo_image %>" />
-  #   </div>
-  # <% end %>
+  def render_tmp_site_info
+    return unless request.host.include?('color-mont.com')
+
+    %[<div id="tmp-site-info">
+        <div class="container">
+          You are using an alternative solidus app, main site is located at <a href="https://solidus.api.flow.io/">https://solidus.api.flow.io</a>
+        </div>
+      </div>].html_safe
+  end
+
   def flow_render_header
     banner = case request.path
       when '/'
