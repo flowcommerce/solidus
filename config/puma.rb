@@ -8,7 +8,7 @@ port    3000
 threads 0, 16
 
 if ENV.fetch('RACK_ENV') == 'production'
-#   # workers 2
+  # workers 2
 
   on_worker_boot do
     ActiveRecord::Base.establish_connection
@@ -20,7 +20,7 @@ if ENV.fetch('RACK_ENV') == 'production'
   end
 
   # refresh and sync products
-  # if ENV['SYNC_PRODUCTS'] == 'true'
+  if ENV['SYNC_PRODUCTS'] == 'true'
     puts '* product sync enabled'
     require './app/flow/lib/flow_api_refresh'
 
@@ -31,6 +31,6 @@ if ENV.fetch('RACK_ENV') == 'production'
         sleep 3600
       end
     end
-  # end
+  end
 end
 

@@ -4,7 +4,7 @@
 			<polygon stroke-width="2" points="17.9357143 18 0.578571429 18 1.15714286 3.6 17.3571429 3.6"></polygon>
 			<path d="M5.78571429,5.4 C5.78571429,3.6 5.90142857,0 9.25714286,0 C12.6128571,0 12.7285714,3.6 12.7285714,5.4" stroke-width="2"></path>
 		</g>
-		<text font-size="11" font-weight="normal" fill="#000000" font-family="Oswald">
+		<text font-size="11" font-weight="bold" fill="#000000" font-family="Oswald">
 			<tspan x="8.31811523" y="15.5">#{count}</tspan>
 		</text>
 	</g>

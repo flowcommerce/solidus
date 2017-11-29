@@ -190,7 +190,8 @@ module FlowHelper
     order = nil if order && (order.state == 'complete' || order.item_count.zero?)
 
     count = order.nil? ? '' : order.item_count
-    color = order.nil? ? '#000000' : '#880000'
+    # color = order.nil? ? '#000000' : '#880000'
+    color = '#000000'
 
     svg_ico '/images/nav-bag.svg', count: count, color: color
   end
