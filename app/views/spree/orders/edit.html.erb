@@ -27,7 +27,7 @@
         <div class="text-align-right middle">
           <button name="button" type="submit" class="button checkout" id="update-button">UPDATE</button>
           <span>or</span>
-          <button id="checkout-link" class="button checkout primary large" name="checkout">CHECKOUT</button>
+          <button id="checkout-link" class="button checkout primary large" name="checkout"<%= @flow_order.try(:error?) ? ' disabled=""' : nil %>>CHECKOUT</button>
         </div>
 
       </div>

@@ -79,9 +79,9 @@ button.large, a.button, button.button, input.button {
     background-color: #FE4101 !important;
   }
 
-  &.disabled {
+  &.disabled, &[disabled] {
     @extend .primary;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 }
 

@@ -65,7 +65,7 @@ class Flow::Order
   end
 
   def error?
-    @response && @response['code'] && @response['messages']
+    @response && @response['code'] && @response['messages'] ? true : false
   end
 
   def delivery

@@ -11,12 +11,10 @@
 
   .container {
     .flex {
-      padding: 5px 10px 0 10px;
+      // padding: 5px 10px 0 10px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-
-      height: 70px;
 
       > div { flex: 1; }
 
@@ -41,13 +39,15 @@
 
         // 1st lvl nav
         > ul {
-          margin-top: 14px;
+          margin-top: 4px;
 
           > li {
             font-size: 14pt;
             display: inline-block;
             margin: 0 21px 0 0;
-            padding: 16px 0;
+            padding-top: 10px;
+            padding-bottom: 16px;
+            margin-bottom: -16px;
             border-bottom: 2px solid #fff;
             position: relative;
             z-index: 1;
