@@ -15,6 +15,12 @@ ActiveRecord::Schema.define(version: 20171201014049) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "flow_settings", id: :integer, default: -> { "nextval('table_flow_settings_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string   "key"
+    t.text     "data"
+    t.datetime "created_at"
+  end
+
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string   "slug",                      null: false
     t.integer  "sluggable_id",              null: false
@@ -1165,12 +1171,6 @@ ActiveRecord::Schema.define(version: 20171201014049) do
     t.integer  "zone_members_count", default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "table_flow_settings", force: :cascade do |t|
-    t.string   "key"
-    t.text     "data"
-    t.datetime "created_at"
   end
 
   add_foreign_key "spree_adjustments", "spree_orders", column: "order_id", name: "fk_spree_adjustments_order_id", on_update: :restrict, on_delete: :restrict

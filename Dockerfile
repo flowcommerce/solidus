@@ -11,6 +11,7 @@ RUN gem install bundler
 # we add this here so it can be cached by docker and not built on every step
 ADD ./Gemfile* /opt/rails/
 RUN bundle install
+RUN rake db:migrate
 
 # add app
 ADD . /opt/rails
