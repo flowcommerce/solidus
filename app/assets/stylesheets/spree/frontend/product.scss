@@ -1,3 +1,5 @@
+@import 'media-queries';
+
 #product-details {
   margin-top: 50px;
 
@@ -49,7 +51,7 @@ h1.product-title {
   color: #000;
 }
 
-@mixin media-mobile {
+@include media-mobile {
   h1.product-title {
     font-size: 20px !important;
   }

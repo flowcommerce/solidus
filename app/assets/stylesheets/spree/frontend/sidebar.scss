@@ -1,3 +1,5 @@
+@import 'media-queries';
+
 #sidebar-pannel {
   display: none;
   position: fixed;
@@ -70,11 +72,11 @@
   }
 }
 
-@mixin media-desktop {
+@include media-desktop {
   #sidebar { display: none !important; }
 }
 
-@mixin media-tablet {
+@include media-tablet {
   #header-logo { left: 60px; }
 
   #sidebar {
@@ -82,5 +84,17 @@
     top: 0;
     width: 400px;
     height: 100%;
+  }
+}
+
+@include media-mobile {
+  #sidebar-data {
+    padding-top: 40px !important;
+
+    h5, ul { margin-bottom: 15px !important; }
+
+    li a {
+      padding-bottom: 6px !important;
+    }
   }
 }
