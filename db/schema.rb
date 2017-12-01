@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170302153604) do
+ActiveRecord::Schema.define(version: 20171201014049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -547,6 +547,7 @@ ActiveRecord::Schema.define(version: 20170302153604) do
     t.integer  "promotion_category_id"
     t.integer  "per_code_usage_limit"
     t.boolean  "apply_automatically",   default: false
+    t.jsonb    "flow_data",             default: {}
     t.index ["advertise"], name: "index_spree_promotions_on_advertise", using: :btree
     t.index ["apply_automatically"], name: "index_spree_promotions_on_apply_automatically", using: :btree
     t.index ["code"], name: "index_spree_promotions_on_code", using: :btree
@@ -1164,6 +1165,12 @@ ActiveRecord::Schema.define(version: 20170302153604) do
     t.integer  "zone_members_count", default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "table_flow_settings", force: :cascade do |t|
+    t.string   "key"
+    t.text     "data"
+    t.datetime "created_at"
   end
 
   add_foreign_key "spree_adjustments", "spree_orders", column: "order_id", name: "fk_spree_adjustments_order_id", on_update: :restrict, on_delete: :restrict
