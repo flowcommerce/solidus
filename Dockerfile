@@ -12,7 +12,6 @@ RUN gem install bundler
 ADD ./Gemfile* /opt/rails/
 RUN bundle install
 RUN gem install rake
-RUN rake db:migrate
 
 # add app
 ADD . /opt/rails
