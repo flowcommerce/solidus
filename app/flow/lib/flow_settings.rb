@@ -10,4 +10,9 @@ class FlowSettings < ActiveRecord::Base
     value
   end
 
+  def self.get key
+    settings = find_by key: key
+    settings ? settings.data : nil
+  end
+
 end

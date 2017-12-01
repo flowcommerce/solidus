@@ -5,7 +5,7 @@ require 'dotenv'
 Dotenv.load
 
 port    3000
-threads 0, 16
+threads 1, 16
 
 if ENV.fetch('RACK_ENV') == 'production'
   # workers 2
@@ -15,8 +15,8 @@ if ENV.fetch('RACK_ENV') == 'production'
   end
 
   before_fork do
-    require 'puma_worker_killer'
-    PumaWorkerKiller.enable_rolling_restart 3 * 3600
+    # require 'puma_worker_killer'
+    # PumaWorkerKiller.enable_rolling_restart 3 * 3600
   end
 
   # refresh and sync products
