@@ -140,6 +140,14 @@ class FlowController < ApplicationController
     render text: 'Scheduled'
   end
 
+  def last_order_put
+    return unless user_is_admin
+
+    data = FlowSettings.get 'flow-order-put-body-%s' % params[:number]
+
+    render json: JSON.load(data)
+  end
+
   private
 
   def paypal_get_order_from_param

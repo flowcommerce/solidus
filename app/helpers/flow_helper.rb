@@ -268,6 +268,7 @@ module FlowHelper
         text  = link_to text, '/admin/orders/%s/edit' % text
         text += ', <a href="https://console.flow.io/%s/orders/%s" target="_console">console</a>'.html_safe % [Flow.organization, simple_current_order.number]
         text += ', <a href="/admin/flow?flow=order&o_id=%s" target="_api">api</a>'.html_safe % [simple_current_order.id]
+        text += ', <a href="/flow/last_order_put?number=%s" target="_last_put">last order/put</a>'.html_safe % [simple_current_order.number]
       end
 
       data.push 'Order (%s)' % text

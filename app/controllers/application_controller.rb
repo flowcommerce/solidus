@@ -1,3 +1,4 @@
+ActionController::Base.send :include, RailsBeforeRender
 class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
   @@session_cache  = {}
@@ -103,6 +104,7 @@ class ApplicationController < ActionController::Base
     return unless order
     return if order.line_items.length == 0
     return if request.path.include?('/admin/')
+    return if @flow_order
 
     # we need to clear any cached flow order data if we do not use flow
     return Flow::Order.clear_cache(order) unless @flow_session.localized?

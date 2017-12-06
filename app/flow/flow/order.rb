@@ -201,13 +201,16 @@ class Flow::Order
     @use_get = false unless @order.flow_data['order']
 
     if @use_get
-      @response = Flow.api :get, '/:organization/orders/%s' % @body[:number], expand: 'experience'
+      @response ||= Flow.api :get, '/:organization/orders/%s' % @body[:number], expand: 'experience'
     else
       # replace when fixed integer error
       # @body[:items].map! { |item| ::Io::Flow::V0::Models::LineItemForm.new(item) }
       # opts[:experience] = @experience.key
       # order_put_form = ::Io::Flow::V0::Models::OrderPutForm.new(@body)
       # r FlowCommerce.instance.orders.put_by_number(Flow.organization, @order.flow_number, order_put_form, opts)
+
+      # cache last order/put for debug purposes
+      FlowSettings.set 'flow-order-put-body-%s' % @body[:number], @body.to_json
 
       @response = Flow.api :put, '/:organization/orders/%s' % @body[:number], opts, @body
     end
