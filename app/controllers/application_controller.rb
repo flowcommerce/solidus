@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
     visitor = flow_get_visitor_id
 
     # create session from cache if possible
-    if cached = FlowSettings.get(visitor)
+    if cached = FlowSettings[visitor]
       session = Flow::Session.restore Base64.decode64(cached)
       session = nil if session.session.visit.expires_at < DateTime.now
     end
@@ -75,16 +75,16 @@ class ApplicationController < ActionController::Base
     end
 
     # save session if needed
-    FlowSettings.set visitor, Base64.encode64(session.dump) if @save_session
+    FlowSettings[visitor] = Base64.encode64(session.dump) if @save_session
 
     # expose flow session object
     @flow_session = session
-  # rescue
-  #   # clear session
-  #   @@session_cache[visitor] = nil
+  rescue
+    # clear session
+    FlowSettings.delete visitor
 
-  #   # and safe redirect
-  #   redirect_to '?redirected=true' unless params[:redirected]
+    # and safe redirect
+    redirect_to '?redirected=true' unless params[:redirected]
   end
 
   def flow_before_filters
