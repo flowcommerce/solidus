@@ -6,6 +6,8 @@ RUN apt-add-repository ppa:brightbox/ruby-ng
 RUN apt-get update -qq
 RUN apt-get install -y ruby2.4-dev ruby-all-dev
 RUN apt-get install -y build-essential libpq-dev nodejs cron
+RUN apt-get install sendmail -y
+
 RUN gem install bundler
 
 # we add this here so it can be cached by docker and not built on every step

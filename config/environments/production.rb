@@ -56,7 +56,7 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "demo-shop_#{Rails.env}"
 
   # we have local sendmail, it is good enough
-  config.action_mailer.delivery_method       = :smtp
+  config.action_mailer.delivery_method       = :sendmail
   config.action_mailer.perform_caching       = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries    = true
