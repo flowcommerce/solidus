@@ -1,7 +1,6 @@
 ActionController::Base.send :include, RailsBeforeRender
 class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
-  @@session_cache  = {}
   @@semaphore      = Mutex.new
 
   private
@@ -38,11 +37,13 @@ class ApplicationController < ActionController::Base
   end
 
   def flow_get_visitor_id
-    if wu = session['warden.user.spree_user.key']
+    uid = if wu = session['warden.user.spree_user.key']
       wu[0] ? 'uid-%d' % wu[0][0] : wu[1]
     else
       Digest::SHA1.hexdigest request.ip + request.user_agent
     end
+
+    'session-%s' % uid
   end
 
   # checks current experience (defined by parameter) and sets default one unless one preset
@@ -51,8 +52,8 @@ class ApplicationController < ActionController::Base
     visitor = flow_get_visitor_id
 
     # create session from cache if possible
-    if cached = @@session_cache[visitor]
-      session = Flow::Session.restore cached
+    if cached = FlowSettings.get(visitor)
+      session = Flow::Session.restore Base64.decode64(cached)
       session = nil if session.session.visit.expires_at < DateTime.now
     end
 
@@ -74,16 +75,16 @@ class ApplicationController < ActionController::Base
     end
 
     # save session if needed
-    @@session_cache[visitor] = session.dump if @save_session
+    FlowSettings.set visitor, Base64.encode64(session.dump) if @save_session
 
     # expose flow session object
     @flow_session = session
-  rescue
-    # clear session
-    @@session_cache[visitor] = nil
+  # rescue
+  #   # clear session
+  #   @@session_cache[visitor] = nil
 
-    # and safe redirect
-    redirect_to '?redirected=true' unless params[:redirected]
+  #   # and safe redirect
+  #   redirect_to '?redirected=true' unless params[:redirected]
   end
 
   def flow_before_filters

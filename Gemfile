@@ -25,8 +25,6 @@ gem 'rails_before_render'
 gem 'solidus', '2.1.0',    require: false
 gem 'solidus_auth_devise', require: false
 
-gem 'bugsnag'
-
 group :manual_load do
   gem 'dotenv'
   gem 'faraday'
@@ -50,6 +48,7 @@ group :development do
 end
 
 group :production do
+  gem 'bugsnag'
   gem 'newrelic_rpm'
   gem 'rack-timeout', require: 'rack/timeout/base' # Rack::Timeout is important for avoiding stuck Puma workers/threads on server:
 end
