@@ -35,11 +35,9 @@ module Flow::Experience
     return cached_experinces if cache_valid?
 
     experiences = FlowCommerce.instance.experiences.get Flow.organization
+
+    # work with active axperiences only
     experiences = experiences.select { |it| it.status.value == 'active' }
-
-    ap experiences
-
-    # it['status'] == 'active'
 
     @cache = [experiences, Time.now]
     experiences

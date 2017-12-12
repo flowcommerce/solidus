@@ -31,6 +31,7 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   rails_asset_host = ENV['RAILS_ASSET_HOST']
   if rails_asset_host.present?
+    ap [rails_asset_host]
     config.action_controller.asset_host = rails_asset_host
   end
 
@@ -56,10 +57,25 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "demo-shop_#{Rails.env}"
 
   # we have local sendmail, it is good enough
-  config.action_mailer.delivery_method       = :sendmail
   config.action_mailer.perform_caching       = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries    = true
+
+  if ENV['SMTP_HOST'].present?
+    # this should be defined
+    config.action_mailer.smtp_settings = {
+     :address              => ENV.fetch('SMTP_HOST'),
+     :port                 => ENV.fetch('SMTP_PORT'),
+     :user_name            => ENV.fetch('SMTP_USER'),
+     :password             => ENV.fetch('SMTP_PASS'),
+     :domain               => 'shopflowfashion.com',
+     :authentication       => 'plain',
+     :enable_starttls_auto => true
+    }
+  else
+    # fallback to sendmail
+    config.action_mailer.delivery_method = :sendmail
+  end
 
   config.i18n.fallbacks = true
 
