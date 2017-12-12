@@ -57,6 +57,8 @@ module FixAssetPaths
     data       = data.gsub(%r{url\((['"])/}) { 'url(%s%s/' % [$1, asset_root] }
 
     asset.write data
+
+    Cli.run 'gzip -fk %s' % file
   end
 
 end

@@ -6,4 +6,7 @@
  *= require spree/backend
  *= require_self
  *= require_tree .
+ *
 */
+
+.flow-dummy-class-force-refresh-v1 { display: block; }
