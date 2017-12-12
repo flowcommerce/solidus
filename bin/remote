@@ -4,6 +4,7 @@ require 'thor'
 require 'dotenv'
 require 'awesome_print'
 require 'colorize'
+require 'pathname'
 
 Dotenv.load
 
@@ -37,6 +38,30 @@ module Cli
   end
 end
 
+module FixAssetPaths
+  extend self
+
+  def find_and_fix
+    css_files = Dir['./public/**/*.css']
+    css_files.each { |it| modify_asset_root_in_place(it) }
+  end
+
+  def modify_asset_root_in_place file
+    puts 'Fixings assets paths: %s' % file.green
+
+    asset_root = ENV.fetch('RAILS_ASSET_HOST')
+    asset      = Pathname.new file
+    data       = asset.read
+
+    data       = data.gsub %r{url\(/}, 'url(%s/' % asset_root
+    data       = data.gsub(%r{url\((['"])/}) { 'url(%s%s/' % [$1, asset_root] }
+
+    asset.write data
+  end
+
+end
+
+
 ###
 
 class Remote < Thor
@@ -66,11 +91,7 @@ class Remote < Thor
     Cli.remote 'ls -al; bash'
   end
 
-  define :sync_to_s3, 'Sync public public folder to S3' do |folder=nil|
-    # we should push only assets
-    # folder ||= 'assets'
-    folder   = '/%s' % folder if folder && folder[0, 1] != '/'
-
+  define :sync_to_s3, 'Sync public public folder to S3' do
     # compile assets in production mode
     Cli.run 'RAILS_ENV=production bundle exec rake assets:clean && rake assets:precompile'
 
@@ -84,23 +105,8 @@ class Remote < Thor
     Cli.run 'rm public/.sprockets-manifest*'
     Cli.run 'cp public/assets/.sprockets-manifest* public/'
 
-    # upload to S3
-    Cli.run "AWS_PROFILE=flowcommerce aws s3 sync ./public#{folder} s3://io.flow.solidus-s3#{folder} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1"
-  end
-
-  define :sync_to_s3_2, 'Sync public public folder to S3' do
-    # compile assets in production mode
-    Cli.run 'RAILS_ENV=production bundle exec rake assets:clean && rake assets:precompile'
-
-    # ensure we have backup manifest file
-    manifests = Dir['./public/assets/.sprockets-manifest-*']
-    Cli.die 'Manifest file not found?' unless manifests.first
-    Cli.die '%d manifests found!' % manifests.length if manifests.length > 1
-
-    # copy manifest file to public folder so Docker can see it and
-    # copy it to public/assets on build
-    Cli.run 'rm public/.sprockets-manifest*'
-    Cli.run 'cp public/assets/.sprockets-manifest* public/'
+    # fix bad asset paths in css files (Solidus bug)
+    FixAssetPaths.find_and_fix
 
     # upload to S3
     Cli.run "AWS_PROFILE=flowcommerce aws s3 sync ./public s3://io.flow.aws-s3-public/assets/solidus --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --region us-east-1"
