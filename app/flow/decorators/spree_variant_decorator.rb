@@ -61,7 +61,7 @@ Spree::Variant.class_eval do
   # creates object for flow api
   # TODO: Remove and use the one in rakefile
   def flow_api_item
-    image_base = 'http://cdn.color-mont.com'
+    image_base = ENV.fetch('RAILS_ASSET_HOST')
 
     # add product categories
     categories = []

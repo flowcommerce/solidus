@@ -8,7 +8,7 @@ module FlowHelper
 
     %[<div id="tmp-site-info">
         <div class="container">
-          You are using an alternative solidus app, main site is located at <a href="https://solidus.api.flow.io/">https://solidus.api.flow.io</a>
+          You are using an alternative solidus app, main site is located at <a href="https://www.shopflowfashion.com/">https://www.shopflowfashion.com/</a>.
         </div>
       </div>].html_safe
   end
