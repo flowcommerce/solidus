@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   before_render_filter do
-    if @flow_session.experience
+    if @flow_session.try(:experience)
       flow_sync_order
       flow_filter_and_restrict_products
       flow_debug

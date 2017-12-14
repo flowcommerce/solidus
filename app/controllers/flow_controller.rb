@@ -9,7 +9,13 @@ class FlowController < ApplicationController
   def handle_flow_web_hook_event
     # return render text: 'Source is not allowed to make requests', status: 403 unless requests.ip == '52.86.80.125'
 
-    data     = JSON.parse request.body.read
+    string_data = request.body.read
+
+    # log web hook post to separate log file
+    webhook_logger = Logger.new webhook_logger_path
+    webhook_logger.info string_data
+
+    data     = JSON.parse string_data
     response = Flow::Webhook.process data
 
     render text: response
@@ -148,7 +154,26 @@ class FlowController < ApplicationController
     render json: JSON.load(data)
   end
 
+  def webhooks
+    @events = []
+
+    lines = `tail -100 #{webhook_logger_path}`.split($/)
+    lines.each do |line|
+      parts = line.split('INFO -- : ', 2)
+
+      next unless parts[1]
+
+      parts[1] = JSON.load(parts[1])
+
+      @events.unshift parts
+    end
+  end
+
   private
+
+  def webhook_logger_path
+    Rails.root.join('log/webhooks.log').to_s
+  end
 
   def paypal_get_order_from_param
     order_number = params[:order]              || raise('Order parameter not defined')

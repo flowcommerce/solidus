@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     post '/update_current_order', to: '/flow#update_current_order'
     post '/schedule_refresh',     to: '/flow#schedule_refresh'
     get  '/last_order_put',       to: '/flow#last_order_put'
+    get  '/webhooks',             to: '/flow#webhooks'
   end
 
   # custom from Flow for Solidus frontend
