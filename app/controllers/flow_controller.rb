@@ -168,6 +168,7 @@ class FlowController < ApplicationController
       next unless parts[1]
 
       parts[1] = JSON.load(parts[1])
+      parts[0] += ' - %s' % parts[1]['discriminator']
 
       @events.unshift parts
     end

@@ -12,8 +12,8 @@
 
 <br />
 
-<% for date, data, id in @events %>
-  <h6><%= date %></h6>
+<% for title, data in @events %>
+  <h6><%= title %></h6>
   <pre><%= JSON.pretty_generate(data) %></pre>
   <hr />
 <% end %>
