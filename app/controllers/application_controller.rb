@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # we want to run filter just before the render
   before_render_filter do
     if @flow_session.try(:experience)
       flow_sync_order
@@ -35,6 +36,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # tries to get vunique vistor id, based on user agent and ip
   def flow_get_visitor_id
     uid = if wu = session['warden.user.spree_user.key']
       wu[0] ? 'uid-%d' % wu[0][0] : wu[1]
@@ -88,6 +90,7 @@ class ApplicationController < ActionController::Base
 
   def flow_before_filters
     # if we are somewhere in checkout and there is no session, force user to login
+    # that will remove few Solidus native bugs
     if request.path.start_with?('/checkout') && !@current_spree_user
       flash[:error] = 'You need to be registred to continue with shopping'
       redirect_to '/login'
@@ -122,6 +125,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # if using flow, filter any list of products to include only ones available in current experience
   def flow_filter_and_restrict_products
     # filter out excluded product for particular experience
     # https://console.flow.io/:organization/restrictions
@@ -134,6 +138,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # debug flow specific requests
   def flow_debug
     return unless params[:debug] == 'flow'
 
@@ -145,4 +150,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # safe run process in the background
+  def background &block
+    Thread.new do
+      yield
+      ActiveRecord::Base.connection.close
+    end
+  end
 end

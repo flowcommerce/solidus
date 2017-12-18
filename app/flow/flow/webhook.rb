@@ -10,6 +10,19 @@ class Flow::Webhook
       web_hook = new data, opts
       web_hook.process
     end
+
+    def logger
+      @@webhook_logger ||= Logger.new logger_path
+    end
+
+    def logger_path
+      Rails.root.join('log/webhooks.log').to_s
+    end
+
+    # read n last lines from log
+    def logger_read_lines num=100
+      `tail -100 #{logger_path}`.split($/)
+    end
   end
 
   ###

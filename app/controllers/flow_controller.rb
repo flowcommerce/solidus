@@ -12,8 +12,7 @@ class FlowController < ApplicationController
     string_data = request.body.read
 
     # log web hook post to separate log file
-    webhook_logger = Logger.new webhook_logger_path
-    webhook_logger.info string_data
+    Flow::Webhook.logger.info string_data
 
     data     = JSON.parse string_data
     response = Flow::Webhook.process data
@@ -53,7 +52,7 @@ class FlowController < ApplicationController
 
   def index
     # solidus method
-    return unless user_is_admin
+    return unless user_is_admin?
 
     if action = params[:flow]
       order = Spree::Order.find(params[:o_id])
@@ -142,12 +141,16 @@ class FlowController < ApplicationController
   end
 
   def schedule_refresh
-    FolwApiRefresh.schedule_refresh!
+    background do
+      FolwApiRefresh.schedule_refresh!
+      FolwApiRefresh.sync_products_if_needed!
+    end
+
     render text: 'Scheduled'
   end
 
   def last_order_put
-    return unless user_is_admin
+    return unless user_is_admin?
 
     data = FlowSettings.get 'flow-order-put-body-%s' % params[:number]
 
@@ -155,10 +158,11 @@ class FlowController < ApplicationController
   end
 
   def webhooks
+    return unless user_is_admin?
+
     @events = []
 
-    lines = `tail -100 #{webhook_logger_path}`.split($/)
-    lines.each do |line|
+    Flow::Webhook.logger_read_lines(100).each do |line|
       parts = line.split('INFO -- : ', 2)
 
       next unless parts[1]
@@ -171,18 +175,14 @@ class FlowController < ApplicationController
 
   private
 
-  def webhook_logger_path
-    Rails.root.join('log/webhooks.log').to_s
-  end
-
   def paypal_get_order_from_param
     order_number = params[:order]              || raise('Order parameter not defined')
     Spree::Order.find_by(number: order_number) || raise('Order not found')
   end
 
-  def user_is_admin
+  def user_is_admin?
     return true if spree_current_user && spree_current_user.admin?
-    render text: 'You must be admin to access flow admin'
+    render text: 'You must be admin to access this action'
     false
   end
 end
