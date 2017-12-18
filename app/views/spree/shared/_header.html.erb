@@ -1,7 +1,7 @@
 <div id="top-nav">
   <div class="container">
     <div class="flex">
-      <div class="hide-in-desktop">
+      <div class="nav-toggle hide-in-desktop">
         <img id="sidebar-button" src="/images/nav-toggle.png" />
       </div>
       <div class="logo center-in-tablet">
@@ -12,7 +12,7 @@
       </div>
       <div class="options">
         <img class="w search" src="/images/nav-search.svg" data-keywords="<%= params[:keywords] %>" data-taxon="<%= @taxon.try(:id) %>" />
-        <a class="hide-in-tablet<%= spree_current_user ? '' : ' dimmed' %>" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
+        <a class="hide-in-tablet" href="/<%= spree_current_user ? :account : :login %>"><img src="/images/nav-user.svg" /></a>
         <a href="/cart"><%= flow_cart_ico %></a>
       </div>
     </div>

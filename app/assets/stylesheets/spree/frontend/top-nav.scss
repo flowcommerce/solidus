@@ -10,6 +10,8 @@
   }
 
   .container {
+    padding-left: 10px;
+
     .flex {
       // padding: 5px 10px 0 10px;
       display: flex;
@@ -29,6 +31,7 @@
       }
 
       .logo {
+        line-height: 14px;
       }
 
       .menu {
@@ -101,9 +104,6 @@
       }
 
       .options {
-        flex-grow: 0;
-        flex-shrink: 0;
-        flex-basis: 130px;
         text-align: right;
 
         img, svg {
@@ -136,8 +136,25 @@
   }
 }
 
-@include media-tablet {
+@include media-desktop {
+  #top-nav {
+    .logo {
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: 170px;
+    }
+  }
+}
+
+@include media-mobile {
   #top-nav {
     border-bottom: 0.5pt solid #ddd;
+
+    .nav-toggle, .options {
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
+      flex-basis: 80px !important;
+    }
+
   }
 }
