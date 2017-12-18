@@ -17,31 +17,31 @@ module FlowHelper
     banner = case request.path
       when '/'
         {
-          url:   'https://i.imgur.com/9EnpmO7.jpg', # :homepage
+          url:   '9EnpmO7.jpg', # :homepage
           title: 'Adventure awaits',
           desc:  'Vacation ready coats and boots'
         }
       when '/sale'
         {
-          url:   'https://i.imgur.com/KlgPyTV.jpg', # :sale
+          url:   'KlgPyTV.jpg', # :sale
           title: 'Sale',
           desc:  'Last chance on summer steals'
         }
       when '/t/apparel-and-accessories/shoes'
         {
-          url:   'https://i.imgur.com/0za1RWv.jpg', # :accessories
+          url:   '0za1RWv.jpg', # :accessories
           title: 'Wherever you go',
           desc:  'Durable footwear for an active life'
         }
       when '/t/apparel-and-accessories'
         {
-          url:   'https://i.imgur.com/WYjqXMp.jpg', # :clothing
+          url:   'WYjqXMp.jpg', # :clothing
           title: 'Lived-in fashion',
           desc:  'Travel with comfort and style'
         }
       when '/t/luggage-and-bags'
         {
-          url:   'https://i.imgur.com/z58J56Q.jpg', # :lugage
+          url:   'z58J56Q.jpg', # :lugage
           title: 'Ready for the road',
           desc:  'Luggage and accessories to go where you do'
         }
@@ -50,7 +50,7 @@ module FlowHelper
     return unless banner
 
     %[<div id="jumbo-top">
-        <img src="#{banner[:url]}" style="display: block !important;" />
+        <img src="#{asset_path('banners/%s' % banner[:url])}" style="display: block !important;" />
       </div>
       <div id="jumbo-top-text" class="container">
         <h2>#{banner[:title]}</h2>
