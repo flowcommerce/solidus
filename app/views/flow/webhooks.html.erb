@@ -1,9 +1,19 @@
+<style>
+  h6 { cursor: pointer; }
+</style>
+
+<script>
+  $(document).on('click', 'h6', function(){
+    $(this).next().toggle();
+  })
+</script>
+
 <h3>Last 100 webhook recieved events we received from Flow</h3>
 
 <br />
 
-<% for event in @events %>
-  <h6><%= event[0] %></h6>
-  <pre><%= JSON.pretty_generate(event[1]) %></pre>
+<% for date, data, id in @events %>
+  <h6><%= date %></h6>
+  <pre><%= JSON.pretty_generate(data) %></pre>
   <hr />
 <% end %>
