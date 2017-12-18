@@ -1,4 +1,3 @@
-ActionController::Base.send :include, RailsBeforeRender
 class ApplicationController < ActionController::Base
   FLOW_SESSION_KEY = :_f60_session
   @@semaphore      = Mutex.new
