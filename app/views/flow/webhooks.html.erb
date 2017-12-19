@@ -13,8 +13,15 @@
 
 <br />
 
-<% for title, data in @events %>
-  <h6><%= title %></h6>
+<% for date, data in @events %>
+  <h6>
+    <%= date.strftime('%H:%M %Ssec') %>
+    &mdash;
+    <%= distance_of_time_in_words(date, Time.now) %>
+    ago
+    &mdash;
+    <%= data['discriminator'] %>
+  </h6>
   <pre><%= JSON.pretty_generate(data) %></pre>
   <hr />
 <% end %>

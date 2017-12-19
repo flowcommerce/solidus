@@ -167,8 +167,8 @@ class FlowController < ApplicationController
 
       next unless parts[1]
 
+      parts[0] = DateTime.parse parts[0].split('[', 2).last.split('#').first
       parts[1] = JSON.load(parts[1])
-      parts[0] += ' - %s' % parts[1]['discriminator']
 
       @events.unshift parts
     end
