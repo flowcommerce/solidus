@@ -21,6 +21,14 @@ module Flow::Experience
     nil
   end
 
+  def get_by_subcatalog_id subcatalog_id
+    get_from_flow.each do |experince|
+      return experince if experince.subcatalog.id == subcatalog_id
+    end
+
+    nil
+  end
+
   def compact
     all.map { |exp| [exp.country, exp.key, exp.name] }
   end
