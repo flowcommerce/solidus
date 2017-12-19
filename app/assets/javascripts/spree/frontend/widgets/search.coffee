@@ -37,12 +37,12 @@ Widget.register 'search',
 
   render_form: ->
     form = """
-      <form id="search-form" action="/products" style="margin-left: -207px;">
+      <form id="search-form" action="/products">
         <input type="hidden" name="taxon" value="#{@state.taxon_id}" />
         <input type="text" name="keywords" value="#{@state.keywords}" onblur="$w('##{@node.id}').blur_hide()" />
       </form>"""
 
-    @root.before(form)
+    @root.after(form)
 
 
 

@@ -114,10 +114,11 @@
         }
 
         #search-form {
+          position: absolute;
+          top: 54px;
+          right: 87px;
           width: 250px;
           text-align: right;
-          position: absolute;
-          margin-top: 41px;
 
           &.hidden { display: none; }
 
@@ -133,6 +134,13 @@
         }
       }
     }
+  }
+}
+
+@include media-tablet {
+  #search-form {
+    top: 41px !important;
+    right: 47px !important;
   }
 }
 
