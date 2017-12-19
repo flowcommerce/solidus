@@ -160,9 +160,10 @@ class FlowController < ApplicationController
   def webhooks
     return unless user_is_admin?
 
-    @events = []
+    @event_num = 200
+    @events    = []
 
-    Flow::Webhook.logger_read_lines(100).each do |line|
+    Flow::Webhook.logger_read_lines(@event_num).each do |line|
       parts = line.split('INFO -- : ', 2)
 
       next unless parts[1]

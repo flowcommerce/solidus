@@ -1,7 +1,7 @@
 <%= render partial: 'spree/shared/error_messages', locals: { target: @spree_user } %>
 
-<div id="forgot-password">
-  <h2><%= Spree.t(:forgot_password) %></h2>
+<div id="forgot-password" style="margin-top: 60px; max-width: 330px;">
+  <h2 class="big"><%= Spree.t(:forgot_password) %></h2>
 
   <br />
 
@@ -13,7 +13,7 @@
       <%= f.email_field :email %>
     </p>
     <p>
-      <%= f.submit Spree.t(:reset_password), class: 'button primary' %>
+      <%= f.submit Spree.t(:reset_password), class: 'button primary', style: 'width: 100%;' %>
     </p>
   <% end %>
 </div>
