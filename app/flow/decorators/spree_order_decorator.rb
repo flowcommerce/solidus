@@ -53,7 +53,7 @@ Spree::Order.class_eval do
       end
 
       flow_order.prices.each do |price|
-        prices.push price_model.new(price['key'].to_s.capitalize , price['label'])
+        prices.push price_model.new(price['name'], price['label'])
       end
     else
       price_elements = [:item_total, :adjustment_total, :included_tax_total, :additional_tax_total, :tax_total, :shipment_total, :promo_total]
