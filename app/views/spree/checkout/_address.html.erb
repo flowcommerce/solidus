@@ -1,3 +1,30 @@
+<script>
+window.user_addresses = <%=
+  @addresses = @current_spree_user.addresses.limit(10)
+  @addr_list = @addresses.map(&:serializable_hash)
+  @addr_list.to_json.html_safe
+%>;
+
+window.apply_address = function(id) {
+  var address     = null;
+  var fields      = ['firstname', 'lastname', 'address1', 'address2', 'city', 'country_id', 'state_id', 'zipcode', 'phone'];
+  var use_billing = $('#order_use_billing');
+
+  // find address
+  user_addresses.map(function(it) { if (it.id == id) address = it; })
+
+  // open address panel if it is closed
+  if(use_billing[0].checked) {
+    use_billing.click();
+  }
+
+  // apply values
+  fields.forEach(function(field){
+    $('#order_ship_address_attributes_'+field).val(address[field]);
+  });
+}
+</script>
+
 <div class="flex">
   <div class="flex-col">
     <fieldset id="billing" data-hook>
@@ -18,6 +45,21 @@
         </p>
         <%= render :partial => 'spree/address/form', :locals => { :form => ship_form, :address_type => 'shipping', :address => @order.ship_address } %>
       <% end %>
+
+      <% if @addr_list.first %>
+        <p><small>Select from previously entered addresses</small></p>
+
+        <ul class="list">
+          <% for adr in @addresses %>
+            <li style="font-size: 14px; cursor: pointer;" onclick="apply_address(<%= adr.id %>)">
+              <%= adr.firstname %> <%= adr.lastname %>
+              <br />
+              <%= adr.city %>, <%= adr.country.name %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+
     </fieldset>
   </div>
 </div>
