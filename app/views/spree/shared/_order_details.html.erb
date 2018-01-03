@@ -2,7 +2,7 @@
   <% if order.has_step?("address") %>
     <div class="flex-col">
       <fieldset class="form">
-        <legend><%= Spree.t(:billing_address) %> <%= link_to "(#{Spree.t('actions.edit')})", checkout_state_path(:address) unless order.completed? %></legend>
+        <legend><%= link_to_if !order.completed?, 'BILLING ADDRESS', checkout_state_path(:address) %></legend>
 
         <%= render :partial => 'spree/shared/address', :locals => { :address => order.bill_address } %>
       </fieldset>
@@ -11,20 +11,20 @@
     <% if order.has_step?("delivery") %>
       <div class="flex-col">
         <fieldset class="form">
-          <legend><%= Spree.t(:shipping_address) %> <%= link_to "(#{Spree.t('actions.edit')})", checkout_state_path(:address) unless order.completed? %></legend>
+          <legend><%= link_to_if !order.completed?, 'SHIPPING ADDRESS', checkout_state_path(:address) %></legend>
           <%= render :partial => 'spree/shared/address', :locals => { :address => order.ship_address } %>
         </fieldset>
       </div>
 
       <div class="flex-col">
         <fieldset class="form">
-          <legend><%= Spree.t(:shipments) %> <%= link_to "(#{Spree.t('actions.edit')})", checkout_state_path(:delivery) unless order.completed? %></legend>
+          <legend><%= link_to_if !order.completed?, 'SHIPMENTS', checkout_state_path(:delivery) %></legend>
 
           <div class="delivery">
             <div>
               <% if @flow_session.localized? %>
                 <i class='fa fa-truck'></i>
-                <%= @flow_order.delivery[:name] %>
+                <%= @flow_order.delivery ? @flow_order.delivery[:name] : 'not available' %>
               <% else %>
                 <% order.shipments.each do |shipment| %>
                   <div>
@@ -43,7 +43,7 @@
   <% if order.has_step?("payment") %>
     <div class="flex-col">
       <fieldset class="form">
-        <legend><%= Spree.t(:payment_information) %> <%= link_to "(#{Spree.t('actions.edit')})", checkout_state_path(:payment) unless order.completed? %></legend>
+        <legend><%= link_to_if !order.completed?, 'PAYMENT INFORMATION', checkout_state_path(:payment) %></legend>
         <div class="payment-info">
           <% if order.flow_paymeny_method == 'paypal' %>
             <span>

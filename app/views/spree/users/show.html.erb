@@ -7,11 +7,10 @@
   </dl>
 </div>
 
-<div data-hook="account_my_orders" class="account-my-orders">
-
-  <h3><%= Spree.t(:my_orders) %></h3>
+<fieldset class="flow">
+  <legend><%= Spree.t(:my_orders).upcase %></legend>
   <% if @orders.present? %>
-    <table class="order-summary">
+    <table class="flow">
       <thead>
       <tr>
         <th class="order-number"><%= I18n.t(:number, scope: 'activerecord.attributes.spree/order') %></th>
@@ -47,4 +46,4 @@
   <% end %>
   <br />
 
-</div>
+</fieldset>
