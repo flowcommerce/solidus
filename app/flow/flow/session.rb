@@ -66,6 +66,8 @@ class Flow::Session
 
   # because we do not get full experience from session, we have to get from exp list
   def delivered_duty_options
+    return nil unless experience
+
     if flow_experience = Flow::Experience.get(experience.key)
       Hashie::Mash.new flow_experience.settings.delivered_duty.to_hash
     else
