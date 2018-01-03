@@ -34,7 +34,7 @@ module Flow::Experience
   end
 
   def default
-    Flow::Experience.all.select{ |exp| exp.key == 'united-states-of-america' }.first
+    Flow::Experience.all.select{ |exp| exp.key.downcase == ENV.fetch('FLOW_BASE_COUNTRY').downcase }.first
   end
 
   private

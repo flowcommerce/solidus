@@ -66,12 +66,20 @@ class Flow::Session
 
   # because we do not get full experience from session, we have to get from exp list
   def delivered_duty_options
-    Hashie::Mash.new Flow::Experience.get(experience.key).settings.delivered_duty.to_hash
+    if flow_experience = Flow::Experience.get(experience.key)
+      Hashie::Mash.new flow_experience.settings.delivered_duty.to_hash
+    else
+      nil
+    end
   end
 
   # if we have more than one choice, we show choice popup
   def offers_delivered_duty_choice?
-    delivered_duty_options.available.length > 1
+    if options = delivered_duty_options
+      options.available.length > 1
+    else
+      false
+    end
   end
 end
 
