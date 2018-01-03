@@ -26,6 +26,11 @@ table.flow {
     td {
       background-color: #fff;
       padding: 6px 0 6px 4px;
+
+      a {
+        color: #000 !important;
+        font-weight: 600;
+      }
     }
 
     &:hover {
@@ -69,7 +74,12 @@ table.flow {
           padding: 10px 5px !important;
 
           &:before {
+            content: attr(data-label);
             float: left;
+          }
+
+          &.bold:before {
+            font-weight: bold !important;
           }
 
           &:last-child {

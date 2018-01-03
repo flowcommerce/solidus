@@ -1,16 +1,36 @@
-<h1><%= accurate_title %> <small>&mdash; <a href="/logout">Logout &rarr;</a></small></h1>
+<h1 class="big">Account</h1>
 
-<div data-hook="account_summary" class="account-summary">
-  <dl id="user-info">
-    <dt><%= Spree.t(:email) %></dt>
-    <dd><%= @user.email %> (<%= link_to Spree.t(:edit), spree.edit_account_path %>)</dd>
-  </dl>
+<div class="flex">
+  <div class="flex-col">
+    <fieldset class="flow" style="min-height: 120px;">
+      <legend>INFORMATION</legend>
+      <div class="flex">
+        <div class="flex-col">
+          <b>Email</b>: <%= @user.email %>
+        </div>
+        <div class="flex-col" style="text-align: right;">
+          <%= link_to 'Logout', '/logout', class: 'button small' %>
+          &nbsp;
+          <%= link_to Spree.t(:edit), spree.edit_account_path, class: 'button small' %>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="flex-col">
+    <fieldset class="flow" style="min-height: 120px;">
+      <legend>ADDRESS</legend>
+      <%=
+        addr = @user.addresses.first
+        "#{addr.firstname} #{addr.lastname}, #{addr.address1}, #{addr.city}"
+      %>
+    </fieldset>
+  </div>
 </div>
 
 <fieldset class="flow">
   <legend><%= Spree.t(:my_orders).upcase %></legend>
   <% if @orders.present? %>
-    <table class="flow">
+    <table class="flow responsive">
       <thead>
       <tr>
         <th class="order-number"><%= I18n.t(:number, scope: 'activerecord.attributes.spree/order') %></th>
@@ -26,13 +46,13 @@
         @orders = @orders.page(params[:page]).per(30)
         @orders.each do |order|
       %>
-        <tr class="<%= cycle('even', 'odd') %>">
-          <td class="order-number"><%= link_to order.number, order_url(order) %></td>
-          <td class="order-date"><%= l order.completed_at.to_date %></td>
-          <td class="order-status"><%= Spree.t("order_state.#{order.state}").titleize %></td>
-          <td class="order-payment-state"><%= Spree.t("payment_states.#{order.payment_state}").titleize if order.payment_state %></td>
-          <td class="order-shipment-state"><%= Spree.t("shipment_states.#{order.shipment_state}").titleize if order.shipment_state %></td>
-          <td class="order-total"><%= order.flow_total %></td>
+        <tr>
+          <td class="order-number bold" data-label="Order number"><%= link_to order.number, order_url(order) %></td>
+          <td class="order-date" data-label="Order date"><%= l order.completed_at.to_date %></td>
+          <td class="order-status" data-label="Order status"><%= Spree.t("order_state.#{order.state}").titleize %></td>
+          <td class="order-payment-state" data-label="Payment state"><%= Spree.t("payment_states.#{order.payment_state}").titleize if order.payment_state %></td>
+          <td class="order-shipment-state" data-label="Shipment state"><%= Spree.t("shipment_states.#{order.shipment_state}").titleize if order.shipment_state %></td>
+          <td class="order-total" data-label="Order total"><b><%= order.flow_total %></b></td>
         </tr>
       <% end %>
       </tbody>

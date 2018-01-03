@@ -22,6 +22,12 @@ h1 {
   border-bottom: 1px solid #000;
   margin: 10px 0 40px 0;
   letter-spacing: 1px;
+
+  &.big {
+    margin-top: 40px;
+    border-bottom: none;
+    font-size: 32px;
+  }
 }
 
 h2 {
@@ -82,6 +88,10 @@ button.large, a.button, button.button, input.button {
   &.disabled, &[disabled] {
     @extend .primary;
     opacity: 0.5;
+  }
+
+  &.small {
+    padding: 0px 10px !important;
   }
 }
 
