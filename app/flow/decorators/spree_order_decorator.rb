@@ -48,7 +48,7 @@ Spree::Order.class_eval do
     if flow_order
       # duty, vat, ...
       unless flow_order.prices
-        message = Flow::Error.format_message flow_order
+        message = Flow::Error.format_order_message flow_order
         raise Flow::Error.new(message)
       end
 

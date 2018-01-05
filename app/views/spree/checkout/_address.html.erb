@@ -6,17 +6,19 @@ window.user_addresses = <%=
 %>;
 
 window.apply_address = function(id) {
-  var address     = null;
-  var fields      = ['firstname', 'lastname', 'address1', 'address2', 'city', 'country_id', 'state_id', 'zipcode', 'phone'];
-  var use_billing = $('#order_use_billing');
+  var address      = null;
+  var fields       = ['firstname', 'lastname', 'address1', 'address2', 'city', 'country_id', 'state_id', 'zipcode', 'phone'];
+  var use_billing  = document.getElementById('order_use_billing');
+  var save_address = document.getElementById('save_user_address');
 
   // find address
   user_addresses.map(function(it) { if (it.id == id) address = it; })
 
   // open address panel if it is closed
-  if(use_billing[0].checked) {
-    use_billing.click();
-  }
+  if(use_billing.checked) { use_billing.click(); }
+
+  // uncheck save address if present
+  if(save_address.checked) { save_address.click(); }
 
   // apply values
   fields.forEach(function(field){

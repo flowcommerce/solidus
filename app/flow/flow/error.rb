@@ -24,7 +24,24 @@ class Flow::Error < StandardError
     end
   end
 
-  def self.format_message order, flow_experience=nil
+  # Io::Flow::V0::HttpClient::ServerError - 422 Unprocessable Entity: {"code":"invalid_number","messages":["Card number is not valid"]}
+  # hash['code']    = 'invalid_number'
+  # hash['message'] = 'Card number is not valid'
+  # hash['title']   = '422 Unprocessable Entity'
+  # hash['klass']   = 'Io::Flow::V0::HttpClient::ServerError'
+  def self.format_message exception
+    parts = exception.message.split(': ', 2)
+    hash  = JSON.load(parts[1])
+
+    hash[:message] = hash['messages'].join(', ')
+    hash[:title]   = parts[0]
+    hash[:klass]   = exception.class
+    hash[:code]    = hash['code']
+
+    hash
+  end
+
+  def self.format_order_message order, flow_experience=nil
     message = if order['messages']
       msg = order['messages'].join(', ')
 

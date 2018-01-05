@@ -10,22 +10,29 @@ class ApplicationController < ActionController::Base
   # we will rescue and log all erorrs
   # idea is to not have any errors in the future, but
   # if they happen we will show hopefully meaning full info
+  # if we have bad cc number, that is an error we can't avoid
   rescue_from StandardError do |exception|
-    if Rails.env.production?
+    if defined?(Bugsnag)
       Bugsnag.notify(exception)
-
-      # render small error template with basic info for the user
-      info_hash = { message: exception.message, klass: exception.class }
-
-      # show customized error only in production
-      render text: Rails.root.join('app/views/flow/_error.html').read % info_hash
     else
       # hard log error
       Flow::Error.log exception, request
+    end
 
-      raise exception
+    # raise exception
+    error = Flow::Error.format_message exception
+
+    # show simple errors inline and other errors in separate page
+    if ['invalid_number'].include?(error['code'])
+      flash[:error] = '%{message} (%{title})' % error
+      redirect_to :back
+    else
+      render text: Rails.root.join('app/views/flow/_error.html').read % error
     end
   end
+
+  # rescue_from Io::Flow::V0::HttpClient::ServerError do |exception|
+  # end
 
   # we want to run filter just before the render
   before_render_filter do
@@ -120,7 +127,7 @@ class ApplicationController < ActionController::Base
         order.finalize!
         redirect_to '/'
       else
-        flash.now[:error] = Flow::Error.format_message @flow_order.response, @flow_session.experience
+        flash.now[:error] = Flow::Error.format_order_message @flow_order.response, @flow_session.experience
       end
     end
   end
