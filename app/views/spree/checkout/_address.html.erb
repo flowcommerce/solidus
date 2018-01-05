@@ -50,7 +50,7 @@ window.apply_address = function(id) {
         <p><small>Select from previously entered addresses</small></p>
 
         <ul class="list">
-          <% for adr in @addresses %>
+          <% for adr in @addresses.select{ |it| !it.lastname.include?(' *') } %>
             <li style="font-size: 14px; cursor: pointer;" onclick="apply_address(<%= adr.id %>)">
               <%= adr.firstname %> <%= adr.lastname %>
               <br />

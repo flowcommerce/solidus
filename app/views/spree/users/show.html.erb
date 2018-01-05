@@ -1,3 +1,13 @@
+<script>
+window.remove_address = function(node, id) {
+  $.post('/flow/remove_address', { address_id: id }, function(text) {
+    alert(text);
+    $(node).remove();
+  })
+}
+</script>
+
+
 <h1 class="big">Account</h1>
 
 <div class="flex">
@@ -18,11 +28,20 @@
   </div>
   <div class="flex-col">
     <fieldset class="flow" style="min-height: 120px;">
-      <legend>ADDRESS</legend>
-      <%=
-        addr = @user.addresses.first
-        "#{addr.firstname} #{addr.lastname}, #{addr.address1}, #{addr.city}"
-      %>
+      <legend>STORED ADDRESSES</legend>
+      <ul class="list">
+        <% for addr in @user.addresses %>
+
+          <li style="line-height: 15pt; font-size: 11pt;" onclick="remove_address(this, <%= addr.id %>);">
+            <button class="button small" style="float: right;">delete</button>
+
+            <span <% if addr.lastname.index(' *')%>style="text-decoration: line-through;"<% end %>><%= "#{addr.firstname} #{addr.lastname}" %></span>
+
+            <br />
+            <%= "#{addr.address1}, #{addr.city}" %>
+          </li>
+        <% end %>
+      </ul>
     </fieldset>
   </div>
 </div>
