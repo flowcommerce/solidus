@@ -10,8 +10,15 @@
 //= require_tree .
 
 window.toggleSidebar = function() {
-  // if ($('#sidebar-pannel:visible')[0]) {
+  var paypal_button = $('#paypal-button')
+
   $('#sidebar-pannel, #sidebar-button').toggle();
+
+  if ($('#sidebar-pannel').is(':visible')) {
+    paypal_button.hide();
+  } else {
+    paypal_button.show();
+  }
 }
 
 $(function(){

@@ -24,21 +24,32 @@ class Flow::Error < StandardError
     end
   end
 
-  # Io::Flow::V0::HttpClient::ServerError - 422 Unprocessable Entity: {"code":"invalid_number","messages":["Card number is not valid"]}
-  # hash['code']    = 'invalid_number'
-  # hash['message'] = 'Card number is not valid'
-  # hash['title']   = '422 Unprocessable Entity'
-  # hash['klass']   = 'Io::Flow::V0::HttpClient::ServerError'
   def self.format_message exception
-    parts = exception.message.split(': ', 2)
-    hash  = JSON.load(parts[1])
+    # format Flow errors in a special way
+    # Io::Flow::V0::HttpClient::ServerError - 422 Unprocessable Entity: {"code":"invalid_number","messages":["Card number is not valid"]}
+    # hash['code']    = 'invalid_number'
+    # hash['message'] = 'Card number is not valid'
+    # hash['title']   = '422 Unprocessable Entity'
+    # hash['klass']   = 'Io::Flow::V0::HttpClient::ServerError'
+    if exception.class == Io::Flow::V0::HttpClient::ServerError
+      parts = exception.message.split(': ', 2)
+      hash  = JSON.load(parts[1])
 
-    hash[:message] = hash['messages'].join(', ')
-    hash[:title]   = parts[0]
-    hash[:klass]   = exception.class
-    hash[:code]    = hash['code']
+      hash[:message] = hash['messages'].join(', ')
+      hash[:title]   = parts[0]
+      hash[:klass]   = exception.class
+      hash[:code]    = hash['code']
+      hash
+    else
+      msg = exception.message.is_a?(Array) ? exception.message.join(' - ') : exception.message
 
-    hash
+      hash = {}
+      hash[:title]   = '-',
+      hash[:code]    = '-',
+      hash[:message] = msg,
+      hash[:klass]   = exception.class
+      hash
+    end
   end
 
   def self.format_order_message order, flow_experience=nil
