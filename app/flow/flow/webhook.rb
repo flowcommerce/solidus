@@ -80,4 +80,9 @@ class Flow::Webhook
 
     hook_localized_item_upserted
   end
+
+  # send en email when order is refunded
+  def hook_refund_capture_upserted_v2
+    Spree::OrderMailer.refund_complete_email(@data).deliver
+  end
 end
