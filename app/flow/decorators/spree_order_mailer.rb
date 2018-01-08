@@ -1,6 +1,6 @@
 Spree::OrderMailer.class_eval do
 
-  def refund_complete_email web_hook_event_hash
+  def refund_complete_email web_hook_event
     # web_hook_event ||= JSON.load File.read('./tmp/refunds.json')
     auth_id          = web_hook_event.dig('refund_capture', 'refund', 'authorization', 'key')
 
