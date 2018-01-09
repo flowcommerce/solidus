@@ -84,5 +84,7 @@ class Flow::Webhook
   # send en email when order is refunded
   def hook_refund_upserted_v2
     Spree::OrderMailer.refund_complete_email(@data).deliver
+
+    'Email delivered'
   end
 end

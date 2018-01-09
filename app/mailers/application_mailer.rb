@@ -1,5 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'solidus@shopflowfashion.com'
+  DEFAULT_FROM = 'solidus@shopflowfashion.com' unless defined?(DEFAULT_FROM)
+
+  default from: DEFAULT_FROM
 
   layout 'mailer'
 end

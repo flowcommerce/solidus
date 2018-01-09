@@ -1,4 +1,5 @@
 Spree::OrderMailer.class_eval do
+  default from: ApplicationMailer::DEFAULT_FROM
 
   def refund_complete_email web_hook_event
     # web_hook_event ||= JSON.load File.read('./tmp/refunds.json')
@@ -12,7 +13,10 @@ Spree::OrderMailer.class_eval do
     @full_name = '%s %s' % [authorization.customer.name.first, authorization.customer.name.last]
     @amount    = '%s %s' % [web_hook_event['refund']['requested']['amount'], web_hook_event['refund']['requested']['currency']]
 
-    mail ({to: @mail_to, subject: 'We refunded your order for ammount %s' % @amount})
+    mail ({
+        to:      @mail_to,
+        subject: 'We refunded your order for ammount %s' % @amount
+    })
   end
 
 end
