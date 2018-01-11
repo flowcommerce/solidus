@@ -76,5 +76,5 @@ Widget.register 'experience_picker',
     country_data = $tag '.list', country_data if countries.length > 9
 
     $tag '#choose_experience',
-     { onclick: '$$.toggle();' },
-     title + first_item + '<hr />' + country_data
+      { onclick: "$w('##{@node.getAttribute('id')}').toggle();" },
+      title + first_item + '<hr />' + country_data

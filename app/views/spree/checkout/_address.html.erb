@@ -48,6 +48,13 @@ window.apply_address = function(id) {
         <%= render :partial => 'spree/address/form', :locals => { :form => ship_form, :address_type => 'shipping', :address => @order.ship_address } %>
       <% end %>
 
+      <% if try_spree_current_user %>
+        <div style="margin-left: 6px;">
+          <%= check_box_tag 'save_user_address', '1', false %>
+          <%= label_tag :save_user_address, Spree.t(:save_my_address), style: 'margin-left: 12px;' %>
+        </div>
+      <% end %>
+
       <% if @addr_list.first %>
         <p><small>Select from previously entered addresses</small></p>
 
@@ -69,11 +76,5 @@ window.apply_address = function(id) {
 <% content_for :sumbit_block do %>
   <div class="form-buttons" data-hook="buttons">
     <%= submit_tag Spree.t(:save_and_continue), :class => 'button primary wide' %>
-      <% if try_spree_current_user %>
-      <div style="padding-top: 15px;">
-        <%= check_box_tag 'save_user_address', '1', try_spree_current_user.respond_to?(:persist_order_address) %>
-        <%= label_tag :save_user_address, Spree.t(:save_my_address) %>
-      </div>
-    <% end %>
   </div>
 <% end %>

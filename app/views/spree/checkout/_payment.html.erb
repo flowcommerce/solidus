@@ -1,3 +1,44 @@
+<script>
+window.apply_coupon_code = function(code) {
+  var data   = {};
+  var url    = 'http://localhost:3000/api/orders/'+Spree.current_order_id+'/apply_coupon_code'
+  var target = $('#coupon_status');
+
+  data.order_token = Spree.current_order_token;
+  data.coupon_code = code || $('#order_coupon_code').val();
+
+  if (!data.coupon_code) {
+    target.addClass('error');
+    target.removeClass('success');
+    target.html('Coupon code is not deinfed');
+    return;
+  }
+
+  $.ajax({
+    type: 'PUT',
+    url:  url,
+    data: data,
+  }).fail(function(response){
+    response = response.responseJSON;
+
+    target.removeClass('success');
+    target.addClass('error');
+    target.html(response.error);
+  }).done(function(response){
+    target.removeClass('error');
+    target.addClass('success');
+    target.html(response.success);
+
+    setTimeout(
+      function(){ location.href = location.href }
+      , 2000
+    );
+  });
+}
+
+</script>
+
+
 <div class="flex">
   <div class="flex-col">
     <% if @flow_session.localized? %>
@@ -6,7 +47,6 @@
 
         <div id="paypal-button"></div>
       </fieldset>
-
       <script>
         FlowPayPal.opts = {
           environment: 'sandbox',
@@ -88,14 +128,14 @@
     <fieldset class="form">
       <legend>PROMO CODES</legend>
 
-      <p class='field' data-hook='coupon_code'>
-        <%= form.label :coupon_code %><br />
-        <%= form.text_field :coupon_code, style: 'width: 100%;' %>
-        <div></div>
-        <button type="button" class="button" id="coupon-code-apply-button">
-          <%= Spree.t(:apply_code) %>
-        </button>
+      <p class="field" data-hook="coupon_code">
+        <label for="order_coupon_code">Coupon Code</label><br>
+        <input style="width: 100%;" type="text" id="order_coupon_code">
+        <br />
+        <br />
+        <button type="button" class="button" id="coupon-code-apply-button" onclick="apply_coupon_code(); return false;">Apply Code</button>
       </p>
+
       <div id='coupon_status'></div>
     </fieldset>
   </div>

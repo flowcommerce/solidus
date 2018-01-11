@@ -54,8 +54,12 @@ class Flow::Webhook
 
     # for testing we need ability to inject dependency for variant class
     variant_class = @opts[:variant_class] || Spree::Variant
-
     @variant      = variant_class.find_by id: number
+
+    unless @variant
+      raise Flow::Error.new('Expected product variant with number [%s] to be defined in solidus: %s' % [number, @data.to_json])
+    end
+
     @product      = @variant.product
     is_included   = @data['local']['status'] == 'included'
 
