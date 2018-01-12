@@ -16,12 +16,12 @@ body {
 
 h1 {
   font-family: Oswald;
-  font-size: 20px;
+  font-size: 18px;
   display: inline-block;
-  padding: 0 100px 10px 0;
-  border-bottom: 1px solid #000;
+  padding: 0 100px 0 0;
   margin: 10px 0 40px 0;
-  letter-spacing: 1px;
+  letter-spacing: 0px;
+  border-bottom: 1px solid #000;
 
   &.big {
     margin-top: 40px;

@@ -99,6 +99,7 @@ class ApplicationController < ActionController::Base
     # if we are somewhere in checkout and there is no session, force user to login
     # that will remove few Solidus native bugs
     if request.path.start_with?('/checkout') && !@current_spree_user
+      session['spree_user_return_to'] = '/cart'
       flash[:error] = 'You need to be registred to continue with shopping'
       redirect_to '/login'
     end
