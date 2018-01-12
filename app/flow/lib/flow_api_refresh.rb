@@ -9,19 +9,25 @@ module FolwApiRefresh
   extend self
 
   SYNC_INTERVAL_IN_MINUTES = 60 unless defined?(SYNC_INTERVAL_IN_MINUTES)
-  CHECK_FILE = Pathname.new './tmp/last-flow-refresh.txt' unless defined?(CHECK_FILE)
+  # CHECK_FILE = Pathname.new './tmp/last-flow-refresh.txt' unless defined?(CHECK_FILE)
   LOGGER = Logger.new('./log/sync.log', 3, 1024000) unless defined?(LOGGER)
 
   ###
 
+  def settings
+    FlowSettings.fetch 'rake-products-refresh'
+  end
+
   def get_data
-    CHECK_FILE.exist? ? JSON.parse(CHECK_FILE.read) : {}
+    # CHECK_FILE.exist? ? JSON.parse(CHECK_FILE.read) : {}
+    JSON.load(settings.data || '{}')
   end
 
   def write
     data = get_data
     yield data
-    CHECK_FILE.write data.to_json
+    # CHECK_FILE.write data.to_json
+    settings.data = data.to_json
     data
   end
 

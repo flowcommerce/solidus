@@ -5,8 +5,8 @@ MAINTAINER Dino Reic (dino@flow.io)
 RUN apt-add-repository ppa:brightbox/ruby-ng
 RUN apt-get update -qq
 RUN apt-get install -y ruby2.4-dev ruby-all-dev
-RUN apt-get install -y build-essential libpq-dev nodejs cron
-RUN apt-get install sendmail -y
+RUN apt-get install -y build-essential libpq-dev
+RUN apt-get install -y curl
 
 RUN gem install bundler
 
@@ -28,6 +28,5 @@ WORKDIR /opt/rails
 
 # java -jar /root/environment-provider.jar --service default solidus bin/start.sh production
 ENTRYPOINT ["java", "-jar", "/root/environment-provider.jar", "--service", "default", "solidus", "bin/start.sh"]
-# ENTRYPOINT ["bin/start.sh"]
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl -f http://localhost:3000/_internal_/healthcheck || exit 1

@@ -12,6 +12,10 @@ class FlowSettings < ActiveRecord::Base
     end
     alias :[]= :set
 
+    def fetch key
+      find_or_initialize_by key: key
+    end
+
     def get key
       settings = find_by key: key
       settings ? settings.data : nil
