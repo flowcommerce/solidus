@@ -1,7 +1,7 @@
 <script>
 window.apply_coupon_code = function(code) {
   var data   = {};
-  var url    = 'http://localhost:3000/api/orders/'+Spree.current_order_id+'/apply_coupon_code'
+  var url    = '/api/orders/'+Spree.current_order_id+'/apply_coupon_code'
   var target = $('#coupon_status');
 
   data.order_token = Spree.current_order_token;

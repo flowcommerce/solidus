@@ -103,7 +103,7 @@ class Flow::SimpleGateway
   # gets credit card token
   def cc_get_token
     cards = @order.credit_cards.select{ |cc| cc.gateway_customer_profile_id }
-    raise StandarError.new('Credit card with token not found') unless cards.first
+    raise StandardError.new('Credit card with token not found') unless cards.first
 
     cards.first.gateway_customer_profile_id
   end
