@@ -7,8 +7,8 @@
     <p><%= Spree.t(:your_cart_is_empty) %></p>
     <p><%= link_to Spree.t(:continue_shopping), products_path, :class => 'button continue' %></p>
   </div>
-<% else %>
 
+<% else %>
   <div data-hook="outside_cart_form">
     <%= form_for @order, :url => update_cart_path, :html => {:id => 'update-cart'} do |order_form| %>
       <div data-hook="inside_cart_form">
