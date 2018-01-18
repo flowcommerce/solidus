@@ -86,7 +86,12 @@ class ApplicationController < ActionController::Base
     FlowSettings[visitor] = Base64.encode64(session.dump) if @save_session
 
     # expose flow session object
-    @flow_session = session
+    @flow_session   = session
+
+    unless @flow_session
+      @flow_session ||= Hashie::Mash.new
+      flash.now[:error] = 'Flow session not initiazized (Flow erorr)'
+    end
   rescue
     # clear session
     FlowSettings.delete visitor
