@@ -91,7 +91,7 @@ module FlowHelper
 
     data = data.join('') if data.is_a?(Array)
 
-    node = "<#{name}#{tag_options(opts)}"
+    node = "<#{name}#{tag_builder.tag_options(opts)}"
     node += data ? ">#{data}</#{name}>" : ' />'
     node.html_safe
   end

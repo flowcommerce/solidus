@@ -9,12 +9,11 @@ git_source(:github) do |repo_name|
 end
 
 # basics
-gem 'rails', '5.0.2'
-gem 'pg'
+gem 'rails', '5.1.4'
+gem 'pg', '< 1.0'
 gem 'hashie'
 gem 'tzinfo-data'
 gem 'colorize'
-# gem 'activemerchant_flow'
 gem 'pry-rails'                # better console
 gem 'awesome_print'
 gem 'flowcommerce'
@@ -22,15 +21,11 @@ gem 'flowcommerce-activemerchant'
 gem 'rails_before_render'
 
 # solidus fw
-gem 'solidus', '2.1.0',    require: false
+gem 'solidus', '2.4.2',    require: false
 gem 'solidus_auth_devise', require: false
-
-group :manual_load do
-  gem 'dotenv'
-  gem 'faraday'
-  gem 'thread'
-  gem 'puma_worker_killer'
-end
+gem 'dotenv',              require: false
+gem 'faraday',             require: false
+gem 'thread',              require: false
 
 group :development do
   # gem 'spring'                           # fast console and tests
