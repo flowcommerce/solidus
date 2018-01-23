@@ -176,7 +176,7 @@ module FlowHelper
   def flow_link_to_cart text=nil
     text ||= Spree.t(:cart)
 
-    order = @order || simple_current_order
+    order = @order || current_order
     order = nil if order && (order.state == 'complete' || order.item_count.zero?)
 
     if order.nil?
@@ -191,7 +191,7 @@ module FlowHelper
   end
 
   def flow_cart_ico
-    order = @order || simple_current_order
+    order = @order || current_order
     order = nil if order && (order.state == 'complete' || order.item_count.zero?)
 
     count = order.nil? ? '' : order.item_count
@@ -261,14 +261,14 @@ module FlowHelper
       { org: Flow.organization, key: @flow_session.experience.key }
     ]
 
-    if respond_to?(:simple_current_order) && simple_current_order.number
-      text = simple_current_order.number
+    if respond_to?(:current_order) && current_order.try(:number)
+      text = current_order.number
 
       if @current_spree_user.try(:admin?)
         text  = link_to text, '/admin/orders/%s/edit' % text
-        text += ', <a href="https://console.flow.io/%s/orders/%s" target="_console">console</a>'.html_safe % [Flow.organization, simple_current_order.number]
-        text += ', <a href="/admin/flow?flow=order&o_id=%s" target="_api">api</a>'.html_safe % [simple_current_order.id]
-        text += ', <a href="/flow/last_order_put?number=%s" target="_last_put">last order/put</a>'.html_safe % [simple_current_order.number]
+        text += ', <a href="https://console.flow.io/%s/orders/%s" target="_console">console</a>'.html_safe % [Flow.organization, current_order.number]
+        text += ', <a href="/admin/flow?flow=order&o_id=%s" target="_api">api</a>'.html_safe % [current_order.id]
+        text += ', <a href="/flow/last_order_put?number=%s" target="_last_put">last order/put</a>'.html_safe % [current_order.number]
       end
 
       data.push 'Order (%s)' % text

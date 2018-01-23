@@ -108,6 +108,15 @@ class ApplicationController < ActionController::Base
       flash[:error] = 'You need to be registred to continue with shopping'
       redirect_to '/login'
     end
+
+    # for some reason, Solidus 2.4.2 is not updateing payment
+    if current_order && request.path == '/checkout/payment'
+      payment = current_order.payments.first
+
+      if payment && !payment.payment_method_id
+        payment.update_column :payment_method_id, current_order.available_payment_methods.first.id
+      end
+    end
   end
 
   # ###
@@ -115,7 +124,7 @@ class ApplicationController < ActionController::Base
   # we need to prepare @order and sync to flow.io before render because we need
   def flow_sync_order
     order = @order if @order.try :id
-    order ||= simple_current_order if respond_to?(:simple_current_order) && simple_current_order.try(:id)
+    order ||= current_order if respond_to?(:current_order) && current_order.try(:id)
 
     return unless order
     return if order.line_items.length == 0

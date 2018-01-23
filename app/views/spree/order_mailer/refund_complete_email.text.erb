@@ -1,7 +1,7 @@
 Dear <%= @full_name %>,
 
 We processed return on the following order:
-<%= ENV['HOST'] %>/orders/<%= @number %>
+<%= ENV['APP_URL'] %>/orders/<%= @number %>
 
 Refunded products
 <% for item in @order.flow_data['order']['items'] %>
