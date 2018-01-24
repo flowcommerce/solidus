@@ -56,13 +56,13 @@ RSpec.describe Flow::Order do
   it 'renders error message' do
     flow_order = Flow::Order.new order: order
 
-    expect(flow_order.error?).to be_nil
+    expect(flow_order.error?).to be_falsy
 
     flow_order.instance_eval do
       @response = { 'code' => 'test_error', 'messages' => 'Ruby is on fire' }
     end
 
-    expect(flow_order.error?).to eq 'Ruby is on fire'
+    expect(flow_order.error?).to be_truthy
   end
 
   it 'selects first active delivery' do
@@ -71,10 +71,6 @@ RSpec.describe Flow::Order do
     delivery = flow_order.delivery
 
     expect(delivery[:id]).to eq 'opt-df5144291ce04a38a30c898187cb8392'
-  end
-
-  it 'ads customer' do
-
   end
 
 end

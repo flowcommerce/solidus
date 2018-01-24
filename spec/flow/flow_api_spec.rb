@@ -1,12 +1,23 @@
 require 'spec_init'
 
 RSpec.describe Flow do
+  let(:session_instance) {
+    Flow::Session.new(ip: '192.206.151.131', visitor: 'test_user_UID').tap do |session|
+      session.create
+    end
+  }
 
   it 'checks that we can gets canadian session from flow' do
-    flow_session = Flow::Session.new ip: '192.206.151.131'
+    expect(session_instance.session.organization).to eq(Flow.organization)
+    expect(session_instance.session.local.country.name).to eq('Canada')
+  end
 
-    expect(flow_session.session.organization).to eq(Flow.organization)
-    expect(flow_session.session.local.country.name).to eq('Canada')
+  it 'checks session dump/restore' do
+    dump     = Base64.encode64(session_instance.dump)
+    restored = Flow::Session.restore Base64.decode64(dump)
+
+    expect(restored.session.ip).to eq(session_instance.session.ip)
+    expect(restored.session.organization).to eq(session_instance.session.organization)
   end
 
   it 'expects class variabes to be set' do

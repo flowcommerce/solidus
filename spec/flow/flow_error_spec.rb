@@ -1,4 +1,5 @@
 require 'spec_init'
+require 'flowcommerce'
 
 class TestError < StandardError
 
@@ -7,40 +8,25 @@ end
 RSpec.describe Flow::Error do
   let(:request) { Struct.new(:url).new('http://mock/flow') }
 
-  let(:flaw_order) {
-    {
-      'messages' => ['first error', 'second error']
-    }
+  let(:flow_error) {
+    Io::Flow::V0::HttpClient::ServerError.new(500, 'foo', body: '{"messages":["b","a","r"]}')
   }
 
   ###
 
   it 'formats message in right way' do
-    formated = Flow::Error.format_message flaw_order
-    expect(formated).to eq('first error, second error (Flow.io)')
+    formated = Flow::Error.format_message(flow_error)
+    expect(formated[:message]).to eq('b, a, r')
 
-    not_formated = Flow::Error.format_message({})
-    expect(not_formated).to eq('Order not properly localized (sync issue) (Flow.io)')
+    not_formated = Flow::Error.format_message(StandardError.new('foo'))
+    expect(not_formated[:message]).to eq('foo')
   end
 
   it 'ensures that errors are logged' do
-    message = 'flow mock error'
+    # if bugsnag is installed, it will probably log
+    require 'bugsnag'
 
-    # clear all test errors
-    FileUtils.rm_rf('./log/exceptions/test_errors/.', secure: true)
-
-    begin
-      raise TestError.new message
-    rescue TestError => e
-      Flow::Error.log e, request
-    end
-
-    error_files = Dir['./log/exceptions/test_errors/*']
-
-    # there should be only one error file
-    expect(error_files.length).to eq(1)
-
-    # and should include error message
-    expect(File.read(error_files.first).include?(message)).to be_truthy
+    expect(Bugsnag.to_s).to eq('Bugsnag')
+    expect(Bugsnag.respond_to?(:notify)).to eq(true)
   end
 end

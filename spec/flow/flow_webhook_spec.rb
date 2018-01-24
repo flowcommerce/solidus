@@ -6,6 +6,11 @@ class SpreeVariantMock
       raise 'Number does not match' unless id == '1233456'
       new id
     end
+
+    def find_by opts
+      raise 'Number does not match' unless opts[:id] == '1233456'
+      new opts[:id]
+    end
   end
 
   ###
