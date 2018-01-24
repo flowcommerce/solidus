@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   #     flash[:error] = '%{message} (%{title})' % error
   #     redirect_to :back
   #   else
-  #     render text: Rails.root.join('app/views/flow/_error.html').read % error
+  #     render plain: Rails.root.join('app/views/flow/_error.html').read % error
   #   end
   # end
 

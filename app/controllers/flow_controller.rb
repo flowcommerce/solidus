@@ -7,7 +7,7 @@ class FlowController < ApplicationController
   # forward all incoming requests to Flow Webhook service object
   # /flow/event-target
   def handle_flow_web_hook_event
-    # return render text: 'Source is not allowed to make requests', status: 403 unless requests.ip == '52.86.80.125'
+    # return render plain: 'Source is not allowed to make requests', status: 403 unless requests.ip == '52.86.80.125'
 
     string_data = request.body.read
 
@@ -17,9 +17,9 @@ class FlowController < ApplicationController
     data     = JSON.parse string_data
     response = Flow::Webhook.process data
 
-    render text: response
+    render plain: response
   rescue ArgumentError => e
-    render text: e.message, status: 400
+    render plain: e.message, status: 400
   end
 
   def paypal_get_id
@@ -76,7 +76,7 @@ class FlowController < ApplicationController
             response = flow_response.success? ? order.flow_data['refund'] : flow_response.message
           end
         else
-          return render text: 'Ation %s not supported' % action
+          return render plain: 'Ation %s not supported' % action
       end
 
       render json: response
@@ -84,7 +84,7 @@ class FlowController < ApplicationController
       @orders = Spree::Order.order('id desc').page(params[:page]).per(20)
     end
   rescue
-    render text: '%s: %s' % [$!.class.to_s, $!.message]
+    render plain: '%s: %s' % [$!.class.to_s, $!.message]
   end
 
   def update_current_order
@@ -99,7 +99,7 @@ class FlowController < ApplicationController
     order.flow_data[name] = value
     order.update_column :flow_data, order.flow_data
 
-    render text: '%s - %s' % [name, value]
+    render plain: '%s - %s' % [name, value]
   end
 
   def promotion_set_option
@@ -145,7 +145,7 @@ class FlowController < ApplicationController
       FolwApiRefresh.sync_products_if_needed!
     end
 
-    render text: 'Scheduled'
+    render plain: 'Scheduled'
   end
 
   def last_order_put
