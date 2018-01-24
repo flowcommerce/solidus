@@ -2,7 +2,7 @@
 
 class FlowController < ApplicationController
   layout 'flow'
-  skip_before_filter :verify_authenticity_token, only: [:handle_flow_web_hook_event, :schedule_refresh]
+  skip_before_action :verify_authenticity_token, only: [:handle_flow_web_hook_event, :schedule_refresh]
 
   # forward all incoming requests to Flow Webhook service object
   # /flow/event-target
@@ -51,7 +51,6 @@ class FlowController < ApplicationController
   end
 
   def index
-    # solidus method
     return unless user_is_admin?
 
     if action = params[:flow]
@@ -175,6 +174,12 @@ class FlowController < ApplicationController
     end
   end
 
+  def version
+    return unless user_is_admin?
+
+    render plain: `git log --max-count=1`
+  end
+
   private
 
   def paypal_get_order_from_param
@@ -184,7 +189,7 @@ class FlowController < ApplicationController
 
   def user_is_admin?
     return true if spree_current_user && spree_current_user.admin?
-    render text: 'You must be admin to access this action'
+    render plain: 'You must be admin to access this action'
     false
   end
 end
