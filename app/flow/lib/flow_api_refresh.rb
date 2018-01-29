@@ -14,21 +14,30 @@ module FolwApiRefresh
 
   ###
 
+  def now
+    Time.now.to_i
+  end
+
   def settings
     FlowSettings.fetch 'rake-products-refresh'
   end
 
-  def get_data
+  def data
     # CHECK_FILE.exist? ? JSON.parse(CHECK_FILE.read) : {}
-    JSON.load(settings.data || '{}')
+    @data ||= JSON.load(settings.data || '{}')
+  end
+
+  def duration
+    return '? (unknown)' if !data['start'] || !data['end'] || data['start'] > data['end']
+
+    (data['end'] - data['start'])/60
   end
 
   def write
-    data = get_data
     yield data
     # CHECK_FILE.write data.to_json
-    settings.data = data.to_json
-    data
+    settings.data = @data.to_json
+    @data
   end
 
   def log message
@@ -42,53 +51,64 @@ module FolwApiRefresh
     end
   end
 
-  def log_refresh! start_time=nil
+  def needs_refresh?
+    data['end'] ||= now - 600
+
+    # needs refresh if last refresh started more than treshold ago
+    if data['end'] < (now - (60 * SYNC_INTERVAL_IN_MINUTES))
+      puts 'Last refresh ended long time ago, needs refresh.'
+      return true
+
+    elsif data['force_refresh']
+      puts 'Force refresh schecduled, refreshing.'
+      true
+
+    else
+      puts 'No need for refresh, ended before %d seconds.' % (now - data['end'])
+      false
+
+    end
+  end
+
+  # for start just call log_refresh! and end it with true statement
+  def log_refresh! has_ended=false
+    data.delete('force_refresh')
+
     write do |data|
-      if start_time
-        data['force_refresh'] = false
-        data['duration_in_seconds'] = Time.now.to_i - start_time.to_i if start_time
-        data['start'] = start_time.to_i
-        data['end']   = Time.now.to_i
-        data.delete('started')
+      if has_ended
+        data['start']   ||= now - 60
+        data['end']       = now
+        data.delete('in_progress')
       else
-        data['started'] = true
-        data['start'] = Time.now.to_i
+        data['in_progress'] = true
+        data['start']       = now
       end
     end
   end
 
-  def last_refresh
-    json = get_data
-
-    return 'No last sync data' unless json['end']
+  def refresh_info
+    return 'No last sync data' unless data['end']
 
     info = []
-
-    info.push 'Sync started %d seconds ago (it is in progress).' % (Time.now.to_i - json['start'].to_i) if json['started']
-
+    info.push 'Sync started %d seconds ago (it is in progress).' % (Time.now.to_i - data['start'].to_i) if data['started']
     info.push 'Last sync finished %{finished} minutes ago and lasted for %{duration} sec. We sync every %{every} minutes.' %
       {
-        finished: (Time.now.to_i - json['end'].to_i)/60,
-        duration: json['duration_in_seconds'] || '?',
+        finished: (Time.now.to_i - data['end'].to_i)/60,
+        duration: duration,
         every:    SYNC_INTERVAL_IN_MINUTES
       }
 
     info.join(' ')
   end
 
-  def sync_products_if_needed! sync_needed=false
-    json = get_data
+  def sync_products_if_needed
+    return unless needs_refresh?
 
-      unless json['started']
-      sync_needed ||= true if json['force_refresh']
-      sync_needed ||= true if json['start'].to_i < (Time.now.to_i - SYNC_INTERVAL_IN_MINUTES * 60)
-    end
+    log_refresh!
 
-    if sync_needed
-      log 'Sync needed, running ...'
-      system 'bundle exec rake flow:sync_localized_items'
-    else
-      log last_refresh
-    end
+    log 'Sync needed, running ...'
+    system 'bundle exec rake flow:sync_localized_items'
+
+    log_refresh
   end
 end
