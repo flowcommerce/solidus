@@ -140,9 +140,11 @@ namespace :flow do
     # https://docs.flow.io/#/module/localization/resource/experiences
 
     # we have to log start, so that another process does not start while this one is running
-    FolwApiRefresh.log_refresh!
+    next unless FolwApiRefresh.needs_refresh?
 
-    start = Time.now
+    puts 'Sync needed, running ...'.yellow
+
+    FolwApiRefresh.log_refresh!
 
     total = 0
 
@@ -184,8 +186,8 @@ namespace :flow do
       end
     end
 
-    # low log duration
-    FolwApiRefresh.log_refresh! start
+    # Log sync end time
+    FolwApiRefresh.log_refresh! true
 
     puts 'Finished with total of %s rows.' % total.to_s.green
   end

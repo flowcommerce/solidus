@@ -35,9 +35,8 @@ module FolwApiRefresh
 
   def write
     yield data
-    # CHECK_FILE.write data.to_json
-    settings.data = @data.to_json
-    @data
+    settings.update_attribute :data, data.to_json
+    data
   end
 
   def log message
@@ -52,7 +51,7 @@ module FolwApiRefresh
   end
 
   def needs_refresh?
-    data['end'] ||= now - 600
+    data['end'] ||= now - 10_000
 
     # needs refresh if last refresh started more than treshold ago
     if data['end'] < (now - (60 * SYNC_INTERVAL_IN_MINUTES))
