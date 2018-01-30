@@ -136,13 +136,12 @@ namespace :flow do
 
   desc 'Sync localized catalog items'
   task :sync_localized_items => :environment do |t|
-    # https://api.flow.io/reference/countries
-    # https://docs.flow.io/#/module/localization/resource/experiences
-
     # we have to log start, so that another process does not start while this one is running
     next unless FolwApiRefresh.needs_refresh?
 
     puts 'Sync needed, running ...'.yellow
+
+    system 'curl -fsS --retry 3 https://hchk.io/93912c0e-65cd-4f5b-a912-8983448f370b > /dev/null'
 
     FolwApiRefresh.log_refresh!
 

@@ -105,7 +105,7 @@ class ApplicationController < ActionController::Base
     # that will remove few Solidus native bugs
     if request.path.start_with?('/checkout') && !@current_spree_user
       session['spree_user_return_to'] = '/cart'
-      flash[:error] = 'You need to be registred to continue with shopping'
+      flash[:error] = 'You need to be registered to continue with shopping'
       redirect_to '/login'
     end
 

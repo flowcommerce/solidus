@@ -62,7 +62,7 @@
     widget_opts = @registered_widgets[widget_name]
 
     # return if widget is not defined
-    return alert "Widget #{widget_name} is not registred" unless widget_opts
+    return alert "Widget #{widget_name} is not registered" unless widget_opts
 
     # define widget instance
     widget = {}
