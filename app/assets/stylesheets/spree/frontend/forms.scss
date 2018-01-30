@@ -24,7 +24,7 @@ $progress-ligtht-color: #bbb;
       a, span { color: #111 !important; }
     }
 
-    &.current { color: #000 !important; }
+    &.current, &.current-first { color: #000 !important; }
   }
 }
 
