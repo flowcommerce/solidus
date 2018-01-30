@@ -11,25 +11,26 @@ class ApplicationController < ActionController::Base
   # idea is to not have any errors in the future, but
   # if they happen we will show hopefully meaning full info
   # if we have bad cc number, that is an error we can't avoid
-  # rescue_from StandardError do |exception|
-  #   if defined?(Bugsnag)
-  #     Bugsnag.notify(exception)
-  #   else
-  #     # hard log error
-  #     Flow::Error.log exception, request
-  #   end
+  rescue_from StandardError do |exception|
+    if defined?(Bugsnag)
+      Bugsnag.notify(exception)
+    else
+      # hard log error
+      Flow::Error.log exception, request
+    end
 
-  #   # raise exception
-  #   error = Flow::Error.format_message exception
+    # raise exception
+    error = Flow::Error.format_message exception
 
-  #   # show simple errors inline and other errors in separate page
-  #   if ['invalid_number'].include?(error['code'])
-  #     flash[:error] = '%{message} (%{title})' % error
-  #     redirect_to :back
-  #   else
-  #     render plain: Rails.root.join('app/views/flow/_error.html').read % error
-  #   end
-  # end
+    # show simple errors inline and other errors in separate page
+    if ['invalid_number'].include?(error['code'])
+      flash[:error] = '%{message} (%{title})' % error
+
+      redirect_back(fallback_location: '/checkout/payment')
+    else
+      render plain: Rails.root.join('app/views/flow/_error.html').read % error
+    end
+  end
 
   # rescue_from Io::Flow::V0::HttpClient::ServerError do |exception|
   # end
