@@ -82,7 +82,10 @@ class Flow::Order
     delivery_list = @order.flow_order['deliveries'][0]['options']
     delivery_list = delivery_list.map do |opts|
       name         = opts['tier']['name']
-      name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
+
+      # add original Flow ID
+      # name        += ' (%s)' % opts['tier']['strategy'] if opts['tier']['strategy']
+
       selection_id = opts['id']
 
       {

@@ -65,10 +65,12 @@ class Flow::Error < StandardError
       'Order not properly localized (sync issue)'
     end
 
-    sub_info = 'Flow.io'
-    sub_info += ' - %s' % flow_experience.key[0, 15] if flow_experience
+    # sub_info = 'Flow.io'
+    # sub_info += ' - %s' % flow_experience.key[0, 15] if flow_experience
 
-    '%s (%s)' % [message, sub_info]
+    # '%s (%s)' % [message, sub_info]
+
+    message
   end
 
 end

@@ -18,10 +18,13 @@ $progress-ligtht-color: #bbb;
       color: $progress-ligtht-color !important;
     }
 
-      &.current, &.current-first {
+    &.current, &.current-first {
       border-bottom: 2px solid #111;
-      span { color: #111 !important; }
+
+      a, span { color: #111 !important; }
     }
+
+    &.current { color: #000 !important; }
   }
 }
 
