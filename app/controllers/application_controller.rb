@@ -20,16 +20,21 @@ class ApplicationController < ActionController::Base
     end
 
     # raise exception
-    error = Flow::Error.format_message exception
+    error   = Flow::Error.format_message exception
+    klass   = exception.class.to_s.include?('Flow') ? 'Flow API error' : exception.class
+    message = '%s (%s)' % [error[:message], klass]
 
-    # show simple errors inline and other errors in separate page
-    if ['invalid_number'].include?(error['code'])
-      flash[:error] = '%{message} (%{title})' % error
+    fallback_location =
+      if ['invalid_number'].include?(error['code'])
+        '/checkout/payment'
+      else
+        '/'
+      end
 
-      redirect_back(fallback_location: '/checkout/payment')
-    else
-      render plain: Rails.root.join('app/views/flow/_error.html').read % error
-    end
+    # render plain: Rails.root.join('app/views/flow/_error.html').read % error
+
+    flash[:error] = message
+    redirect_back(fallback_location: fallback_location)
   end
 
   # rescue_from Io::Flow::V0::HttpClient::ServerError do |exception|
