@@ -88,12 +88,15 @@ module FolwApiRefresh
   def refresh_info
     return 'No last sync data' unless data['end']
 
+    helper = Class.new
+    helper.extend ActionView::Helpers::DateHelper
+
     info = []
     info.push 'Sync started %d seconds ago (it is in progress).' % (Time.now.to_i - data['start'].to_i) if data['started']
-    info.push 'Last sync finished %{finished} minutes ago and lasted for %{duration} sec. We sync every %{every} minutes.' %
+    info.push 'Last sync finished %{finished} ago and lasted for %{duration}. We sync every %{every} minutes.' %
       {
-        finished: (Time.now.to_i - data['end'].to_i)/60,
-        duration: duration,
+        finished: helper.distance_of_time_in_words(Time.now, data['end'].to_i),
+        duration: helper.distance_of_time_in_words(duration),
         every:    SYNC_INTERVAL_IN_MINUTES
       }
 

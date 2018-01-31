@@ -347,7 +347,7 @@ module FlowHelper
   end
 
   def last_api_refresh
-    schedule_data = FolwApiRefresh.get_data
+    schedule_data = FolwApiRefresh.refresh_info
 
     data = []
 
