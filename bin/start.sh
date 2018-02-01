@@ -9,7 +9,7 @@ puma -p 3000 -e production &
 while true
 do
   # sleep, then recheck if sync is needed
-  sleep 120
+  sleep 600
 
   # refresh DB
   bundle exec rake flow:sync_localized_items

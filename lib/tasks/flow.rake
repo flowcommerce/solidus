@@ -139,11 +139,12 @@ namespace :flow do
     # we have to log start, so that another process does not start while this one is running
     next unless FolwApiRefresh.needs_refresh?
 
+    FolwApiRefresh.log_refresh!
+
     puts 'Sync needed, running ...'.yellow
 
+    # mark that sync happend
     system 'curl -fsS --retry 3 https://hchk.io/93912c0e-65cd-4f5b-a912-8983448f370b > /dev/null'
-
-    FolwApiRefresh.log_refresh!
 
     total = 0
 

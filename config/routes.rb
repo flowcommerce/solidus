@@ -19,7 +19,8 @@ Rails.application.routes.draw do
     get  '/last_order_put',       to: '/flow#last_order_put'
     get  '/webhooks',             to: '/flow#webhooks'
     get  '/version',              to: '/flow#version'
-  end
+    get  '/products',             to: '/flow#products'
+ end
 
   # custom from Flow for Solidus frontend
   get '/about', to: 'flow#about'

@@ -180,6 +180,22 @@ class FlowController < ApplicationController
     render plain: `git log --max-count=1`
   end
 
+  def products
+    variants = Spree::Variant.select('id, product_id').all
+
+    data = {}
+    data[:product_ids] = Spree::Product.select('id').map(&:id)
+    data[:variant_ids] = variants.map(&:id)
+
+    data[:products] = {}
+    for el in variants
+      data[:products][el.product_id] ||= []
+      data[:products][el.product_id].push el.id
+    end
+
+    render json: data
+  end
+
   private
 
   def paypal_get_order_from_param
