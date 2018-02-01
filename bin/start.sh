@@ -4,7 +4,7 @@
 bunle exec rake db:migrate
 
 # run web server
-puma -p 3000 -e production &
+puma -w 2 -p 3000 -e production &
 
 while true
 do

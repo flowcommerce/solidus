@@ -183,14 +183,14 @@ class FlowController < ApplicationController
   def products
     variants = Spree::Variant.select('id, product_id').all
 
-    data = {}
-    data[:product_ids] = Spree::Product.select('id').map(&:id)
-    data[:variant_ids] = variants.map(&:id)
+    data = { products: {} }
+    data[:product_ids] = Spree::Product.select('id').map(&:id).sort
+    data[:variant_ids] = variants.map(&:id).sort
 
-    data[:products] = {}
     for el in variants
       data[:products][el.product_id] ||= []
       data[:products][el.product_id].push el.id
+      data[:products][el.product_id] = data[:products][el.product_id].sort
     end
 
     render json: data
@@ -205,7 +205,9 @@ class FlowController < ApplicationController
 
   def user_is_admin?
     return true if spree_current_user && spree_current_user.admin?
+
     render plain: 'You must be admin to access this action'
+
     false
   end
 end

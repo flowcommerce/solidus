@@ -57,7 +57,9 @@ class Flow::Webhook
     @variant      = variant_class.find_by id: number
 
     unless @variant
-      raise Flow::Error.new('Expected product variant with number [%s] to be defined in solidus: %s' % [number, @data.to_json])
+      error_message = 'Product variant with number [%s] not found: %s' % [number, @data.to_json]
+      # raise Flow::Error.new(error_message)
+      return error_message
     end
 
     @product      = @variant.product

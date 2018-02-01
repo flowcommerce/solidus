@@ -211,8 +211,12 @@ namespace :flow do
         sku = item['number']
 
         do_remove = false
+
+        # sku has to be an integer
         do_remove = true if sku.to_i == 0 || sku.to_i.to_s != sku
-        do_remove = true if !do_remove && !Spree::Variant.find(sku.to_i)
+
+        # remove if variant not found
+        do_remove ||= true if !Spree::Variant.find_by(id: sku.to_i)
 
         next unless do_remove
 
