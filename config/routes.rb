@@ -33,5 +33,5 @@ Rails.application.routes.draw do
   get '/admin/flow', to:'flow#index'
 
   # 404
-  get '*all', to: 'spree/home#not_found'
+  match '*path', to: 'spree/home#not_found', via: :all
 end

@@ -21,6 +21,8 @@ module Spree
     def not_found
       @title    = 'Page not found'
       response.status = 404
+
+      render :not_found, formats: 'html'
     end
   end
 end
