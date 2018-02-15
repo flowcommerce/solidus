@@ -10,6 +10,8 @@ threads 1, 16
 if ENV.fetch('RACK_ENV') == 'production'
   # workers 2
 
+  preload_app!
+
   on_worker_boot do
     ActiveRecord::Base.establish_connection
   end
@@ -33,4 +35,3 @@ if ENV.fetch('RACK_ENV') == 'production'
   #   end
   # end
 end
-
