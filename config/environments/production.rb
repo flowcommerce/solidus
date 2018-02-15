@@ -31,7 +31,6 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   rails_asset_host = ENV['RAILS_ASSET_HOST']
   if rails_asset_host.present?
-    ap [rails_asset_host]
     config.action_controller.asset_host = rails_asset_host
   end
 
