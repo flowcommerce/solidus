@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # migrate if needed
-bunle exec rake db:migrate
+bundle exec rake db:migrate
 
 # run web server
 puma -w 2 -p 3000 -e production &
