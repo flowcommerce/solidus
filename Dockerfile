@@ -7,6 +7,7 @@ RUN apt-get update -qq
 RUN apt-get install -y ruby2.4-dev ruby-all-dev
 RUN apt-get install -y build-essential libpq-dev
 RUN apt-get install -y curl
+RUN apt-get install libffi-dev
 
 RUN gem install bundler
 
