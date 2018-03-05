@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     post '/remove_address',       to: '/flow_other#delete_address'
     post '/event-target',         to: '/flow#handle_flow_web_hook_event'
     post '/paypal_id',            to: '/flow#paypal_get_id'
+    get  '/paypal_id',            to: '/flow#paypal_get_id'
     post '/paypal_finish',        to: '/flow#paypal_finish'
     post '/promotion_set_option', to: '/flow#promotion_set_option'
     post '/update_current_order', to: '/flow#update_current_order'

@@ -38,7 +38,7 @@
   <% if request.request_method == 'GET' %>
     <div class="col">
       <div class="form">
-        <%= render 'spree/shared/error_messages', target: resource %>
+        <%= render('spree/shared/error_messages', target: resource) %>
 
         <div id="new-customer">
           <h2 class="big">New Customers</h2>
@@ -50,9 +50,11 @@
                 <p><%= f.submit 'Sign Up', class: 'button primary' %></p>
               </div>
             <% end %>
+            <!--
             <div style="padding-left: 155px;">or</div>
             <br />
             <button class="button large" onclick="location.href='/'" style="width: 330px !important;">Continue as guest</button>
+            -->
           </div>
         </div>
       <div data-hook="login_extras"></div>

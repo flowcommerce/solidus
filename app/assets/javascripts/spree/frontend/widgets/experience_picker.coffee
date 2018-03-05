@@ -46,7 +46,7 @@ Widget.register 'experience_picker',
     @render()
 
   render_popup: ->
-    first_item = null
+    first_item = ''
     countries  = []
 
     sufix = if location.href.indexOf('?') > -1 then '&' else '?'

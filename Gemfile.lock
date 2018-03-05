@@ -102,7 +102,7 @@ GEM
     fast_blank (1.0.0)
     ffi (1.9.21)
     flow-reference (0.3.2)
-    flowcommerce (0.2.52)
+    flowcommerce (0.2.54)
       json
     flowcommerce-activemerchant (0.0.7)
       activemerchant (~> 1.63)

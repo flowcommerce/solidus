@@ -16,7 +16,6 @@ module Flow::PayPal
       }
 
       # Flow.api :post, '/:organization/payments', {}, body
-
       form     = ::Io::Flow::V0::Models::MerchantOfRecordPaymentForm.new body
       FlowCommerce.instance.payments.post Flow.organization, form
     else
