@@ -44,10 +44,10 @@ class Flow::Error < StandardError
       msg = exception.message.is_a?(Array) ? exception.message.join(' - ') : exception.message
 
       hash = {}
-      hash[:title]   = '-',
-      hash[:code]    = '-',
       hash[:message] = msg,
+      hash[:title]   = '-',
       hash[:klass]   = exception.class
+      hash[:code]    = '-',
       hash
     end
   end

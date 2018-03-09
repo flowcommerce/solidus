@@ -98,11 +98,9 @@ button.large, a.button, button.button, input.button {
 // raw classes
 .price         { color: #333 !important; }
 .product-image { border: none !important; }
-.flash.error   { margin-bottom: 30px; }
 .center        { text-align: center; }
 .right         { text-align: right !important; }
 .dimmed        { opacity: 0.5; }
-
 
 .pagination {
   span {
@@ -339,4 +337,14 @@ button.large, a.button, button.button, input.button {
   }
 
   a { font-weight: bold; }
+}
+
+.flash.error {
+  margin-bottom: 30px;
+  background-color: #fff !important;
+  color: #000;
+  padding-left: 0px;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
 }

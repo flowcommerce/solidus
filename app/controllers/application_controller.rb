@@ -42,7 +42,9 @@ class ApplicationController < ActionController::Base
 
   # we want to run filter just before the render
   before_render_filter do
-    if @flow_session.try(:experience)
+    @flow_session ||= Hashie::Mash.new
+
+    if @flow_session.experience
       flow_sync_order
       flow_filter_and_restrict_products
       flow_debug
@@ -96,7 +98,7 @@ class ApplicationController < ActionController::Base
 
     unless @flow_session
       @flow_session ||= Hashie::Mash.new
-      flash.now[:error] = 'Flow session not initiazized (Flow erorr)'
+      flash.now[:error] = 'Flow session not initiazized'
     end
   rescue
     # clear session
