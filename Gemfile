@@ -19,6 +19,7 @@ gem 'awesome_print'
 gem 'flowcommerce'
 gem 'flowcommerce-activemerchant'
 gem 'rails_before_render'
+gem 'loofah', '~> 2.2.1'
 
 # solidus fw
 gem 'solidus', '2.4.2',    require: false
