@@ -50,7 +50,7 @@ module FlowHelper
     return unless banner
 
     %[<div id="jumbo-top">
-        <img src="#{asset_path('banners/%s' % banner[:url])}" style="display: block !important;" />
+        <img src="#{asset_path('banners/%s' % banner[:url], skip_pipeline: true)}" style="display: block !important;" />
       </div>
       <div id="jumbo-top-text" class="container">
         <h2>#{banner[:title]}</h2>
