@@ -10,27 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180122232157) do
+ActiveRecord::Schema.define(version: 20180823110927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "pg_stat_statements"
 
-  create_table "flow_catalog_caches", id: :serial, force: :cascade do |t|
-    t.string "sku"
-    t.string "country"
-    t.string "remote_id"
-    t.jsonb "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["sku", "country"], name: "index_flow_catalog_caches_on_sku_and_country"
-  end
-
-  create_table "flow_settings", id: :serial, force: :cascade do |t|
+  create_table "flow_settings", id: :integer, default: -> { "nextval('table_flow_settings_id_seq'::regclass)" }, force: :cascade do |t|
     t.string "key"
     t.text "data"
     t.datetime "created_at"
-    t.index ["key"], name: "flow_settings_key_key", unique: true
   end
 
   create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
@@ -44,6 +32,11 @@ ActiveRecord::Schema.define(version: 20180122232157) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "spree_activators", id: :serial, force: :cascade do |t|
+    t.string "experience"
+    t.integer "restricted_ids", default: [], array: true
   end
 
   create_table "spree_addresses", id: :serial, force: :cascade do |t|
@@ -1052,6 +1045,7 @@ ActiveRecord::Schema.define(version: 20180122232157) do
     t.string "meta_description"
     t.string "meta_keywords"
     t.integer "depth"
+    t.integer "google_category_id"
     t.index ["parent_id"], name: "index_taxons_on_parent_id"
     t.index ["permalink"], name: "index_taxons_on_permalink"
     t.index ["position"], name: "index_spree_taxons_on_position"

@@ -1,0 +1,54 @@
+<div data-hook="admin_inside_taxon_form" class="row">
+  <div class="col-5">
+    <%= f.field_container :name do %>
+      <%= f.label :name, class: 'required' %><br />
+      <%= text_field :taxon, :name, class: 'fullwidth' %>
+      <%= error_message_on :taxon, :name, class: 'fullwidth title' %>
+    <% end %>
+
+    <%= f.field_container :permalink_part do %>
+      <%= label_tag :permalink_part, Spree::Taxon.human_attribute_name(:permalink), class: 'required' %><br />
+      <div class="input-group">
+        <% if @taxon.parent %>
+          <span class="input-group-addon"><%= @taxon.permalink.split('/')[0...-1].join('/') + '/' %></span>
+        <% end %>
+        <%= text_field_tag :permalink_part, @permalink_part, class: 'fullwidth form-control' %><br />
+      </div>
+    <% end %>
+
+    <%= f.field_container :icon do %>
+      <%= f.label :icon %><br />
+      <%= f.file_field :icon %>
+      <%= image_tag f.object.icon(:mini) if f.object.icon.present? %>
+    <% end %>
+  </div>
+
+  <div class="col-5">
+    <%= f.field_container :description do %>
+      <%= f.label :description %><br />
+      <%= f.text_area :description, class: 'fullwidth', rows: 6 %>
+    <% end %>
+  </div>
+
+  <div class="col-10">
+    <%= f.field_container :meta_title do %>
+      <%= f.label :meta_title %><br />
+      <%= f.text_field :meta_title, class: 'fullwidth' %>
+    <% end %>
+
+    <%= f.field_container :meta_description do %>
+      <%= f.label :meta_description %><br />
+      <%= f.text_field :meta_description, class: 'fullwidth' %>
+    <% end %>
+
+    <%= f.field_container :meta_keywords do %>
+      <%= f.label :meta_keywords %><br />
+      <%= f.text_field :meta_keywords, class: 'fullwidth' %>
+    <% end %>
+
+    <%= f.field_container :google_category_id do %>
+      <label>Google category ID (integer)</label><br />
+      <%= f.text_field :google_category_id %>
+    <% end %>
+  </div>
+</div>
