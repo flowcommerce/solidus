@@ -13,10 +13,11 @@ class ApplicationController < ActionController::Base
   # if we have bad cc number, that is an error we can't avoid
   rescue_from StandardError do |exception|
     if defined?(Bugsnag)
+      # hard log error
       Bugsnag.notify(exception)
     else
-      # hard log error
-      Flow::Error.log exception, request
+      # Flow::Error.log exception, request
+      raise exception
     end
 
     # raise exception
