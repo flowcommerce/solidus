@@ -196,6 +196,31 @@ class FlowController < ApplicationController
     render json: data
   end
 
+  def products_csv
+    # https://support.google.com/merchants/answer/7052112
+    # in /admin/taxonomies in meta_description add keyword google_product_category
+
+    csv = SimpleCsvWriter.new
+
+    for product in Spree::Product.all
+      data = {
+        id:           product.id,
+        title:        product.name,
+        description:  product.description,
+        link:         '%s/products/%s' % [ENV.fetch('APP_URL'), product.slug],
+        image_​​link:   'https://flowcdn.io/assets/solidus' + product.display_image.attachment(:product),
+        availability: 'in stock',
+        price:        product.variants.first.flow_spree_price,
+        # google_product_category: ,
+        unit_​​pricing_​​measure: 'ct',
+      }
+
+      csv.add data
+    end
+
+    render plain: csv.to_s
+  end
+
   private
 
   def paypal_get_order_from_param
