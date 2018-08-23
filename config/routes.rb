@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     get  '/webhooks',             to: '/flow#webhooks'
     get  '/version',              to: '/flow#version'
     get  '/products',             to: '/flow#products'
+    get  '/csv',                  to: '/flow#products_csv'
  end
 
   # custom from Flow for Solidus frontend
