@@ -1,4 +1,4 @@
-# flow specific controller
+  # flow specific controller
 
 class FlowController < ApplicationController
   layout 'flow'
@@ -200,19 +200,41 @@ class FlowController < ApplicationController
     # https://support.google.com/merchants/answer/7052112
     # in /admin/taxonomies in meta_description add keyword google_product_category
 
+    brands = ["AG Adriano", "ALPHAKILO", "Alternative Apparel", "Andrew Marc", "Australia Luxe", "Badgley Mischka",
+      "Baggins", "Ballin", "Bally", "Barney Cool", "Beirn", "Belpearl", "Ben Sherman",
+      "Bravery", "Breed", "Bulova", "Butter", "CHAPTER", "Charlie Jade", "Chelsea Paris", "Corey Lynn",
+      "Cynthia Rowley", "Katie Rowland", "L.A.M.B.", "L.K.Bennett", "Life After", "Link Up", "Loree",
+      "Lori Kassin", "M2", "Mallary Marks", "Marabelle", "Matiere", "Meira", "Mizuki", "Nanis", "Nephora",
+      "Nick Point", "Nudie", "OURCASTE", "Original Penguin", "PURE NAVY", "Paolo Costagli", "Paul & Joe Sister",
+      "Piranesi of Aspen", "Prism Small Kyoto Crossbody", "Rebecca Taylor", "Relwen", "Robert Graham", "Rogue",
+      "Ron Hami", "Rush", "Ryder", "SO&CO", "Seiko", "Sergio Rossi", "Shay", "She + Lo", "Standard Issue",
+      "Star Wars", "Stuhrling", "Superfine", "Swiss Legend", "Tara Pearls", "Tateossian", "Thakoon", "Time's Arrow",
+      "Timo Weiland", "Tocca", "Tom Binns", "Tsovet", "Vanishing Elephant", "Victorinox", "Vivienne Westwood", "Young Fabulous"]
+
     csv = SimpleCsvWriter.new
 
     for product in Spree::Product.all
+      brand = brands.inject(nil) { |found, brand| found ||= brand if product.name.start_with?(brand) }
+      brand ||= 'Flow'
+
+      google_category_id = product.taxons.first.try(:google_category_id) || 166 # Apparel & Accessories
+
       data = {
-        id:           product.id,
-        title:        product.name,
-        description:  product.description,
-        link:         '%s/products/%s' % [ENV.fetch('APP_URL'), product.slug],
-        image_​​link:   'https://flowcdn.io/assets/solidus' + product.display_image.attachment(:product),
-        availability: 'in stock',
-        price:        product.variants.first.flow_spree_price,
-        # google_product_category: ,
-        unit_​​pricing_​​measure: 'ct',
+        id:                      product.id,
+        title:                   product.name,
+        description:             product.description,
+        link:                    '%s/products/%s' % [ENV.fetch('APP_URL'), product.slug],
+        image_​​link:              'https://flowcdn.io/assets/solidus' + product.display_image.attachment(:product),
+        availability:            'in stock',
+        price:                   product.variants.first.flow_spree_price,
+        unit_​​pricing_​​measure:    'ct',
+        brand:                   brand,
+        google_product_category: google_category_id,
+        identifier_​​exists:       'no',
+        condition:               'new',
+        adult:                   'no',
+        is_​​bundle:               'no',
+        gender:                  'unisex',
       }
 
       csv.add data
