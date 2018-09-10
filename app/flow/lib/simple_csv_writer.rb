@@ -6,8 +6,9 @@
 # csv.to_s
 
 class SimpleCsvWriter
-  def initialize
-    @data = []
+  def initialize delimiter: nil
+    @data      = []
+    @delimiter = delimiter || "\t"
   end
 
   # add hash or list
@@ -19,12 +20,12 @@ class SimpleCsvWriter
       data
     end
 
-    @data.push list.map { |el| fmt(el) }.join(',')
+    @data.push list.map { |el| fmt(el) }.join(@delimiter)
   end
 
   def to_s
     if @keys
-      @keys.map(&:to_s).join(',') + "\n" +
+      @keys.map(&:to_s).join(@delimiter) + "\n" +
       @data.join($/)
     else
       @data.join($/)
@@ -38,7 +39,7 @@ class SimpleCsvWriter
       .gsub($/, "\\n")
       .gsub('"', '""')
 
-    el.include?(',') || el.include?("\\") ? '"%s"' % el : el
+    el.include?(@delimiter) || el.include?("\\") ? '"%s"' % el : el
   end
 end
 

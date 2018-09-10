@@ -214,33 +214,49 @@ class FlowController < ApplicationController
     csv = SimpleCsvWriter.new
 
     for product in Spree::Product.all
-      brand = brands.inject(nil) { |found, brand| found ||= brand if product.name.start_with?(brand) }
-      brand ||= 'Flow'
+      brand = 'Flow'
+      brands.each { |brand_name| brand = brand_name if product.name.start_with?(brand_name) }
 
       google_category_id = product.taxons.first.try(:google_category_id) || 166 # Apparel & Accessories
 
+      host = 'https://www.shopflowfashion.com' # ENV.fetch('APP_URL')
+      link = [host, product.slug].join('/products/').split('&').first
+
+      next unless product.slug
+
       data = {
-        id:                      product.id,
-        title:                   product.name,
-        description:             product.description,
-        link:                    '%s/products/%s' % [ENV.fetch('APP_URL'), product.slug],
-        image_​​link:              'https://flowcdn.io/assets/solidus' + product.display_image.attachment(:product),
-        availability:            'in stock',
-        price:                   product.variants.first.flow_spree_price,
-        unit_​​pricing_​​measure:    'ct',
-        brand:                   brand,
-        google_product_category: google_category_id,
-        identifier_​​exists:       'no',
-        condition:               'new',
-        adult:                   'no',
-        is_​​bundle:               'no',
-        gender:                  'unisex',
+        "id"                      => product.id,
+        "title"                   => product.name,
+        "description"             => product.description,
+        "link"                    => link,
+        "image link"              => 'https://flowcdn.io/assets/solidus' + product.images.first.attachment.url(:large),
+        "availability"            => 'in stock',
+        "price"                   => product.variants.first.flow_spree_price,
+        "unit ​pricing measure"    => 'ct',
+        "brand"                   => brand,
+        "google product category" => google_category_id,
+        "identifier exists"       => 'no',
+        "condition"               => 'new',
+        "adult"                   => 'no',
+        "is bundle"               => 'no',
+        "gender"                  => 'unisex',
+        "shipping"                => 'US:::0.00 USD',
+        "tax"                     => 'US::6.49:yes',
+        "age group"               => 'adult',
+        "condition"               => 'new',
+        "identifier exists"       => 'yes',
       }
 
       csv.add data
     end
 
-    render plain: csv.to_s
+    data = csv.to_s
+
+    csv_dir = Rails.root.join('tmp/csv').to_s
+    Dir.mkdir(csv_dir) unless Dir.exists?(csv_dir)
+    File.write("#{csv_dir}/google-merchant-#{Time.now.to_i}.csv", data)
+
+    render plain: data
   end
 
   private
