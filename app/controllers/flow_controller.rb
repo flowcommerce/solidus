@@ -222,6 +222,15 @@ class FlowController < ApplicationController
       host = 'https://www.shopflowfashion.com' # ENV.fetch('APP_URL')
       link = [host, product.slug].join('/products/').split('&').first
 
+      color =
+        if product.id % 2 == 0
+          'White'
+        elsif product.id % 3 == 0
+          'Gray'
+        else
+          'Black'
+        end
+
       next unless product.slug
 
       data = {
@@ -245,6 +254,7 @@ class FlowController < ApplicationController
         "age group"               => 'adult',
         "condition"               => 'new',
         "identifier exists"       => 'yes',
+        "color"                   => color,
       }
 
       csv.add data
