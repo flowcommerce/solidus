@@ -24,5 +24,9 @@ module Spree
 
       render :not_found, formats: 'html'
     end
+
+    def returns_and_refunds
+      render :returns_and_refunds
+    end
   end
 end

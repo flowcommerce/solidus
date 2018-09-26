@@ -1,6 +1,30 @@
+<style>
+  #footer {
+    display: flex;
+    margin-bottom: 40px;
+  }
+
+  #footer > div { flex: 1; }
+
+  #footer > div:nth-child(2) { text-align: center; }
+
+  @media only screen and (max-width: 600px) {
+    #footer > div:nth-child(2) { text-align: right; padding-right: 10px; }
+    #footer > div:nth-child(3) { display: none; }
+  }
+</style>
+
 <footer id="footer" class="sixteen columns" data-hook>
-  <p>
+  <div>
+    <small>Supported Payment Methods</small>
+    <br />
+    <img src="/cc.gif" />
+  </div>
+  <div>
+    <a href="/returns-and-refunds">Returns and refunds</a>
+  </div>
+  <div>
     <img class="w experience_picker hide-in-tablet" src="<%= flow_flag(@flow_session.experience, 32) %>" />
     <!-- <%= Spree.t :powered_by  %> <a href="https://www.flow.io" target="_new">Flow.io</a> &amp; <%= link_to 'Solidus', 'http://solidus.io/' %> -->
-  </p>
+  </div>
 </footer>

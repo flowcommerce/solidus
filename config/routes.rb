@@ -25,8 +25,10 @@ Rails.application.routes.draw do
  end
 
   # custom from Flow for Solidus frontend
-  get '/about', to: 'flow#about'
-  get '/sale', to: 'spree/home#sale'
+  get '/about',               to: 'flow#about'
+  get '/sale',                to: 'spree/home#sale'
+  get '/returns-and-refunds', to: 'spree/home#returns_and_refunds'
+
 
   # health check ping
   get '/_internal_/healthcheck', to: lambda { |env| [200, {}, ['alive']] }
