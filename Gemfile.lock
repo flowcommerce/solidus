@@ -100,7 +100,7 @@ GEM
     faraday (0.14.0)
       multipart-post (>= 1.2, < 3)
     fast_blank (1.0.0)
-    ffi (1.9.21)
+    ffi (1.9.25)
     flow-reference (0.3.2)
     flowcommerce (0.2.54)
       json
