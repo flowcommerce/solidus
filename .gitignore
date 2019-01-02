@@ -8,7 +8,7 @@ pickle-email-*.html
 config/secrets.yml
 capybara-*.html
 *.rbc
-**.orig
+**/*.orig
 /log/*
 !/log/.keep
 /tmp
