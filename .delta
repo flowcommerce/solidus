@@ -2,5 +2,5 @@ builds:
   - root:
       port.container: 3000
       port.host: 7422
-      instance.type: t2.small
+      instance.type: t3.small
       version: 1.2
