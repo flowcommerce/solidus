@@ -32,7 +32,7 @@ How to set up a dev environment for this project:
 
 ## Working Protocols
 ### Branches
-* The `master` branch contains the state of the site on the production server
+* The `main` branch contains the state of the site on the production server
 * The `staging` branch contains the state of the site on the staging server
 * All other branches should start with `fix/` or `feature/` and a number that matches a corresponding open issue on Codebase or Github
 
@@ -69,7 +69,7 @@ subl `bundle show solidus_frontend`
 
 then go to app/views/spree and copy them to local app/views/spress. names have to match
 or
-https://github.com/solidusio/solidus/tree/master/frontend/app/views/spree
+https://github.com/solidusio/solidus/tree/main/frontend/app/views/spree
 
 ### Products
 #### List products
